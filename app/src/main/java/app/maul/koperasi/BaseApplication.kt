@@ -1,4 +1,4 @@
-package app.maul.koperasi.di
+package app.maul.koperasi
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

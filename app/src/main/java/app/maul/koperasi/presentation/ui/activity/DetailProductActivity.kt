@@ -18,7 +18,7 @@ import app.maul.koperasi.preference.Preferences
 import app.maul.koperasi.presentation.ui.augmentedReality.ProductArActivity
 import app.maul.koperasi.presentation.ui.detailProduct.DetailProductViewModel
 import app.maul.koperasi.presentation.ui.wishlist.WishlistViewModel
-import app.maul.koperasi.utils.Constant.Companion.BASE_URL
+import app.maul.koperasi.utils.Constant
 import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -95,7 +95,7 @@ class DetailProductActivity : AppCompatActivity() {
                 tempProduct = product
                 println(product)
                 val prefix = "Rp. "
-                Glide.with(this).load(BASE_URL + product.images).into(binding.IvProduct)
+                Glide.with(this).load(Constant.BASE_URL + product.images).into(binding.IvProduct)
                 binding.ProductPrice.text = "$prefix${product.price}"
                 binding.ProductName.text = product.name
                 binding.ProductSold.text = "Terjual ${product.terjual}"

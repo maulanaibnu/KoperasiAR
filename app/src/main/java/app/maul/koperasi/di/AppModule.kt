@@ -1,5 +1,4 @@
-package app.maul.koperasi.factory
-
+package app.maul.koperasi.di
 
 import app.maul.koperasi.api.ApiService
 import app.maul.koperasi.utils.Constant
@@ -18,37 +17,30 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-
-//    private const val BASE_URL = "https://koperasi.simagang.my.id/"
-    const val BASE_URL = Constant.BASE_URL
-
     @Provides
     @Singleton
-    fun okHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(): OkHttpClient {
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-
         return OkHttpClient.Builder()
-            .connectTimeout(30,TimeUnit.SECONDS)
-            .readTimeout(30,TimeUnit.SECONDS)
-            .writeTimeout(30,TimeUnit.SECONDS)
-            .addInterceptor(interceptor).build()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor(interceptor)
+            .build()
     }
 
-    @Singleton
     @Provides
-    fun setupRetrofitGithub(okHttp : OkHttpClient):Retrofit{
+    @Singleton
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(okHttp)
+            .baseUrl(Constant.BASE_URL) // <-- GUNAKAN DARI CONSTANT!
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
 
-
     @Provides
-    fun apiEndPoint(retrofit : Retrofit): ApiService = retrofit.create(ApiService::class.java)
-
-
-
+    @Singleton
+    fun provideApiService(retrofit: Retrofit): ApiService = retrofit.create(ApiService::class.java)
 }
