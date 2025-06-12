@@ -1,0 +1,117 @@
+<resources>
+    <string name="app_name">Koperasi</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="email_validasi">Email Tidak Valid</string>
+    <string name="password_validasi">Password Minimal 8 Karakter</string>
+    <string name="imagelogin">imagelogin</string>
+    <string name="login">Login</string>
+    <string name="masuk_ke_akun_anda">Login untuk mengakses fitur lengkap aplikasi.</string>
+    <string name="email">email</string>
+    <string name="password">password</string>
+    <string name="lupa_kata_sandi">Lupa Kata Sandi?</string>
+    <string name="masuk">Masuk</string>
+    <string name="atau_masuk_dengann">atau masuk dengan</string>
+    <string name="belum_punya_akun">belum punya akun?</string>
+    <string name="daftar">Daftar</string>
+    <string name="buat_akun_anda">Daftar sekarang untuk menikmati layanan kami.</string>
+    <string name="register">Register</string>
+    <string name="name">nama</string>
+    <string name="app_logo">app logo</string>
+    <string name="tutup">tutup</string>
+    <string name="_4_9">4.9</string>
+    <string name="rp_10_000">Rp.10.000</string>
+    <string name="_10rb_terjual">10rb+ terjual</string>
+    <string name="ubah_alamat">Ubah Alamat</string>
+    <string name="rumah">Rumah</string>
+    <string name="home">Rumah</string>
+    <string name="change_address">Ubah Alamat</string>
+    <string name="jl_semangka">Jl. semangka</string>
+    <string name="home_adress">Rumah</string>
+    <string name="name_address">Maulana Ibnu Fajar</string>
+    <string name="number_phone">08928288282</string>
+    <string name="tambah_alamat">Tambah Alamat</string>
+    <string name="simpan_alamat">Simpan Alamat</string>
+    <string name="alamat_anda">Alamat Anda</string>
+    <string name="pilih_alamat">Pilih Alamat</string>
+    <string name="add_alamat">Tambah Alamat</string>
+    <string name="nama_penerima">Nama Penerima</string>
+    <string name="nomor_telefon">Nomor Telefon</string>
+    <string name="label_alamat">Label Alamat</string>
+    <string name="alamat_lengkap">Alamat lengkap</string>
+    <string name="simpan">Simpan</string>
+    <string name="ubah_alaamt">Ubah Alamat</string>
+    <string name="kode_pos">kode Pos</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="pilih_gambar">Pilih Gambar</string>
+    <string name="username">Username</string>
+    <string name="tanggal_lahir">Tanggal Lahir</string>
+    <string name="jenis_kelamin">Jenis Kelamin</string>
+    <string name="profile">Profile</string>
+    <string name="name_pengguna">Name</string>
+    <string name="alamat">Alamat</string>
+    <string name="password_add">Password</string>
+    <string name="notifikasi">Notifikasi</string>
+    <string name="pusat_bantuan">Pusat Bantuan</string>
+    <string name="semua">Semua</string>
+    <string name="perabotan">Perabotan</string>
+    <string name="miniatur">Miniatur</string>
+    <string name="aksesoris">Aksesoris</string>
+    <string name="keranjang">Keranjang</string>
+    <string name="all">Semua</string>
+    <string name="total">Total</string>
+    <string name="bell">Bell</string>
+    <string name="mulai_belanja">Mulai Belanja</string>
+    <string name="keranjang_kamu_kosong">keranjang Kamu Kosong</string>
+    <string name="belanja_mulai_sekarang">Belanja Mulai Sekarang</string>
+    <string name="maulana_ibnu_fajar">Maulana Ibnu Fajar</string>
+    <string name="selamat_datang">Selamat Datang</string>
+    <string name="cari">Cari</string>
+    <string name="lihat_semua">Lihat Semua</string>
+    <string name="produk_terbaru">Produk Terbaru</string>
+    <string name="rekomendasi_produk">Rekomendasi Produk</string>
+    <string name="home_fragment">Home</string>
+    <string name="profile_fragment">Profile</string>
+    <string name="cart">Cart</string>
+    <string name="input_code_otp">Input Code OTP</string>
+    <string name="sudah_punya_akun">Punya akun ?</string>
+    <string name="productName">Cangkir kayu</string>
+    <string name="back">Kembali</string>
+    <string name="contentDesc">Image</string>
+    <string name="price">Rp 10000</string>
+    <string name="desciption">Deskripsi</string>
+    <string name="logout">Keluar</string>
+    <string name="addCart">Masukan keranjang</string>
+    <string name="minus">-</string>
+    <string name="plus">+</string>
+    <string name="placeHere">place here</string>
+    <string name="chatbot">Chatbot</string>
+    <string name="chatMessage">hi chatbot</string>
+    <string name="point_your_phone_down">Arahkan kamera ke permukaan datar</string>
+    <string name="name_auth">Nama Anda</string>
+    <string name="email_auth">Email Anda</string>
+    <string name="password_auth">Password Anda</string>
+    <string name="etname_auth">buat nama anda</string>
+    <string name="etemail_auth">buat email anda</string>
+    <string name="etpass_auth">buat password anda</string>
+    <string name="etemail_login">tulis email yang terdaftar</string>
+    <string name="etpass_login">tulis password yang terdaftar</string>
+
+    <string-array name="payment_types">
+        <item>Bank Transfer</item>
+        <item>Online</item>
+    </string-array>
+
+    <string-array name="bank_transfer_options">
+        <item>BRI</item>
+        <item>BNI</item>
+        <item>Mandiri</item>
+    </string-array>
+
+    <string-array name="shipping_methods">
+        <item>Standard</item>
+        <item>Express</item>
+        <item>Overnight</item>
+    </string-array>
+
+</resources>
