@@ -36,43 +36,43 @@ class CheckoutActivity : AppCompatActivity() {
 
         observeOrderResponse()
         // Set up Submit Button
-        binding.btnSubmitOrder.setOnClickListener {
-            var paymentType = binding.spinnerPaymentType.selectedItem.toString()
-            val bankTransfer = binding.spinnerBankTransfer.selectedItem.toString()
-            val shippingMethod = binding.spinnerShippingMethod.selectedItem.toString()
-            val customerName = binding.etCustomerName.text.toString()
-            val phoneNumber = binding.etPhoneNumber.text.toString()
-            val address = binding.etAddress.text.toString()
-
-            // Validate inputs
-            if (customerName.isEmpty() || phoneNumber.isEmpty() || address.isEmpty()) {
-                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            if(paymentType == "Bank Transfer"){
-                paymentType = "bank_transfer"
-            }
-
-            // Create OrderRequest
-            val orderRequest = OrderRequest(
-                id_user = userId,
-                total = total,
-                payment_type = paymentType,
-                shipping_method = shippingMethod,
-                bank_transfer = bankTransfer,
-                customer_name = customerName,
-                phone_number = phoneNumber,
-                address = address,
-                orderDetails = orderDetails
-            )
-
-            // Call ViewModel to create the order
-            orderViewModel.createOrder(orderRequest)
-
-            // Show success message or navigate back
-
-        }
+//        binding.btnSubmitOrder.setOnClickListener {
+//            var paymentType = binding.spinnerPaymentType.selectedItem.toString()
+//            val bankTransfer = binding.spinnerBankTransfer.selectedItem.toString()
+//            val shippingMethod = binding.spinnerShippingMethod.selectedItem.toString()
+//            val customerName = binding.etCustomerName.text.toString()
+//            val phoneNumber = binding.etPhoneNumber.text.toString()
+//            val address = binding.etAddress.text.toString()
+//
+//            // Validate inputs
+//            if (customerName.isEmpty() || phoneNumber.isEmpty() || address.isEmpty()) {
+//                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
+//                return@setOnClickListener
+//            }
+//
+//            if(paymentType == "Bank Transfer"){
+//                paymentType = "bank_transfer"
+//            }
+//
+//            // Create OrderRequest
+//            val orderRequest = OrderRequest(
+//                id_user = userId,
+//                total = total,
+//                payment_type = paymentType,
+//                shipping_method = shippingMethod,
+//                bank_transfer = bankTransfer,
+//                customer_name = customerName,
+//                phone_number = phoneNumber,
+//                address = address,
+//                orderDetails = orderDetails
+//            )
+//
+//            // Call ViewModel to create the order
+//            orderViewModel.createOrder(orderRequest)
+//
+//            // Show success message or navigate back
+//
+//        }
 
     }
 

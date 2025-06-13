@@ -1,5 +1,9 @@
 package app.maul.koperasi.model.address
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class AddressResponse(
     val id: Int,
     val recipient_name: String,
@@ -8,4 +12,4 @@ data class AddressResponse(
     val notes: String,
     val label: String,
     val userId: Int
-)
+) : Parcelable

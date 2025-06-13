@@ -96,6 +96,11 @@
     <string name="etpass_auth">buat password anda</string>
     <string name="etemail_login">tulis email yang terdaftar</string>
     <string name="etpass_login">tulis password yang terdaftar</string>
+    <string name="ulasan_pembeli">Ulasan Pembeli</string>
+    <string name="lihat_semua_ulasan">Lihat Semua</string>
+    <string name="otherUser">Maulana Ibnu Fajar</string>
+    <string name="produk_sangat_bagus_dan_bahan_berkualitas_tinggi">Produk sangat bagus dan bahan berkualitas tinggi</string>
+    <string name="checkout">Checkout</string>
 
     <string-array name="payment_types">
         <item>Bank Transfer</item>

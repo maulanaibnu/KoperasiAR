@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="12dp"
+    android:layout_marginTop="20dp"
     tools:context=".presentation.ui.activity.DetailProductActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,6 +16,8 @@
             android:id="@+id/appBar"
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -30,30 +32,35 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/black" />
+                app:tint="@color/black"
+                tools:ignore="TouchTargetSizeCheck" />
 
             <ImageButton
                 android:id="@+id/arButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="10dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/simpan"
                 android:padding="12dp"
                 android:src="@drawable/ic_ar"
                 app:layout_constraintEnd_toStartOf="@id/wishlistButton"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/black" />
+                app:tint="@color/black"
+                tools:ignore="TouchTargetSizeCheck" />
 
             <ImageButton
                 android:id="@+id/wishlistButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="20dp"
+                android:layout_height="0dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/simpan"
                 android:padding="12dp"
                 android:src="@drawable/ic_favorite_border"
                 app:layout_constraintEnd_toStartOf="@id/cartButton"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="TouchTargetSizeCheck" />
 
             <ImageButton
                 android:id="@+id/cartButton"
@@ -87,10 +94,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            android:layout_marginStart="15dp"
             android:text="@string/price"
             android:textColor="@color/black"
             android:textSize="20sp"
-            android:textStyle="bold"
+            android:fontFamily="@font/urbanist_extrabold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/Iv_product" />
 
@@ -99,27 +107,40 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:layout_marginStart="15dp"
+            android:fontFamily="@font/urbanist_medium"
             android:text="@string/productName"
             android:textColor="@color/black"
-            android:textSize="20sp"
+            android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ProductPrice" />
+
+        <ImageView
+            android:id="@+id/img_star"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:layout_marginStart="9dp"
+            android:src="@drawable/star"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ProductName"/>
 
         <TextView
             android:id="@+id/ProductRatting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="2dp"
             android:text="@string/_4_9"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ProductName" />
+            app:layout_constraintBottom_toBottomOf="@+id/img_star"
+            app:layout_constraintStart_toEndOf="@+id/img_star" />
 
         <TextView
             android:id="@+id/ProductSold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="22dp"
             android:text="@string/_10rb_terjual"
             app:layout_constraintStart_toEndOf="@id/ProductRatting"
             app:layout_constraintTop_toBottomOf="@id/ProductName" />
@@ -127,8 +148,8 @@
         <View
             android:id="@+id/view1"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="30dp"
+            android:layout_height="8dp"
+            android:layout_marginTop="20dp"
             android:background="@color/lines"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -139,9 +160,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:layout_marginStart="15dp"
             android:text="@string/desciption"
             android:textColor="@color/black"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/view1" />
@@ -151,6 +173,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            android:layout_marginStart="15dp"
             android:text="@string/contentDesc"
             android:textColor="@color/black"
             android:textSize="16sp"
@@ -160,24 +183,166 @@
         <View
             android:id="@+id/view2"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="8dp"
             android:layout_marginTop="30dp"
             android:background="@color/lines"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ProductDesc" />
 
-        <Button
-            android:id="@+id/btnAddCart"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tvUlasan"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:backgroundTint="@color/primary_color"
-            android:text="@string/addCart"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/ulasan_pembeli"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:textSize="15sp"
+            android:fontFamily="@font/urbanist_bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/view2" />
 
+        <TextView
+            android:id="@+id/tvAllRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="196dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="@font/urbanist_medium"
+            android:text="@string/lihat_semua_ulasan"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.333"
+            app:layout_constraintStart_toEndOf="@+id/tvUlasan"
+            app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgOtherUser"
+            android:layout_width="15dp"
+            android:layout_height="18dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="15dp"
+            android:src="@drawable/img_1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvUlasan"/>
+
+        <TextView
+            android:id="@+id/tvUserRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="7dp"
+            android:layout_marginTop="30dp"
+            android:fontFamily="@font/urbanist_medium"
+            android:text="@string/otherUser"
+            app:layout_constraintBottom_toBottomOf="@+id/imgOtherUser"
+            app:layout_constraintStart_toEndOf="@+id/imgOtherUser"
+            app:layout_constraintTop_toBottomOf="@+id/tvUlasan" />
+
+        <LinearLayout
+            android:id="@+id/LinearRating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imgOtherUser">
+
+            <ImageView
+                android:id="@+id/rating1"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="12dp"
+                android:src="@drawable/star" />
+            <ImageView
+                android:id="@+id/rating2"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginTop="12dp"
+                android:src="@drawable/star" />
+            <ImageView
+                android:id="@+id/rating3"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginTop="12dp"
+                android:src="@drawable/star" />
+            <ImageView
+                android:id="@+id/rating4"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginTop="12dp"
+                android:src="@drawable/star" />
+            <ImageView
+                android:id="@+id/rating5"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginTop="12dp"
+                android:src="@drawable/star" />
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/tvDetailUlasan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:fontFamily="@font/urbanist_medium"
+            android:text="@string/produk_sangat_bagus_dan_bahan_berkualitas_tinggi"
+            android:textSize="12sp"
+            android:layout_marginTop="15dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/LinearRating" />
+
+        <View
+            android:id="@+id/view3"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_marginTop="30dp"
+            android:background="@color/lines"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvDetailUlasan" />
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view3"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <Button
+                android:id="@+id/btnAddCart"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+
+                android:layout_marginTop="20dp"
+                android:backgroundTint="@color/primary_color"
+                android:text="@string/addCart" />
+
+            <Button
+                android:id="@+id/btnOrderNow"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+
+                android:layout_marginTop="20dp"
+                android:backgroundTint="@color/second_color"
+                android:text="Beli Sekarang" />
+
+        </LinearLayout>
+
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 </ScrollView>

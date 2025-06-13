@@ -19,6 +19,10 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideBaseUrl(): String = Constant.BASE_URL
+
+    @Provides
+    @Singleton
     fun provideOkHttpClient(): OkHttpClient {
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -32,9 +36,12 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    fun provideRetrofit(
+        okHttpClient: OkHttpClient,
+        baseUrl: String // inject dari Provider di atas
+    ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(Constant.BASE_URL) // <-- GUNAKAN DARI CONSTANT!
+            .baseUrl(baseUrl)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -42,5 +49,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideApiService(retrofit: Retrofit): ApiService = retrofit.create(ApiService::class.java)
+    fun provideApiService(retrofit: Retrofit): ApiService =
+        retrofit.create(ApiService::class.java)
 }
+

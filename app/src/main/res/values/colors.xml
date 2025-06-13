@@ -18,8 +18,8 @@
     <color name="second_gray">#747474</color>
     <color name="background">#F2EAD3</color>
     <color name="third_gray">#F8F8F8</color>
-    <color name="lines">#6D6D6D</color>
-    <color name="bg">#F4F4F4</color>
+    <color name="lines">#E9E9E9</color>
+    <color name="bg">#FEF7FF</color>
     <color name="bgsearch">#F6F6F6F6</color>
     <color name="authColour">#F8FFFFFF</color>
     <color name="shadow">#BABABA</color>

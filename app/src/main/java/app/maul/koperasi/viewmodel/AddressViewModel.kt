@@ -2,7 +2,7 @@ package app.maul.koperasi.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import app.maul.koperasi.api.ApiService
+import app.maul.koperasi.data.AddressRepository
 import app.maul.koperasi.model.address.AddressRequest
 import app.maul.koperasi.model.address.AddressResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddressViewModel @Inject constructor(
-    private val api: ApiService
+    private val addressRepository: AddressRepository
 ) : ViewModel() {
 
     private val _addresses = MutableStateFlow<List<AddressResponse>>(emptyList())
@@ -44,7 +44,7 @@ class AddressViewModel @Inject constructor(
             _error.value = null
             _success.value = null
             try {
-                val response = api.getAddresses()
+                val response = addressRepository.getAddresses()
                 if (response.isSuccessful) {
                     _addresses.value = response.body() ?: emptyList()
                 } else {
@@ -63,7 +63,7 @@ class AddressViewModel @Inject constructor(
             _error.value = null
             _success.value = null
             try {
-                val response = api.createAddress(request)
+                val response = addressRepository.createAddress(request)
                 if (response.isSuccessful) {
                     _success.value = "Alamat berhasil ditambahkan"
                     getAddresses()
@@ -83,7 +83,7 @@ class AddressViewModel @Inject constructor(
             _error.value = null
             _success.value = null
             try {
-                val response = api.updateAddress(id, request)
+                val response = addressRepository.updateAddress(id, request)
                 if (response.isSuccessful) {
                     _success.value = "Alamat berhasil diupdate"
                     getAddresses()
@@ -103,7 +103,7 @@ class AddressViewModel @Inject constructor(
             _error.value = null
             _success.value = null
             try {
-                val response = api.deleteAddress(id)
+                val response = addressRepository.deleteAddress(id)
                 if (response.isSuccessful) {
                     _success.value = "Alamat berhasil dihapus"
                     getAddresses()
@@ -123,7 +123,7 @@ class AddressViewModel @Inject constructor(
             _error.value = null
             _success.value = null
             try {
-                val response = api.getAddress(id)
+                val response = addressRepository.getAddress(id)
                 if (response.isSuccessful) {
                     _address.value = response.body()
                 } else {
