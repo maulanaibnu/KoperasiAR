@@ -8,14 +8,15 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import app.maul.koperasi.R
 import app.maul.koperasi.databinding.ListItemAddressBinding
+import app.maul.koperasi.model.address.AddressData
 import app.maul.koperasi.model.address.AddressResponse
 
 
 class AddressAdapter(
-    private val onSelect: (AddressResponse) -> Unit,
-    private val onChange: (AddressResponse) -> Unit,
+    private val onSelect: (AddressData) -> Unit,
+    private val onChange: (AddressData) -> Unit,
 
-) : ListAdapter<AddressResponse, AddressAdapter.AddressViewHolder>(DIFF_CALLBACK) {
+) : ListAdapter<AddressData, AddressAdapter.AddressViewHolder>(DIFF_CALLBACK) {
 
     private var selectedId: Int? = null // jika ingin highlight alamat yang dipilih
     fun setSelectedId(id: Int?) {
@@ -24,7 +25,7 @@ class AddressAdapter(
     }
 
     inner class AddressViewHolder(val binding: ListItemAddressBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: AddressResponse) {
+        fun bind(item: AddressData) {
             val context = binding.root.context
             if (item.id == selectedId) {
                 binding.card.setBackgroundResource(R.drawable.background_selected_size)
@@ -63,12 +64,12 @@ class AddressAdapter(
     }
 
     companion object {
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<AddressResponse>() {
-            override fun areItemsTheSame(oldItem: AddressResponse, newItem: AddressResponse): Boolean {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<AddressData>() {
+            override fun areItemsTheSame(oldItem: AddressData, newItem: AddressData): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(oldItem: AddressResponse, newItem: AddressResponse): Boolean {
+            override fun areContentsTheSame(oldItem: AddressData, newItem: AddressData): Boolean {
                 return oldItem == newItem
             }
         }

@@ -1,10 +1,13 @@
 package app.maul.koperasi.di
 
+import android.content.Context
 import app.maul.koperasi.api.ApiService
+import app.maul.koperasi.network.AuthInterceptor
 import app.maul.koperasi.utils.Constant
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -23,13 +26,15 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(@ApplicationContext context : Context): OkHttpClient {
+        val authInterceptor = AuthInterceptor(context)
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         return OkHttpClient.Builder()
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor(authInterceptor)
             .addInterceptor(interceptor)
             .build()
     }

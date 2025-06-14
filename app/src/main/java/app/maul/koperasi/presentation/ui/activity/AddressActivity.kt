@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import app.maul.koperasi.adapter.AddressAdapter
 import app.maul.koperasi.databinding.ActivityAddressBinding
 import app.maul.koperasi.viewmodel.AddressViewModel
@@ -57,15 +58,23 @@ class AddressActivity : AppCompatActivity() {
                 addAddressLauncher.launch(intent)
             }
         )
+
         binding.rvAddress.adapter = addressAdapter
+        binding.rvAddress.layoutManager = LinearLayoutManager(this)
+
     }
 
     private fun setupObservers() {
+
+
         // Observe daftar alamat
         lifecycleScope.launchWhenStarted {
+
             viewModel.addresses.collect { list ->
+                Toast.makeText(this@AddressActivity, "$list", Toast.LENGTH_SHORT).show()
+                binding.rvAddress.visibility = View.VISIBLE
                 addressAdapter.submitList(list)
-                binding.emptyState.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
+                binding.emptyState.visibility = if (list?.isEmpty() == true) View.VISIBLE else View.GONE
             }
         }
 

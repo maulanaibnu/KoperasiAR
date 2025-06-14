@@ -1,8 +1,10 @@
 package app.maul.koperasi.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.maul.koperasi.data.AddressRepository
+import app.maul.koperasi.model.address.AddressData
 import app.maul.koperasi.model.address.AddressRequest
 import app.maul.koperasi.model.address.AddressResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,11 +18,11 @@ class AddressViewModel @Inject constructor(
     private val addressRepository: AddressRepository
 ) : ViewModel() {
 
-    private val _addresses = MutableStateFlow<List<AddressResponse>>(emptyList())
-    val addresses: StateFlow<List<AddressResponse>> get() = _addresses
+    private val _addresses = MutableStateFlow<List<AddressData>>(emptyList())
+    val addresses: StateFlow<List<AddressData>?> get() = _addresses
 
-    private val _address = MutableStateFlow<AddressResponse?>(null)
-    val address: StateFlow<AddressResponse?> get() = _address
+    private val _address = MutableStateFlow<AddressData?>(null)
+    val address: StateFlow<AddressData?> get() = _address
 
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> get() = _loading
@@ -46,7 +48,10 @@ class AddressViewModel @Inject constructor(
             try {
                 val response = addressRepository.getAddresses()
                 if (response.isSuccessful) {
-                    _addresses.value = response.body() ?: emptyList()
+                    _loading.value = false
+
+                    _addresses.value = response.body()?.data ?: emptyList()
+                    Log.d("TESTED","${ _addresses.value}")
                 } else {
                     _error.value = "Gagal mengambil data address"
                 }

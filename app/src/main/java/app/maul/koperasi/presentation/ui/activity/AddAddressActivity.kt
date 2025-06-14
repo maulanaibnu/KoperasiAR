@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import app.maul.koperasi.databinding.ActivityAddAddressBinding
+import app.maul.koperasi.model.address.AddressData
 import app.maul.koperasi.model.address.AddressRequest
 import app.maul.koperasi.viewmodel.AddressViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,12 +19,28 @@ class AddAddressActivity : AppCompatActivity() {
     // INI INJECT VIEWMODEL DARI HILT!
     private val viewModel: AddressViewModel by viewModels()
 
+    private var  id = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddAddressBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.imgBack.setOnClickListener { finish() }
+
+        id = intent.getIntExtra("ADDRESS_ID", 0)
+        if(id != 0){
+            viewModel.getAddressById(id)
+        }
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.address.collect { data ->
+                if(data != null){
+                    setData(data)
+                }
+            }
+        }
+
 
         binding.btnSaveAlamat.setOnClickListener {
             val recipientName = binding.etNamaPenerima.text?.toString()?.trim() ?: ""
@@ -44,7 +61,11 @@ class AddAddressActivity : AppCompatActivity() {
                 street = street,
                 notes = notes
             )
-            viewModel.createAddress(request)
+            if(id != 0){
+                viewModel.updateAddress(id,request)
+            }else{
+                viewModel.createAddress(request)
+            }
         }
 
         lifecycleScope.launchWhenStarted {
@@ -63,6 +84,15 @@ class AddAddressActivity : AppCompatActivity() {
                     viewModel.resetError()
                 }
             }
+        }
+    }
+
+    private fun setData(addressData: AddressData){
+        binding.apply {
+            etNamaPenerima.setText(addressData.recipient_name)
+            etNoTelefon.setText(addressData.phone_number)
+            etLabelAlamat.setText(addressData.label)
+            etAlamatLengkap.setText(addressData.street)
         }
     }
 }

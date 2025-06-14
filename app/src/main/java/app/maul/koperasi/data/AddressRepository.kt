@@ -1,17 +1,18 @@
 package app.maul.koperasi.data
 
 import app.maul.koperasi.api.ApiService
+import app.maul.koperasi.model.address.AddressData
 import app.maul.koperasi.model.address.AddressRequest
 import app.maul.koperasi.model.address.AddressResponse
 import retrofit2.Response
 import javax.inject.Inject
 
 class AddressRepository @Inject constructor(private val apiService: ApiService)  {
-    suspend fun getAddresses(): Response<List<AddressResponse>> {
+    suspend fun getAddresses(): Response<AddressResponse> {
         return apiService.getAddresses()
     }
 
-    suspend fun getAddress(id: Int): Response<AddressResponse> {
+    suspend fun getAddress(id: Int): Response<AddressData> {
         return apiService.getAddress(id)
     }
 
