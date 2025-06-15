@@ -98,9 +98,20 @@
                         android:id="@+id/tvLabelAlamat"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Rumah • Maulana Ibnu Fajar"
+                        android:text="Rumah"
                         android:textColor="@color/black"
                         android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/urbanist_bold"/>
+
+                    <TextView
+                        android:id="@+id/tvReceiptName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Maulana Ibnu Fajar"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:layout_marginTop="10dp"
                         android:textSize="16sp"
                         android:fontFamily="@font/urbanist_bold"/>
 
@@ -111,6 +122,7 @@
                         android:text="Jl. Mangga, Kec. Slawi, Tegal, Jawa Tengah, 52194"
                         android:textColor="@color/semi_black"
                         android:textSize="14sp"
+                        android:layout_marginTop="10dp"
                         android:maxLines="2"
                         android:ellipsize="end"/>
                 </LinearLayout>
