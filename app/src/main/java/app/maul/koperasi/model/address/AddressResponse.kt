@@ -11,6 +11,12 @@ data class AddressResponse(
 ) : Parcelable
 
 @Parcelize
+data class AddressDetailResponse(
+    val message : String,
+    val data : AddressData
+) : Parcelable
+
+@Parcelize
 data class AddressData(
     val id: Int,
     val recipient_name: String,

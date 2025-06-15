@@ -29,6 +29,7 @@ class AddAddressActivity : AppCompatActivity() {
         binding.imgBack.setOnClickListener { finish() }
 
         id = intent.getIntExtra("ADDRESS_ID", 0)
+        Toast.makeText(this, "$id", Toast.LENGTH_SHORT).show()
         if(id != 0){
             viewModel.getAddressById(id)
         }
@@ -93,6 +94,7 @@ class AddAddressActivity : AppCompatActivity() {
             etNoTelefon.setText(addressData.phone_number)
             etLabelAlamat.setText(addressData.label)
             etAlamatLengkap.setText(addressData.street)
+            etKodePos.setText(addressData.phone_number) // Laka response kode pos ngab
         }
     }
 }

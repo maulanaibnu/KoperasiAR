@@ -1,6 +1,7 @@
 package app.maul.koperasi.api
 
 import app.maul.koperasi.model.address.AddressData
+import app.maul.koperasi.model.address.AddressDetailResponse
 import app.maul.koperasi.model.address.AddressRequest
 import app.maul.koperasi.model.address.AddressResponse
 import app.maul.koperasi.model.cart.CartItem
@@ -152,13 +153,13 @@ interface ApiService {
     @GET("address/{id}")
     suspend fun getAddress(
         @Path("id") id: Int
-    ): Response<AddressData>
+    ): Response<AddressDetailResponse>
 
     @PUT("address/{id}")
     suspend fun updateAddress(
         @Path("id") id: Int,
         @Body addressRequest: AddressRequest
-    ): Response<AddressResponse>
+    ): Response<AddressDetailResponse>
 
     @DELETE("address/{id}")
     suspend fun deleteAddress(

@@ -130,7 +130,8 @@ class AddressViewModel @Inject constructor(
             try {
                 val response = addressRepository.getAddress(id)
                 if (response.isSuccessful) {
-                    _address.value = response.body()
+                    _address.value = response.body()?.data
+                    Log.d("TESTED","${_address.value}")
                 } else {
                     _error.value = "Gagal mengambil data address"
                 }

@@ -2,6 +2,7 @@ package app.maul.koperasi.data
 
 import app.maul.koperasi.api.ApiService
 import app.maul.koperasi.model.address.AddressData
+import app.maul.koperasi.model.address.AddressDetailResponse
 import app.maul.koperasi.model.address.AddressRequest
 import app.maul.koperasi.model.address.AddressResponse
 import retrofit2.Response
@@ -12,7 +13,7 @@ class AddressRepository @Inject constructor(private val apiService: ApiService) 
         return apiService.getAddresses()
     }
 
-    suspend fun getAddress(id: Int): Response<AddressData> {
+    suspend fun getAddress(id: Int): Response<AddressDetailResponse> {
         return apiService.getAddress(id)
     }
 
@@ -20,7 +21,7 @@ class AddressRepository @Inject constructor(private val apiService: ApiService) 
         return apiService.createAddress(request)
     }
 
-    suspend fun updateAddress(id: Int, request: AddressRequest): Response<AddressResponse> {
+    suspend fun updateAddress(id: Int, request: AddressRequest): Response<AddressDetailResponse> {
         return apiService.updateAddress(id, request)
     }
 

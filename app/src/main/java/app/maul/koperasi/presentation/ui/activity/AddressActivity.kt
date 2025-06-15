@@ -43,6 +43,7 @@ class AddressActivity : AppCompatActivity() {
         binding.imgBack.setOnClickListener { finish() }
 
         viewModel.getAddresses()
+
     }
 
     private fun setupRecyclerView() {
@@ -50,7 +51,15 @@ class AddressActivity : AppCompatActivity() {
             onSelect = { address ->
                 viewModel.setSelectedId(address.id)
                 addressAdapter.setSelectedId(address.id)
-                Toast.makeText(this, "Alamat ${address.label} dipilih!", Toast.LENGTH_SHORT).show()
+                binding.btnSimpanAlamat.setOnClickListener {
+                    val resultIntent = Intent()
+                    resultIntent.putExtra("street",address.street)
+                    resultIntent.putExtra("name",address.recipient_name)
+                    resultIntent.putExtra("label",address.label)
+                    setResult(RESULT_OK, resultIntent)
+                    finish()
+                }
+
             },
             onChange = { address ->
                 val intent = Intent(this, AddAddressActivity::class.java)
@@ -112,6 +121,8 @@ class AddressActivity : AppCompatActivity() {
             }
         }
     }
+
+
 
     private fun addAddress() {
         binding.btnAddAlamat.setOnClickListener {
