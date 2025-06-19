@@ -17,7 +17,7 @@ class AddressRepository @Inject constructor(private val apiService: ApiService) 
         return apiService.getAddress(id)
     }
 
-    suspend fun createAddress(request: AddressRequest): Response<AddressResponse> {
+    suspend fun createAddress(request: AddressRequest): Response<AddressDetailResponse> {
         return apiService.createAddress(request)
     }
 
