@@ -148,7 +148,7 @@ interface ApiService {
     @POST("address")
     suspend fun createAddress(
         @Body addressRequest: AddressRequest
-    ): Response<AddressResponse>
+    ): Response<AddressDetailResponse>
 
     @GET("address/{id}")
     suspend fun getAddress(
