@@ -1,7 +1,12 @@
 package app.maul.koperasi.presentation.ui.activity
 
+import android.R
 import android.app.Activity
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -21,10 +26,14 @@ class AddAddressActivity : AppCompatActivity() {
 
     private var  id = 0
 
+    private val labelOptions = listOf("Rumah", "Toko")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddAddressBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setupLabelDropdown()
 
         binding.imgBack.setOnClickListener { finish() }
 
@@ -46,9 +55,9 @@ class AddAddressActivity : AppCompatActivity() {
         binding.btnSaveAlamat.setOnClickListener {
             val recipientName = binding.etNamaPenerima.text?.toString()?.trim() ?: ""
             val phoneNumber = binding.etNoTelefon.text?.toString()?.trim() ?: ""
-            val label = binding.etLabelAlamat.text?.toString()?.trim() ?: ""
+            val label = binding.actvLabelAlamat.text?.toString()?.trim() ?: ""
             val street = binding.etAlamatLengkap.text?.toString()?.trim() ?: ""
-            val notes = binding.etKodePos.text?.toString()?.trim() ?: ""
+            val notes = binding.etNotes.text?.toString()?.trim() ?: ""
 
             if (recipientName.isBlank() || phoneNumber.isBlank() || label.isBlank() || street.isBlank() || notes.isBlank()) {
                 Toast.makeText(this, "Isi semua data terlebih dahulu", Toast.LENGTH_SHORT).show()
@@ -63,8 +72,10 @@ class AddAddressActivity : AppCompatActivity() {
                 notes = notes
             )
             if(id != 0){
+                Toast.makeText(this, "Update alamat dengan id: $id", Toast.LENGTH_SHORT).show()
                 viewModel.updateAddress(id,request)
             }else{
+                Toast.makeText(this, "Tambah alamat baru", Toast.LENGTH_SHORT).show()
                 viewModel.createAddress(request)
             }
         }
@@ -88,13 +99,45 @@ class AddAddressActivity : AppCompatActivity() {
         }
     }
 
+
+    //set up dropdown label alamat
+    private fun Int.dpToPx(): Int =
+        (this * resources.displayMetrics.density).toInt()
+
+    private fun setupLabelDropdown() {
+        val paddingStart = 16.dpToPx() // 16dp padding kiri
+
+        val adapter = object : ArrayAdapter<String>(
+            this,
+            android.R.layout.simple_dropdown_item_1line,
+            labelOptions
+        ) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getView(position, convertView, parent)
+                if (view is TextView) {
+                    view.setPadding(paddingStart, 0, 0, 0)
+                }
+                return view
+            }
+
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getDropDownView(position, convertView, parent)
+                if (view is TextView) {
+                    view.setPadding(paddingStart, 24, 0, 24)
+                }
+                return view
+            }
+        }
+        binding.actvLabelAlamat.setAdapter(adapter)
+    }
+
     private fun setData(addressData: AddressData){
         binding.apply {
             etNamaPenerima.setText(addressData.recipient_name)
             etNoTelefon.setText(addressData.phone_number)
-            etLabelAlamat.setText(addressData.label)
+            actvLabelAlamat.setText(addressData.label ?: labelOptions.first(), false)
             etAlamatLengkap.setText(addressData.street)
-            etKodePos.setText(addressData.phone_number) // Laka response kode pos ngab
+            etNotes.setText(addressData.notes)
         }
     }
 }

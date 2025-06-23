@@ -77,18 +77,7 @@ interface ApiService {
         @Field("password") password: String
     ): UserResponse
 
-//    //Updateuser
-//    @FormUrlEncoded
-//    @PUT("user/updateUserById")
-//    suspend fun updateProfile(
-//        @Header("Authorization") token: String,
-//        @Field("username") name: String,
-//        @Field("age") age: String,
-//        @Field("gender") gender: String,
-//        @Field("height") height: String,
-//        @Field("weight") weight: String,
-//        @Field("birth_date") birthdate: String
-//    ):
+    //update user
 
     //get all product
     @GET("product/getAllProduct")

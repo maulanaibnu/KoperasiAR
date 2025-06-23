@@ -80,25 +80,6 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/ilLabelAlamat"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginStart="30dp"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etLabelAlamat"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/label_alamat"
-            android:fontFamily="@font/urbanist_regular"
-            android:background="@drawable/background_edit_text"/>
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/ilAlamatLengkap"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -127,7 +108,7 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etKodePos"
+            android:id="@+id/etNotes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/kode_pos"
@@ -135,6 +116,30 @@
             android:background="@drawable/background_edit_text"/>
 
     </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/ilLabelAlamat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginStart="30dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:endIconMode="dropdown_menu"
+        >
+
+        <AutoCompleteTextView
+            android:id="@+id/actvLabelAlamat"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="   Label Alamat"
+            android:fontFamily="@font/urbanist_regular"
+            android:inputType="none"
+            android:textSize="16sp"
+            android:importantForAccessibility="no"
+            android:background="@drawable/background_edit_text"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSaveAlamat"
