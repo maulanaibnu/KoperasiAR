@@ -15,8 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddressViewModel @Inject constructor(
-    private val addressRepository: AddressRepository
-) : ViewModel() {
+    private val addressRepository: AddressRepository) : ViewModel() {
 
     private val _addresses = MutableStateFlow<List<AddressData>>(emptyList())
     val addresses: StateFlow<List<AddressData>?> get() = _addresses

@@ -101,6 +101,7 @@
     <string name="otherUser">Maulana Ibnu Fajar</string>
     <string name="produk_sangat_bagus_dan_bahan_berkualitas_tinggi">Produk sangat bagus dan bahan berkualitas tinggi</string>
     <string name="checkout">Checkout</string>
+    <string name="hapus_alamat">Hapus Alamat</string>
 
     <string-array name="payment_types">
         <item>Bank Transfer</item>

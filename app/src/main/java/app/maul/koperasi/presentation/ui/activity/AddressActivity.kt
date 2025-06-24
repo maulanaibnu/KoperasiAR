@@ -62,7 +62,7 @@ class AddressActivity : AppCompatActivity() {
 
             },
             onChange = { address ->
-                val intent = Intent(this, AddAddressActivity::class.java)
+                val intent = Intent(this, EditAddressActivity::class.java)
                 intent.putExtra("ADDRESS_ID", address.id)
                 addAddressLauncher.launch(intent)
             }
