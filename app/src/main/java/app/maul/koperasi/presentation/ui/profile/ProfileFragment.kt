@@ -25,6 +25,7 @@ class ProfileFragment : Fragment() {
         doLogout()
         goToChatbot()
         setAdress()
+        editProfile()
         return binding.root
     }
 
@@ -36,7 +37,7 @@ class ProfileFragment : Fragment() {
 
     private fun editProfile(){
         binding.linearEditProfile.setOnClickListener {
-
+            startActivity(Intent(requireActivity(), EditProfileActivity::class.java))
         }
     }
 

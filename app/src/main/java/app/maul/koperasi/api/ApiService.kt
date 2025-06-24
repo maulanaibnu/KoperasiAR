@@ -20,18 +20,23 @@ import app.maul.koperasi.model.product.DetailProductResponse
 import app.maul.koperasi.model.product.ProductResponse
 import app.maul.koperasi.model.register.RegisterResponse
 import app.maul.koperasi.model.user.ForgotPasswordResponse
+import app.maul.koperasi.model.user.UpdateResponse
 import app.maul.koperasi.model.user.UserResponse
 import app.maul.koperasi.model.verify.VerifyResponse
 import app.maul.koperasi.model.wishlist.WishlistRequest
 import app.maul.koperasi.model.wishlist.WishlistResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -78,6 +83,16 @@ interface ApiService {
     ): UserResponse
 
     //update user
+    @Multipart
+    @PUT("user/updateUserById/")
+    suspend fun updateUser(
+        @Part("name") name: RequestBody,
+        @Part("gender") gender: RequestBody,
+        @Part("phone") phone: RequestBody,
+        @Part image: MultipartBody.Part?
+    ): Response<UpdateResponse>
+
+
 
     //get all product
     @GET("product/getAllProduct")
