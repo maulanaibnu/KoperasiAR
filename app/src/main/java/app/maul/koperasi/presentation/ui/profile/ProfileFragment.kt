@@ -19,7 +19,6 @@ import app.maul.koperasi.presentation.ui.login.LoginActivity
 import app.maul.koperasi.viewmodel.UserViewModel
 import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {

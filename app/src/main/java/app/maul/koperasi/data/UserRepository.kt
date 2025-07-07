@@ -21,7 +21,7 @@ class UserRepository @Inject constructor(private val apiService: ApiService) {
 
     suspend fun getUserProfile(token: String): Result<User> {
         return try {
-            val response = apiService.getUserDetail("Bearer $token")
+            val response = apiService.getUserDetail()
             if (response.isSuccessful && response.body() != null) {
                 Result.success(response.body()!!.data)
             } else {

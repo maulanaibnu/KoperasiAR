@@ -94,9 +94,8 @@ interface ApiService {
     ): Response<UpdateResponse>
 
     //get user detail
-    @GET("user/user/getUserById/")
+    @GET("user/getUserById")
     suspend fun getUserDetail(
-        @Header("Authorization") token: String
     ): Response<UserResponse>
 
 
