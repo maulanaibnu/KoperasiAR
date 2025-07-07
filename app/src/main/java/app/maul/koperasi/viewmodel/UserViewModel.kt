@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import app.maul.koperasi.data.AddressRepository
 import app.maul.koperasi.data.UserRepository
 import app.maul.koperasi.model.address.AddressData
+import app.maul.koperasi.model.user.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,6 +21,9 @@ class UserViewModel @Inject constructor(
 
     private val _user = MutableStateFlow<String?>(null)
     val user: StateFlow<String?> get() = _user
+
+    private val _userProfile = MutableStateFlow<User?>(null)
+    val userProfile: StateFlow<User?> get() = _userProfile
 
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> get() = _loading
@@ -58,4 +62,23 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    fun getUserProfile(token: String) {
+        viewModelScope.launch {
+            _loading.value = true
+            _error.value = null
+            try {
+                val result = userRepository.getUserProfile(token)
+                result.onSuccess { user ->
+                    _userProfile.value = user
+                    _success.value = "Berhasil mengambil profil"
+                }.onFailure { exception ->
+                    _error.value = exception.message ?: "Terjadi kesalahan saat mengambil profil"
+                }
+            } catch (e: Exception) {
+                _error.value = e.localizedMessage ?: "Terjadi kesalahan"
+            }
+            _loading.value = false
+        }
     }
+
+}

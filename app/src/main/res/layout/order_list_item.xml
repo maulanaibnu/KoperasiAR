@@ -3,62 +3,104 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="8dp"
+    android:padding="10dp"
     android:background="@android:color/white"
     android:elevation="4dp"
-    android:layout_margin="8dp">
+    android:layout_margin="15dp">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp">
+
+        <TextView
+            android:id="@+id/label_belanja"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Belanja"
+            android:textSize="16sp"
+            android:fontFamily="@font/urbanist_bold"
+            android:layout_marginStart="5dp"
+            android:textColor="#000000"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/historyStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Selesai"
+            android:fontFamily="@font/urbanist_medium"
+            android:textSize="14sp"
+            android:layout_marginEnd="8dp"
+            android:textColor="#A7682E"/>
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/textOrderId"
+        android:id="@+id/hidtoryDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Order ID: #123456"
-        android:textStyle="bold"
-        android:textSize="16sp"
-        android:paddingBottom="4dp" />
+        android:text="12 Des 2024"
+        android:layout_marginStart="5dp"
+        android:textSize="12sp"
+        android:fontFamily="@font/urbanist_regular"
+        android:textColor="#555555"
+        android:layout_marginBottom="10dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/lines"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="10dp"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp">
+
+        <ImageView
+            android:id="@+id/historyImgProduct"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="5dp"
+            android:src="@drawable/product"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
+            android:id="@+id/historyProductName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nama produk"
+            android:fontFamily="@font/urbanist_medium"
+            android:textSize="15sp"
+            android:textColor="#000000"
+            android:layout_gravity="center_vertical"/>
+
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/textOrderStatus"
+        android:id="@+id/total_belanja"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Status: Pending"
+        android:text="Total Belanja"
+        android:fontFamily="@font/urbanist_medium"
         android:textSize="14sp"
-        android:textColor="@android:color/holo_red_dark"
-        android:paddingBottom="4dp" />
+        android:textColor="#555555"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="8dp"/>
 
     <TextView
-        android:id="@+id/textOrderTotal"
+        android:id="@+id/historyTotalPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Total: Rp. 250,000"
+        android:fontFamily="@font/urbanist_medium"
+        android:text="Rp 262.380"
+        android:layout_marginStart="5dp"
         android:textSize="14sp"
-        android:textStyle="bold"
-        android:paddingBottom="4dp" />
-
-    <TextView
-        android:id="@+id/textOrderDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Date: 01/02/2025"
-        android:textSize="12sp"
-        android:textColor="@android:color/darker_gray"
-        android:paddingBottom="4dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Order Detail"
-        android:textSize="12sp"
-        android:textColor="@android:color/darker_gray"
-        android:paddingBottom="4dp" />
-
-    <TextView
-        android:id="@+id/textOrderDetail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Detail"
-        android:textSize="12sp"
-        android:textColor="@android:color/darker_gray"
-        android:paddingBottom="4dp" />
+        android:textColor="#000000"
+        android:layout_marginBottom="6dp"/>
 
 </LinearLayout>

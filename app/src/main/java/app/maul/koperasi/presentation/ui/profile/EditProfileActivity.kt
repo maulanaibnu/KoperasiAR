@@ -18,6 +18,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import app.maul.koperasi.R
 import app.maul.koperasi.databinding.ActivityEditProfileBinding
+import app.maul.koperasi.preference.Preferences
 import app.maul.koperasi.presentation.ui.activity.AddAddressActivity
 import app.maul.koperasi.viewmodel.AddressViewModel
 import app.maul.koperasi.viewmodel.UserViewModel
@@ -56,6 +57,11 @@ class EditProfileActivity : AppCompatActivity() {
         binding = ActivityEditProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initView()
+
+        val token = Preferences.getToken(this)
+        if (!token.isNullOrEmpty()) {
+            viewModel.getUserProfile("Bearer $token")
+        }
     }
 
     private fun initView(

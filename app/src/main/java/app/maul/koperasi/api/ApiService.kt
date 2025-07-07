@@ -33,6 +33,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -92,6 +93,11 @@ interface ApiService {
         @Part image: MultipartBody.Part?
     ): Response<UpdateResponse>
 
+    //get user detail
+    @GET("user/user/getUserById/")
+    suspend fun getUserDetail(
+        @Header("Authorization") token: String
+    ): Response<UserResponse>
 
 
     //get all product

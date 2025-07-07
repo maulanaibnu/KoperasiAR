@@ -30,15 +30,15 @@ class OrderAdapter(
         }
 
         holder.binding.apply {
-            textOrderId.text = "Order ID: ${order.code}"
-            textOrderTotal.text = "Total: Rp. ${order.total_price}"
-            textOrderStatus.text = status
-            textOrderDate.text = "Created At: ${order.createdAt}"
-
-            // Display order details
-            textOrderDetail.text = order.order_details.joinToString("\n") {
-                "${it.name_product} - ${it.qty}x @ Rp. ${it.price}"
-            }
+//            textOrderId.text = "Order ID: ${order.code}"
+//            textOrderTotal.text = "Total: Rp. ${order.total_price}"
+//            textOrderStatus.text = status
+//            textOrderDate.text = "Created At: ${order.createdAt}"
+//
+//            // Display order details
+//            textOrderDetail.text = order.order_details.joinToString("\n") {
+//                "${it.name_product} - ${it.qty}x @ Rp. ${it.price}"
+//            }
         }
 
         holder.itemView.setOnClickListener {
