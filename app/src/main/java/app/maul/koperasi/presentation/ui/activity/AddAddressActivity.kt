@@ -1,20 +1,31 @@
 package app.maul.koperasi.presentation.ui.activity
 
-import android.R
+
 import android.app.Activity
+import android.content.res.Resources
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import app.maul.koperasi.R
+import app.maul.koperasi.adapter.CityAdapter
 import app.maul.koperasi.databinding.ActivityAddAddressBinding
+import app.maul.koperasi.databinding.BottomSheetCityBinding
 import app.maul.koperasi.model.address.AddressData
 import app.maul.koperasi.model.address.AddressRequest
 import app.maul.koperasi.viewmodel.AddressViewModel
+import app.maul.koperasi.viewmodel.RajaOngkirViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -26,7 +37,13 @@ class AddAddressActivity : AppCompatActivity() {
 
     private var  id = 0
 
+    private var addressId = 0
+
     private val labelOptions = listOf("Rumah", "Toko")
+
+    private val rajaOngkirViewModel by viewModels<RajaOngkirViewModel>()
+
+    private lateinit var cityAdapter: CityAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +53,7 @@ class AddAddressActivity : AppCompatActivity() {
         setupLabelDropdown()
 
         binding.imgBack.setOnClickListener { finish() }
+        binding.etCity.setOnClickListener { showFullScreenBottomSheet() }
 
         id = intent.getIntExtra("ADDRESS_ID", 0)
         Toast.makeText(this, "$id", Toast.LENGTH_SHORT).show()
@@ -58,8 +76,9 @@ class AddAddressActivity : AppCompatActivity() {
             val label = binding.actvLabelAlamat.text?.toString()?.trim() ?: ""
             val street = binding.etAlamatLengkap.text?.toString()?.trim() ?: ""
             val notes = binding.etNotes.text?.toString()?.trim() ?: ""
+            val city = binding.etCity.text?.toString()?.trim() ?: ""
 
-            if (recipientName.isBlank() || phoneNumber.isBlank() || label.isBlank() || street.isBlank() || notes.isBlank()) {
+            if (recipientName.isBlank() || phoneNumber.isBlank() || label.isBlank() || street.isBlank() || notes.isBlank() || city.isBlank()) {
                 Toast.makeText(this, "Isi semua data terlebih dahulu", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -69,7 +88,9 @@ class AddAddressActivity : AppCompatActivity() {
                 phone_number = phoneNumber,
                 label = label,
                 street = street,
-                notes = notes
+                notes = notes,
+                city = city,
+                id_destination = addressId
             )
             if(id != 0){
                 Toast.makeText(this, "Update alamat dengan id: $id", Toast.LENGTH_SHORT).show()
@@ -140,4 +161,69 @@ class AddAddressActivity : AppCompatActivity() {
             etNotes.setText(addressData.notes)
         }
     }
+
+    private fun showFullScreenBottomSheet() {
+        val dialog = BottomSheetDialog(this, R.style.FullScreenBottomSheetDialogTheme)
+        val bottomSheetView = BottomSheetCityBinding.inflate(layoutInflater)
+
+        dialog.setContentView(bottomSheetView.root)
+
+        dialog.setOnShowListener {
+            val bottomSheet = dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+            bottomSheet?.let {
+                val behavior = BottomSheetBehavior.from(it)
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+                it.requestLayout()
+            }
+        }
+
+
+        rajaOngkirViewModel.destinationResult.observe(this) { destinationList ->
+            if(destinationList.isNotEmpty()){
+                bottomSheetView.tvDesc.visibility = View.VISIBLE
+                bottomSheetView.rvCity.visibility = View.VISIBLE
+                cityAdapter.updateData(destinationList)
+            }else{
+                bottomSheetView.tvDesc.visibility = View.GONE
+                bottomSheetView.rvCity.visibility = View.GONE
+                Toast.makeText(this, "Data kosong", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
+        rajaOngkirViewModel.errorMessage.observe(this) { error ->
+            Toast.makeText(this, error ?: "Error apa kek", Toast.LENGTH_SHORT).show()
+        }
+
+        cityAdapter = CityAdapter(mutableListOf(), object : CityAdapter.onClickCity {
+            override fun onSelectCity(label: String, id: Int) {
+                addressId = id
+                binding.etCity.setText(label)
+                dialog.dismiss()
+            }
+        })
+
+        bottomSheetView.rvCity.apply {
+            adapter = cityAdapter
+            layoutManager = LinearLayoutManager(this@AddAddressActivity)
+        }
+
+
+        bottomSheetView.etSearch.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = s.toString()
+                if (query.length >= 3) {
+                    rajaOngkirViewModel.searchDestination(query)
+                }
+            }
+        })
+
+        dialog.show()
+    }
+
 }

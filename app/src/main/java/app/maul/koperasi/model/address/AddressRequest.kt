@@ -9,5 +9,7 @@ data class AddressRequest(
     val phone_number: String,
     val street: String,
     val notes: String,
-    val label: String
+    val label: String,
+    val city : String,
+    val id_destination : Int,
 ) : Parcelable

@@ -73,7 +73,9 @@ class EditAddressActivity : AppCompatActivity() {
                 phone_number = phoneNumber,
                 label = label,
                 street = street,
-                notes = notes
+                notes = notes,
+                city = "",
+                id_destination = 0
             )
             if(id != 0){
                 Toast.makeText(this, "Update alamat dengan id: $id", Toast.LENGTH_SHORT).show()

@@ -2,11 +2,14 @@ package app.maul.koperasi.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import app.maul.koperasi.data.RajaOngkirRepository
 import app.maul.koperasi.model.ongkir.DestinationData
 import app.maul.koperasi.model.ongkir.TariffData
+import kotlinx.coroutines.launch
 
-class RajaOngkirViewModel {
+class RajaOngkirViewModel : ViewModel() {
     private val repository = RajaOngkirRepository()
 
     // LiveData untuk hasil pencarian destinasi
@@ -43,7 +46,7 @@ class RajaOngkirViewModel {
         viewModelScope.launch {
             val result = repository.calculateTariff(shipperId, receiverId, weight, itemValue, cod)
             result.onSuccess { response ->
-                _tariffResult.postValue(response.data)
+                _tariffResult.postValue(response.data!!)
             }.onFailure { error ->
                 _errorMessage.postValue(error.message)
             }

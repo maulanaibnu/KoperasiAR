@@ -15,14 +15,18 @@ object ApiClient {
     // private const val USER_API_BASE_URL = "https://api.yourotherdomain.com/"
 
     private fun createOkHttpClient(): OkHttpClient {
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY // Log request dan response
-        }
         return OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
+            .addInterceptor { chain ->
+                val original = chain.request()
+                val requestBuilder = original.newBuilder()
+                    .header("x-api-key", "qAUHt48xc92ad9c69ed75fd0GZoBN07T")
+                    .method(original.method, original.body)
+
+                val request = requestBuilder.build()
+                chain.proceed(request)
+            }
             .build()
     }
-
     // Instance Retrofit untuk Raja Ongkir
     val rajaOngkirService: RajaOngkirApiService by lazy {
         Retrofit.Builder()
