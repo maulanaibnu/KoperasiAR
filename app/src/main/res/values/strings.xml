@@ -69,7 +69,7 @@
     <string name="cari">Cari</string>
     <string name="lihat_semua">Lihat Semua</string>
     <string name="produk_terbaru">Produk Terbaru</string>
-    <string name="rekomendasi_produk">Rekomendasi Produk</string>
+    <string name="rekomendasi_produk">Semua Produk</string>
     <string name="home_fragment">Home</string>
     <string name="profile_fragment">Profile</string>
     <string name="cart">Cart</string>

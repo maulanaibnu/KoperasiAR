@@ -7,6 +7,8 @@ import app.maul.koperasi.databinding.ProductListCartBinding
 import app.maul.koperasi.model.cart.CartItem
 import app.maul.koperasi.utils.Constant
 import com.bumptech.glide.Glide
+import java.text.NumberFormat
+import java.util.Locale
 
 class CartAdapter(
     var cartItems: List<CartItem>,
@@ -39,6 +41,11 @@ class CartAdapter(
 
             // Atur checkbox sesuai status item dalam set
             cbProduct.isChecked = selectedItems.contains(cartItem)
+
+            val itemTotalPrice = product.price * cartItem.quantity
+
+            // Buat formatter untuk mata uang Rupiah
+            val formatter = NumberFormat.getNumberInstance(Locale("in", "ID"))
 
             // Event checkbox
             cbProduct.setOnCheckedChangeListener { _, isChecked ->
