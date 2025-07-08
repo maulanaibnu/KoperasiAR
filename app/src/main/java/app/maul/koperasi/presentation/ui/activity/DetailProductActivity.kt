@@ -20,6 +20,7 @@ import app.maul.koperasi.presentation.ui.detailProduct.DetailProductViewModel
 import app.maul.koperasi.presentation.ui.wishlist.WishlistViewModel
 import app.maul.koperasi.utils.Constant
 import com.bumptech.glide.Glide
+import java.text.DecimalFormat
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -94,9 +95,11 @@ class DetailProductActivity : AppCompatActivity() {
                 val product = it.data
                 tempProduct = product
                 println(product)
+                val formatter = DecimalFormat("#,###")
+                val formattedPrice = formatter.format(product.price).replace(',', '.')
                 val prefix = "Rp. "
                 Glide.with(this).load(Constant.BASE_URL + product.images).into(binding.IvProduct)
-                binding.ProductPrice.text = "$prefix${product.price}"
+                binding.ProductPrice.text = "Rp. $formattedPrice"
                 binding.ProductName.text = product.name
                 binding.ProductSold.text = "Terjual ${product.terjual}"
                 binding.ProductDesc.text = product.description

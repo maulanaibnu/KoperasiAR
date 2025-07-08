@@ -7,6 +7,7 @@ import app.maul.koperasi.databinding.ProductListItemBinding
 import app.maul.koperasi.model.product.Product
 import app.maul.koperasi.utils.Constant
 import com.bumptech.glide.Glide
+import java.text.DecimalFormat
 
 class ProductAdapter (private var listProduct: List<Product>, private val listener: ProductItemListener): RecyclerView.Adapter<ProductAdapter.ProductsViewholder>(){
     inner class ProductsViewholder( val binding: ProductListItemBinding) : RecyclerView.ViewHolder(binding.root)
@@ -22,8 +23,10 @@ class ProductAdapter (private var listProduct: List<Product>, private val listen
                 .into(imageProduct)
 
             textTittle.text = listProduct[position].name
-            val prefix = "Rp. "
-            textPrice.text = "$prefix${listProduct[position].price}"
+
+            val formatter = DecimalFormat("#,###")
+            val formattedPrice = formatter.format(listProduct[position].price).replace(',', '.')
+            textPrice.text = "Rp. $formattedPrice"
         }
         holder.itemView.setOnClickListener {
             listener.onItemClick(listProduct[position])
