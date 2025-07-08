@@ -50,7 +50,7 @@ class AddressViewModel @Inject constructor(
                     _loading.value = false
 
                     _addresses.value = response.body()?.data ?: emptyList()
-                    Log.d("TESTED","${ _addresses.value}")
+                    _success.value = "Daftar alamat berhasil dimuat"
                 } else {
                     _error.value = "Gagal mengambil data address"
                 }
@@ -121,6 +121,25 @@ class AddressViewModel @Inject constructor(
         }
     }
 
+    fun setDefaultAddress(id: Int) {
+        viewModelScope.launch {
+            _loading.value = true
+            try {
+                val response = addressRepository.setDefaultAddress(id)
+                if (response.isSuccessful) {
+                    _success.value = response.body()?.message ?: "Alamat utama berhasil diatur"
+                    // Setelah sukses, panggil ulang getAddresses untuk sinkronisasi data
+                    getAddresses()
+                } else {
+                    _error.value = "Gagal mengatur alamat utama"
+                }
+            } catch (e: Exception) {
+                _error.value = "Terjadi kesalahan: ${e.message}"
+            }
+            // Loading akan di-handle oleh getAddresses() setelah ini, jadi tidak perlu set false di sini.
+        }
+    }
+
     fun getAddressById(id: Int) {
         viewModelScope.launch {
             _loading.value = true
@@ -130,7 +149,6 @@ class AddressViewModel @Inject constructor(
                 val response = addressRepository.getAddress(id)
                 if (response.isSuccessful) {
                     _address.value = response.body()?.data
-                    Log.d("TESTED","${_address.value}")
                 } else {
                     _error.value = "Gagal mengambil data address"
                 }

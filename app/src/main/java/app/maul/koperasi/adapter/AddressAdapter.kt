@@ -13,39 +13,42 @@ import app.maul.koperasi.model.address.AddressResponse
 
 
 class AddressAdapter(
-    private val onSelect: (AddressData) -> Unit,
+    private val onSetDefault: (AddressData) -> Unit,
     private val onChange: (AddressData) -> Unit,
 
 ) : ListAdapter<AddressData, AddressAdapter.AddressViewHolder>(DIFF_CALLBACK) {
 
-    private var selectedId: Int? = null // jika ingin highlight alamat yang dipilih
-    fun setSelectedId(id: Int?) {
-        selectedId = id
-        notifyDataSetChanged()
-    }
-
     inner class AddressViewHolder(val binding: ListItemAddressBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: AddressData) {
-            val context = binding.root.context
-            if (item.id == selectedId) {
-                binding.card.setBackgroundResource(R.drawable.background_selected_size)
-            } else {
-                binding.card.setBackgroundResource(R.drawable.background_normal)
-            }
             // Set data ke setiap view
             binding.tvLabelAddress.text = item.label ?: "-"
             binding.tvName.text = item.recipient_name
             binding.tvPhoneNumber.text = item.phone_number
             binding.tvAddress.text = item.street
             binding.tvKodepos.text = item.notes // Atau item.postalCode jika ada
-            binding.tvPriority.text = if (item.id == selectedId) "Utama" else "Alamat"
 
-            // Tampilkan icon check jika terpilih
-            binding.imageView.visibility = if (item.id == selectedId) View.VISIBLE else View.INVISIBLE
+
+            if (item.isDefault) {
+                // Tampilan jika alamat ini adalah alamat utama
+                binding.card.setBackgroundResource(R.drawable.background_selected_size)
+                binding.tvPriority.visibility = View.VISIBLE
+                binding.imageView.visibility = View.VISIBLE
+            } else {
+                // Tampilan untuk alamat biasa
+                binding.card.setBackgroundResource(R.drawable.background_normal)
+                binding.tvPriority.visibility = View.GONE
+                binding.imageView.visibility = View.GONE
+            }
 
             // Listener untuk memilih alamat
             binding.card.setOnClickListener {
-                onSelect(item)
+                android.util.Log.d("AdapterClick", "Item DIKLIK! Data: $item")
+                if (!item.isDefault) {
+                    android.util.Log.d("AdapterClick", "Item belum default, memanggil onSetDefault...")
+                    onSetDefault(item)
+                }else {
+                    android.util.Log.d("AdapterClick", "Item sudah default, tidak melakukan apa-apa.")
+                }
             }
             // Listener untuk tombol ubah alamat
             binding.btnChangeAddress.setOnClickListener {

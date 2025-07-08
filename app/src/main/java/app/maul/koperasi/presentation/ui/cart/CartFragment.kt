@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import app.maul.koperasi.databinding.FragmentCartBinding
 import app.maul.koperasi.model.cart.CartItem
 import app.maul.koperasi.model.order.OrderDetail
+
 import app.maul.koperasi.model.order.OrderRequest
 import app.maul.koperasi.preference.Preferences
 import app.maul.koperasi.presentation.ui.checkout.CheckoutActivity

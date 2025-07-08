@@ -26,6 +26,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".presentation.ui.checkout.PaymentActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.ui.courir.SelectCourirActivity"
             android:exported="false" />
         <activity

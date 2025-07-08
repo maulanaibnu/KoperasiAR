@@ -24,5 +24,6 @@ data class AddressData(
     val street: String,
     val notes: String,
     val label: String,
-    val userId: Int
+    val userId: Int,
+    val isDefault: Boolean
 ) : Parcelable

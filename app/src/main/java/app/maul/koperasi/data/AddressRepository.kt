@@ -25,6 +25,10 @@ class AddressRepository @Inject constructor(private val apiService: ApiService) 
         return apiService.updateAddress(id, request)
     }
 
+    suspend fun setDefaultAddress(id: Int): Response<AddressDetailResponse> {
+        return apiService.setDefaultAddress(id)
+    }
+
     suspend fun deleteAddress(id: Int): Response<Unit> {
         return apiService.deleteAddress(id)
     }

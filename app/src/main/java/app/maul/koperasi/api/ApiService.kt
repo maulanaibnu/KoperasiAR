@@ -13,7 +13,6 @@ import app.maul.koperasi.model.chatbot.ChatbotListResponse
 import app.maul.koperasi.model.chatbot.ChatbotRequest
 import app.maul.koperasi.model.login.LoginResponse
 import app.maul.koperasi.model.order.HistoryResponse
-import app.maul.koperasi.model.order.Order
 import app.maul.koperasi.model.order.OrderRequest
 import app.maul.koperasi.model.order.OrderResponse
 import app.maul.koperasi.model.product.DetailProductResponse
@@ -35,6 +34,7 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
@@ -147,10 +147,10 @@ interface ApiService {
     @POST("wishlist")
     suspend fun createWishlist(@Body wishlistRequest: WishlistRequest): Response<Void>
 
-    @POST("transaction/order")
+    @POST("transaction/createtransaction")
     suspend fun createOrder(@Body orderRequest: OrderRequest): Response<OrderResponse>
 
-    @GET("transaction/getAllTransaction")
+    @GET("transaction/history")
     suspend fun getAllOrders(@Query("userId") userId: Int): HistoryResponse
 
     //Address
@@ -168,6 +168,11 @@ interface ApiService {
     suspend fun updateAddress(
         @Path("id") id: Int,
         @Body addressRequest: AddressRequest
+    ): Response<AddressDetailResponse>
+
+    @PATCH("address/{id}/default")
+    suspend fun setDefaultAddress(
+        @Path("id") id: Int
     ): Response<AddressDetailResponse>
 
     @DELETE("address/{id}")

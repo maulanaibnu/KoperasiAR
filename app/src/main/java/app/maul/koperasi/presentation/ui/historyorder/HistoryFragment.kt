@@ -27,20 +27,20 @@ class HistoryFragment : Fragment() {
     ): View {
         _binding = FragmentHistoryBinding.inflate(inflater, container, false)
 
-        setupRecyclerView()
+//        setupRecyclerView()
 
         orderViewModel.getAllOrders(Preferences.getId(requireContext()))
 
         return binding.root
     }
 
-    private fun setupRecyclerView() {
-        val layoutManager = LinearLayoutManager(requireContext())
-        binding.rvAddress.layoutManager = layoutManager
-        orderViewModel.orders.observe(viewLifecycleOwner) { orders ->
-            println(orders)
-            orderAdapter = OrderAdapter(orders)
-            binding.rvAddress.adapter = orderAdapter
-        }
-    }
+//    private fun setupRecyclerView() {
+//        val layoutManager = LinearLayoutManager(requireContext())
+//        binding.rvAddress.layoutManager = layoutManager
+//        orderViewModel.orders.observe(viewLifecycleOwner) { orders ->
+//            println(orders)
+//            orderAdapter = OrderAdapter(orders)
+//            binding.rvAddress.adapter = orderAdapter
+//        }
+//    }
 }

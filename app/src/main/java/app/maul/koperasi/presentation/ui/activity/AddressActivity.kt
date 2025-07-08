@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import app.maul.koperasi.adapter.AddressAdapter
 import app.maul.koperasi.databinding.ActivityAddressBinding
+import app.maul.koperasi.model.address.AddressData
 import app.maul.koperasi.viewmodel.AddressViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -38,9 +39,7 @@ class AddressActivity : AppCompatActivity() {
 
         setupRecyclerView()
         setupObservers()
-        addAddress()
-
-        binding.imgBack.setOnClickListener { finish() }
+        setupClickListeners()
 
         viewModel.getAddresses()
 
@@ -48,17 +47,8 @@ class AddressActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         addressAdapter = AddressAdapter(
-            onSelect = { address ->
+            onSetDefault = { address ->
                 viewModel.setSelectedId(address.id)
-                addressAdapter.setSelectedId(address.id)
-                binding.btnSimpanAlamat.setOnClickListener {
-                    val resultIntent = Intent()
-                    resultIntent.putExtra("street",address.street)
-                    resultIntent.putExtra("name",address.recipient_name)
-                    resultIntent.putExtra("label",address.label)
-                    setResult(RESULT_OK, resultIntent)
-                    finish()
-                }
 
             },
             onChange = { address ->
@@ -68,55 +58,57 @@ class AddressActivity : AppCompatActivity() {
             }
         )
 
-        binding.rvAddress.adapter = addressAdapter
-        binding.rvAddress.layoutManager = LinearLayoutManager(this)
+        binding.rvAddress.apply {
+            adapter = addressAdapter
+            layoutManager = LinearLayoutManager(this@AddressActivity)
+        }
 
     }
 
     private fun setupObservers() {
-
-
-        // Observe daftar alamat
-        lifecycleScope.launchWhenStarted {
-
-            viewModel.addresses.collect { list ->
-                Toast.makeText(this@AddressActivity, "$list", Toast.LENGTH_SHORT).show()
-                binding.rvAddress.visibility = View.VISIBLE
+        // Mengamati perubahan pada daftar alamat
+        lifecycleScope.launch {
+            viewModel.addresses.collect { addresses ->
+                val list = addresses ?: emptyList()
                 addressAdapter.submitList(list)
-                binding.emptyState.visibility = if (list?.isEmpty() == true) View.VISIBLE else View.GONE
+
+                // Menampilkan atau menyembunyikan tampilan "empty state"
+                binding.emptyState.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
+
+                // Mengatur tombol "Simpan Alamat"
+                updateSaveButtonState(list)
             }
         }
 
-        // Observe loading
-        lifecycleScope.launchWhenStarted {
+        // Mengamati status loading
+        lifecycleScope.launch {
             viewModel.loading.collect { isLoading ->
                 binding.shimmerContainer.visibility = if (isLoading) View.VISIBLE else View.GONE
+                binding.rvAddress.visibility = if (isLoading) View.GONE else View.VISIBLE
                 if (isLoading) {
                     binding.shimmerContainer.startShimmer()
-                    binding.rvAddress.visibility = View.GONE
                 } else {
                     binding.shimmerContainer.stopShimmer()
-                    binding.rvAddress.visibility = View.VISIBLE
                 }
             }
         }
 
-        // Observe error
-        lifecycleScope.launchWhenStarted {
+        // Mengamati pesan error
+        lifecycleScope.launch {
             viewModel.error.collect { message ->
                 message?.let {
-                    Toast.makeText(this@AddressActivity, it, Toast.LENGTH_SHORT).show()
-                    viewModel.resetError()
+                    Toast.makeText(this@AddressActivity, it, Toast.LENGTH_LONG).show()
+                    viewModel.resetError() // Reset agar toast tidak muncul lagi
                 }
             }
         }
 
-        // Observe success
-        lifecycleScope.launchWhenStarted {
+        // Mengamati pesan sukses
+        lifecycleScope.launch {
             viewModel.success.collect { message ->
                 message?.let {
                     Toast.makeText(this@AddressActivity, it, Toast.LENGTH_SHORT).show()
-                    viewModel.resetSuccess()
+                    viewModel.resetSuccess() // Reset agar toast tidak muncul lagi
                 }
             }
         }
@@ -124,10 +116,39 @@ class AddressActivity : AppCompatActivity() {
 
 
 
-    private fun addAddress() {
+    private fun setupClickListeners() {
+        // Tombol kembali
+        binding.imgBack.setOnClickListener {
+            finish()
+        }
+
+        // Tombol tambah alamat baru
         binding.btnAddAlamat.setOnClickListener {
             val intent = Intent(this, AddAddressActivity::class.java)
             addAddressLauncher.launch(intent)
+        }
+    }
+
+    private fun updateSaveButtonState(list: List<AddressData>) {
+        val defaultAddress = list.find { it.isDefault }
+
+        if (defaultAddress != null) {
+            binding.btnSimpanAlamat.isEnabled = true
+            binding.btnSimpanAlamat.setOnClickListener {
+                // Kirim data alamat utama kembali ke activity sebelumnya
+                val resultIntent = Intent().apply {
+                    putExtra("street", defaultAddress.street)
+                    putExtra("name", defaultAddress.recipient_name)
+                    putExtra("label", defaultAddress.label)
+                    // Anda bisa menambahkan data lain jika perlu
+                }
+                setResult(Activity.RESULT_OK, resultIntent)
+                finish()
+            }
+        } else {
+            // Jika tidak ada alamat utama, tombol dinonaktifkan
+            binding.btnSimpanAlamat.isEnabled = false
+            binding.btnSimpanAlamat.setOnClickListener(null) // Hapus listener
         }
     }
 }

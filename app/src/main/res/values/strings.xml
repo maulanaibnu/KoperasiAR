@@ -102,6 +102,22 @@
     <string name="produk_sangat_bagus_dan_bahan_berkualitas_tinggi">Produk sangat bagus dan bahan berkualitas tinggi</string>
     <string name="checkout">Checkout</string>
     <string name="hapus_alamat">Hapus Alamat</string>
+    <string name="detail_pesanan">Detail Pesanan</string>
+    <string name="detail_pembayaran">Detail Pembayaran</string>
+    <string name="batas_pembayaran">Batas Pembayaran</string>
+    <string name="date_expired">2025-07-09 09:49:19</string>
+    <string name="bca_virtual_account">Bca Virtual Account</string>
+    <string name="nomor_virtual_account">Nomor Virtual Account</string>
+    <string name="va_number">46328476874238445</string>
+    <string name="salin">salin</string>
+    <string name="total_pembayaran">Total Pembayaran</string>
+    <string name="total_payment_order">Rp 20.000</string>
+    <string name="info_cek_status">Cek status pembayaran di halaman Daftar Transaksi</string>
+    <string name="selesai">Selesai</string>
+    <string name="cancel">Cancel</string>
+    <string name="pilih_metode_pembayaran">Pilih Metode Pembayaran</string>
+    <string name="bank_transfer">Bank Transfer</string>
+    <string name="pilih_kurir_pengiriman">Pilih Kurir Pengiriman</string>
 
     <string-array name="payment_types">
         <item>Bank Transfer</item>

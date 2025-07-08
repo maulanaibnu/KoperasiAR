@@ -33,7 +33,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:layout_weight="1"
-            android:text="@string/add_alamat"
+            android:text="@string/detail_pesanan"
             android:textColor="@color/black"
             android:textStyle="bold" />
     </LinearLayout>
