@@ -205,11 +205,10 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAddAlamat"
-            android:layout_width="150dp"
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="15dp"
             android:layout_marginTop="10dp"
+            android:layout_marginStart="25dp"
             android:layout_marginBottom="10dp"
             android:backgroundTint="@color/secondary"
             android:fontFamily="@font/urbanist_regular"
@@ -217,25 +216,6 @@
             android:text="@string/tambah_alamat"
             android:textAllCaps="false"
             app:cornerRadius="10dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSimpanAlamat"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="30dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:backgroundTint="@color/priority"
-            android:fontFamily="@font/urbanist_regular"
-            android:padding="15dp"
-            android:text="@string/pilih_alamat"
-            android:textAllCaps="false"
-            app:cornerRadius="10dp" />
-
-
-
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

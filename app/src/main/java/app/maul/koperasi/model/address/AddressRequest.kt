@@ -12,4 +12,5 @@ data class AddressRequest(
     val label: String,
     val city : String,
     val id_destination : Int,
+    val is_default: Boolean
 ) : Parcelable

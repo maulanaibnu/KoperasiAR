@@ -1,5 +1,6 @@
 package app.maul.koperasi.presentation.ui.profile
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -114,13 +115,22 @@ class ProfileFragment : Fragment() {
     }
 
 
-    private fun logout(){
-        val intent = Intent(activity, LoginActivity::class.java).also {
-            Preferences.clearName(requireActivity())
-            Preferences.clearToken(requireActivity())
-        }
-        activity?.startActivity(intent)
-        activity?.finish()
+    private fun logout() {
+        // Membuat dan menampilkan AlertDialog
+        AlertDialog.Builder(requireContext())
+            .setTitle("Konfirmasi Logout") // Judul dialog
+            .setMessage("Apakah Anda yakin ingin keluar dari aplikasi?") // Pesan untuk user
+            .setPositiveButton("Ya") { _, _ ->
+                // Kode ini hanya akan dijalankan jika user menekan tombol "Ya"
+                val intent = Intent(activity, LoginActivity::class.java).also {
+                    Preferences.clearName(requireActivity())
+                    Preferences.clearToken(requireActivity())
+                }
+                activity?.startActivity(intent)
+                activity?.finish()
+            }
+            .setNegativeButton("Batal", null) // Tombol "Batal" tidak melakukan apa-apa selain menutup dialog
+            .show() // Menampilkan dialog ke layar
     }
 
     // Pastikan untuk membersihkan binding untuk menghindari memory leak

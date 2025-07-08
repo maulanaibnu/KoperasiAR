@@ -45,12 +45,15 @@ class AddAddressActivity : AppCompatActivity() {
 
     private lateinit var cityAdapter: CityAdapter
 
+    private var isSetAsDefault = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddAddressBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setupLabelDropdown()
+        setupDefaultCheckbox()
 
         binding.imgBack.setOnClickListener { finish() }
         binding.etCity.setOnClickListener { showFullScreenBottomSheet() }
@@ -90,7 +93,8 @@ class AddAddressActivity : AppCompatActivity() {
                 street = street,
                 notes = notes,
                 city = city,
-                id_destination = addressId
+                id_destination = addressId,
+                is_default = isSetAsDefault
             )
             if(id != 0){
                 Toast.makeText(this, "Update alamat dengan id: $id", Toast.LENGTH_SHORT).show()
@@ -120,6 +124,21 @@ class AddAddressActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupDefaultCheckbox() {
+        binding.containerSetDefault.setOnClickListener {
+            isSetAsDefault = !isSetAsDefault // Toggle state
+            updateCheckboxVisual()
+        }
+    }
+
+    // TAMBAHKAN FUNGSI INI
+    private fun updateCheckboxVisual() {
+        if (isSetAsDefault) {
+            binding.ivSetDefault.setImageResource(R.drawable.check_box_done) // Ganti dengan drawable Anda
+        } else {
+            binding.ivSetDefault.setImageResource(R.drawable.check_box_blank)
+        }
+    }
 
     //set up dropdown label alamat
     private fun Int.dpToPx(): Int =

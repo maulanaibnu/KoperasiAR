@@ -48,7 +48,7 @@ class AddressActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         addressAdapter = AddressAdapter(
             onSetDefault = { address ->
-                viewModel.setSelectedId(address.id)
+                viewModel.setDefaultAddress(address.id)
 
             },
             onChange = { address ->
@@ -75,8 +75,7 @@ class AddressActivity : AppCompatActivity() {
                 // Menampilkan atau menyembunyikan tampilan "empty state"
                 binding.emptyState.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
 
-                // Mengatur tombol "Simpan Alamat"
-                updateSaveButtonState(list)
+
             }
         }
 
@@ -129,26 +128,5 @@ class AddressActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateSaveButtonState(list: List<AddressData>) {
-        val defaultAddress = list.find { it.isDefault }
 
-        if (defaultAddress != null) {
-            binding.btnSimpanAlamat.isEnabled = true
-            binding.btnSimpanAlamat.setOnClickListener {
-                // Kirim data alamat utama kembali ke activity sebelumnya
-                val resultIntent = Intent().apply {
-                    putExtra("street", defaultAddress.street)
-                    putExtra("name", defaultAddress.recipient_name)
-                    putExtra("label", defaultAddress.label)
-                    // Anda bisa menambahkan data lain jika perlu
-                }
-                setResult(Activity.RESULT_OK, resultIntent)
-                finish()
-            }
-        } else {
-            // Jika tidak ada alamat utama, tombol dinonaktifkan
-            binding.btnSimpanAlamat.isEnabled = false
-            binding.btnSimpanAlamat.setOnClickListener(null) // Hapus listener
-        }
-    }
 }
