@@ -61,10 +61,19 @@
 
             <TextView
                 android:id="@+id/tv_courir_ninja"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NINJA"
+                android:textColor="#212121"
+                android:textSize="15sp"
+                android:layout_marginStart="12dp"/>
+
+            <TextView
+                android:id="@+id/tv_price_ninja"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="NINJA"
+                android:text="(Rp. 20.000)"
                 android:textColor="#212121"
                 android:textSize="15sp"
                 android:layout_marginStart="12dp"/>
@@ -86,10 +95,19 @@
 
             <TextView
                 android:id="@+id/tv_courir_sicepat"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SICEPAT"
+                android:textColor="#212121"
+                android:textSize="15sp"
+                android:layout_marginStart="12dp"/>
+
+            <TextView
+                android:id="@+id/tv_price_sicepat"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="SICEPAT"
+                android:text="(Rp. 20.000)"
                 android:textColor="#212121"
                 android:textSize="15sp"
                 android:layout_marginStart="12dp"/>
@@ -110,10 +128,19 @@
 
             <TextView
                 android:id="@+id/tv_courir_sap"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SAP"
+                android:textColor="#212121"
+                android:textSize="15sp"
+                android:layout_marginStart="12dp"/>
+
+            <TextView
+                android:id="@+id/tv_price_sap"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="SAP"
+                android:text="(Rp. 20.000)"
                 android:textColor="#212121"
                 android:textSize="15sp"
                 android:layout_marginStart="12dp"/>
@@ -134,10 +161,18 @@
 
             <TextView
                 android:id="@+id/tv_courir_jne"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="JNE"
+                android:textColor="#212121"
+                android:textSize="15sp"
+                android:layout_marginStart="12dp"/>
+            <TextView
+                android:id="@+id/tv_price_jne"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="JNE"
+                android:text="(Rp. 20.000)"
                 android:textColor="#212121"
                 android:textSize="15sp"
                 android:layout_marginStart="12dp"/>
@@ -158,10 +193,19 @@
 
             <TextView
                 android:id="@+id/tv_courir_jnt"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="JNT"
+                android:textColor="#212121"
+                android:textSize="15sp"
+                android:layout_marginStart="12dp"/>
+
+            <TextView
+                android:id="@+id/tv_price_jnt"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="JNT"
+                android:text="(Rp. 20.000)"
                 android:textColor="#212121"
                 android:textSize="15sp"
                 android:layout_marginStart="12dp"/>
@@ -182,10 +226,18 @@
 
             <TextView
                 android:id="@+id/tv_courir_idexpress"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ID EXPRESS"
+                android:textColor="#212121"
+                android:textSize="15sp"
+                android:layout_marginStart="12dp"/>
+            <TextView
+                android:id="@+id/tv_price_idExpress"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="IDEXPRESS"
+                android:text="(Rp. 20.000)"
                 android:textColor="#212121"
                 android:textSize="15sp"
                 android:layout_marginStart="12dp"/>
@@ -206,10 +258,19 @@
 
             <TextView
                 android:id="@+id/tv_courir_lion"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="LION"
+                android:textColor="#212121"
+                android:textSize="15sp"
+                android:layout_marginStart="12dp"/>
+
+            <TextView
+                android:id="@+id/tv_price_lion"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="LION"
+                android:text="(Rp. 20.000)"
                 android:textColor="#212121"
                 android:textSize="15sp"
                 android:layout_marginStart="12dp"/>
