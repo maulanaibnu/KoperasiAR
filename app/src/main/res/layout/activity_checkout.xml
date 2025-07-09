@@ -229,6 +229,15 @@
                         app:tint="@color/primary_color" />
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/tvLihatSemua"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="125dp"
+                    android:text="Lihat Semua"
+                    android:textColor="@color/priority"
+                    android:textSize="14sp" />
+
             </LinearLayout>
 
         </LinearLayout>
@@ -383,14 +392,6 @@
                     android:fontFamily="@font/urbanist_bold"
                     android:layout_marginBottom="8dp" />
 
-                <TextView
-                    android:id="@+id/tvLihatSemua"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Lihat Semua"
-                    android:textColor="@color/priority"
-                    android:textSize="14sp"
-                    android:layout_marginStart="125dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -553,6 +554,8 @@
                     android:layout_marginStart="185dp" />
             </LinearLayout>
 
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -578,6 +581,34 @@
                     android:textColor="@color/priority"
                     android:textSize="14sp"
                     android:layout_marginStart="160dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvTotal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total Belanja"
+                    android:textColor="#212121"
+                    android:textSize="16sp"
+                    android:layout_marginStart="12dp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/urbanist_bold"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/tvPriceTotal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rp. 50.0000"
+                    android:textColor="@color/priority"
+                    android:textSize="14sp"
+                    android:layout_marginStart="185dp" />
             </LinearLayout>
 
         </LinearLayout>

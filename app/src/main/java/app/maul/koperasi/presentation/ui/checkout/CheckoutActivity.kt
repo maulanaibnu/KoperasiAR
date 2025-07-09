@@ -49,6 +49,8 @@ class CheckoutActivity : AppCompatActivity() {
 
     var selectShipping : ShippingOption? = null
 
+    var countProduct = 1
+
     private var isFromShippingSelection = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,6 +79,7 @@ class CheckoutActivity : AppCompatActivity() {
                     binding.tvTotalShipping.text = formatRupiah(shippingOption.shippingCost)
                     viewModel.getAddresses()
                     selectShipping = shippingOption
+                    binding.tvPriceTotal.text = formatRupiah(shippingOption.shippingCost + orderDetails.sumOf { it.price })
                 }else{
                     street = result.data?.getStringExtra("street") ?: ""
                     name = result.data?.getStringExtra("name") ?: ""
@@ -96,6 +99,27 @@ class CheckoutActivity : AppCompatActivity() {
             intent.getParcelableArrayListExtra<OrderDetail>("orderDetails") ?: emptyList()
 
         binding.tvTotalItemCo.text = formatRupiah(orderDetails.sumOf { it.price })
+        if(orderDetails.size == 1){
+            binding.tvCOProductName.text = orderDetails[0].name_product
+            binding.tvCoProductPrice.text = formatRupiah(orderDetails[0].price)
+            binding.btnPlus.setOnClickListener {
+                countProduct++
+                binding.tvQuantity.text = countProduct.toString()
+                updateTotalPrice()
+            }
+
+            binding.btnMinus.setOnClickListener {
+                if(countProduct == 1){
+                    binding.tvQuantity.text = countProduct.toString()
+                }else{
+                    countProduct--
+                    binding.tvQuantity.text = countProduct.toString()
+                    updateTotalPrice()
+                }
+            }
+        }else{
+            Toast.makeText(this, "Terjadi kesalahan produk", Toast.LENGTH_SHORT).show()
+        }
 
         viewModel.getAddresses()
         setupObservers()
@@ -207,9 +231,12 @@ class CheckoutActivity : AppCompatActivity() {
     private fun observerCalculate(){
         kingViewModel.tariffResult.observe(this) {
             val data = getCheapestShippingOption(it)
-            binding.tvCourier.text = data?.shippingName ?: "Gagal mendapatkan nama shipping"
+            binding.tvCourier.text = "${data?.shippingName} ( ${data?.serviceName} )" ?: "Gagal mendapatkan nama shipping"
             binding.tvEstimation.text = formatRupiah(data?.shippingCost ?: 0)
             selectShipping = data
+            binding.tvTotalShipping.text = formatRupiah(data?.shippingCost ?: 0)
+            binding.tvPriceTotal.text = formatRupiah((data?.shippingCost ?: 0) + orderDetails.sumOf { it.price })
+
         }
         kingViewModel.errorMessage.observe(this) { error ->
             Toast.makeText(this, error ?: "Error apa kek", Toast.LENGTH_SHORT).show()
@@ -226,7 +253,10 @@ class CheckoutActivity : AppCompatActivity() {
         return "Rp.${formatter.format(amount)}"
     }
 
-    override fun onResume() {
-        super.onResume()
+    private fun updateTotalPrice() {
+        val shippingCost = selectShipping?.shippingCost ?: 0
+        val totalProductPrice = orderDetails[0].price * countProduct
+        binding.tvTotalItemCo.text = formatRupiah(totalProductPrice)
+        binding.tvPriceTotal.text = formatRupiah(shippingCost + totalProductPrice)
     }
 }
