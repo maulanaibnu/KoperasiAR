@@ -74,6 +74,7 @@ class CheckoutActivity : AppCompatActivity() {
                     isFromShippingSelection = true
                     binding.tvCourier.text = "${shippingOption.shippingName} (${shippingOption.serviceName})"
                     binding.tvEstimation.text = formatRupiah(shippingOption.shippingCost)
+                    binding.tvTotalShipping.text = formatRupiah(shippingOption.shippingCost)
                     viewModel.getAddresses()
                     selectShipping = shippingOption
                 }else{
@@ -93,6 +94,8 @@ class CheckoutActivity : AppCompatActivity() {
         total = intent.getDoubleExtra("total", 0.0)
         orderDetails =
             intent.getParcelableArrayListExtra<OrderDetail>("orderDetails") ?: emptyList()
+
+        binding.tvTotalItemCo.text = formatRupiah(orderDetails.sumOf { it.price })
 
         viewModel.getAddresses()
         setupObservers()
