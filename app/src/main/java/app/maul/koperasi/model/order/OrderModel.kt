@@ -142,6 +142,9 @@ data class HistoryItem(
     @SerializedName("updatedAt")
     val updatedAt: String,
 
+    @SerializedName("shipping_cost")
+    val shippingCost: String,
+
     @SerializedName("product")
     val product: ProductHistoryDetail
 ) : Parcelable

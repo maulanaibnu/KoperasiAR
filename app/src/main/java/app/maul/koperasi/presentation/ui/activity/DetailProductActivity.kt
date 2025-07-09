@@ -132,11 +132,14 @@ class DetailProductActivity : AppCompatActivity() {
         }
     }
 
+
     private fun goToArActivity() {
         binding.arButton.setOnClickListener {
             detailProductViewModel.productDetail.value?.data?.let { product ->
                 startActivity(Intent(this, ProductArActivity::class.java).apply {
-                    putExtra("urlGlbFile", product.model?.urlname)
+                    // Pastikan Anda mengirim "urlGlbFile" dan "productName"
+                    putExtra("urlGlbFile", product.model?.urlname) // <-- Ini yang Anda inginkan kembali
+                    putExtra("productName", product.name)          // <-- TAMBAHKAN BARIS INI
                 })
             }
         }

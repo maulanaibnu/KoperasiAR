@@ -1,6 +1,6 @@
 package app.maul.koperasi.api
 
-import app.maul.koperasi.model.address.AddressData
+import app.maul.koperasi.model.augmented.ModelResponse
 import app.maul.koperasi.model.address.AddressDetailResponse
 import app.maul.koperasi.model.address.AddressRequest
 import app.maul.koperasi.model.address.AddressResponse
@@ -32,7 +32,6 @@ import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -109,6 +108,10 @@ interface ApiService {
         @Path("id") id: Int,
         @Query("userId") userId: Int,
     ): DetailProductResponse
+
+    //augmented
+    @GET("product/getModel/{id}")
+    suspend fun getModelByProductId(@Path("id") productId: String): Response<ModelResponse>
 
     @POST("cart/add")
     suspend fun addCart(@Body cartRequest: CartRequest): CartResponse

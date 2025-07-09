@@ -1,6 +1,8 @@
 package app.maul.koperasi.presentation.ui.augmentedReality
 
 import android.os.Bundle
+import android.util.Log // Tambahkan ini untuk logging
+import android.widget.Toast // Tambahkan ini untuk pesan ke user
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -21,6 +23,10 @@ import kotlinx.coroutines.launch
 
 class ProductArActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProductArBinding
+
+    // Tambahkan variabel untuk menyimpan URL model dan nama produk
+    private var urlGlbFile: String? = null
+    private var productName: String? = null // <--- TAMBAHKAN INI
 
     var isLoading = false
         set(value) {
@@ -64,6 +70,21 @@ class ProductArActivity : AppCompatActivity() {
             insets
         }
         goBack()
+
+        // Ambil URL GLB dan nama produk dari Intent
+        urlGlbFile = intent.getStringExtra("urlGlbFile")
+        productName = intent.getStringExtra("productName") // <--- AMBIL NAMA PRODUK DARI INTENT
+
+        // Set nama produk ke TextView
+        binding.productName.text = productName ?: getString(R.string.productName) // <--- SET TEKS
+
+        // Opsional: Cek apakah urlGlbFile null di sini jika Anda ingin langsung memberi tahu user
+        if (urlGlbFile == null || urlGlbFile!!.isBlank()) {
+            Log.e("ProductArActivity", "URL model 3D tidak ditemukan atau kosong.")
+            Toast.makeText(this, "Model 3D tidak tersedia untuk produk ini.", Toast.LENGTH_LONG).show()
+            // finish() // Anda bisa uncomment ini jika ingin langsung menutup activity
+        }
+
         setupSceneview()
     }
 
@@ -81,6 +102,7 @@ class ProductArActivity : AppCompatActivity() {
             }
 
             onSessionUpdated = { _, frame ->
+                // Jika belum ada anchorNode, coba deteksi plane dan tambahkan
                 if (anchorNode == null) {
                     frame.getUpdatedPlanes()
                         .firstOrNull { it.type == Plane.Type.HORIZONTAL_UPWARD_FACING }
@@ -97,33 +119,47 @@ class ProductArActivity : AppCompatActivity() {
     }
 
     fun addAnchorNode(anchor: Anchor) {
-        val urlGlbFIle = intent.getStringExtra("urlGlbFile")
         binding.sceneView.addChildNode(
             AnchorNode(binding.sceneView.engine, anchor)
                 .apply {
                     isEditable = true
+                    this@ProductArActivity.anchorNode = this
+
                     lifecycleScope.launch {
-                        isLoading = true
-                        if (urlGlbFIle != null) {
-                            binding.sceneView.modelLoader.loadModelInstance(
-                                urlGlbFIle
-                            )?.let { modelInstance ->
-                                addChildNode(
-                                    ModelNode(
-                                        modelInstance = modelInstance,
-                                        // Scale to fit in a 0.5 meters cube
-                                        scaleToUnits = 0.5f,
-                                        // Bottom origin instead of center so the model base is on floor
-                                        centerOrigin = Position(y = -0.5f)
-                                    ).apply {
-                                        isEditable = true
-                                    }
-                                )
+                        isLoading = true // Tampilkan loading indicator
+                        try {
+                            // Pastikan URL tidak null atau kosong sebelum mencoba memuat model
+                            if (urlGlbFile != null && urlGlbFile!!.isNotBlank()) {
+                                binding.sceneView.modelLoader.loadModelInstance(urlGlbFile!!)?.let { modelInstance ->
+                                    // Jika model berhasil dimuat, tambahkan ke Scene
+                                    addChildNode(
+                                        ModelNode(
+                                            modelInstance = modelInstance,
+                                            scaleToUnits = 0.5f,
+                                            centerOrigin = Position(y = -0.5f)
+                                        ).apply {
+                                            isEditable = true // Izinkan model untuk diedit/dipindahkan
+                                        }
+                                    )
+                                    Log.d("ProductArActivity", "Model berhasil dimuat dari URL: $urlGlbFile")
+                                } ?: run {
+                                    // Jika loadModelInstance mengembalikan null (gagal memuat model)
+                                    Log.e("ProductArActivity", "Gagal memuat instance model dari URL: $urlGlbFile (mengembalikan null)")
+                                    Toast.makeText(this@ProductArActivity, "Gagal memuat model 3D. Periksa format file atau URL.", Toast.LENGTH_LONG).show()
+                                }
+                            } else {
+                                // Jika URL kosong atau null
+                                Log.e("ProductArActivity", "URL model 3D tidak ditemukan atau kosong saat mencoba memuat.")
+                                Toast.makeText(this@ProductArActivity, "Model 3D tidak tersedia untuk produk ini.", Toast.LENGTH_LONG).show()
                             }
+                        } catch (e: Exception) {
+                            // Tangani error lain yang mungkin terjadi saat memuat model
+                            Log.e("ProductArActivity", "Terjadi kesalahan saat memuat model 3D dari URL: $urlGlbFile", e)
+                            Toast.makeText(this@ProductArActivity, "Terjadi kesalahan: ${e.message}", Toast.LENGTH_LONG).show()
+                        } finally {
+                            isLoading = false // Sembunyikan loading indicator
                         }
-                        isLoading = false
                     }
-                    anchorNode = this
                 }
         )
     }
@@ -133,6 +169,4 @@ class ProductArActivity : AppCompatActivity() {
             finish()
         }
     }
-
-
 }
