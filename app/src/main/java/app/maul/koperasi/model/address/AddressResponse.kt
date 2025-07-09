@@ -26,7 +26,6 @@ data class AddressData(
     val label: String,
     val userId: Int,
     val isDefault: Boolean,
-
     val city: String,
     val id_destination: Int
 ) : Parcelable
