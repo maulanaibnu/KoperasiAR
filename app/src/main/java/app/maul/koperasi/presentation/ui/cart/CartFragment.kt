@@ -21,7 +21,9 @@ import app.maul.koperasi.preference.Preferences
 import app.maul.koperasi.presentation.ui.checkout.CheckoutActivity
 import app.maul.koperasi.presentation.ui.order.OrderViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.NumberFormat
 import java.util.ArrayList
+import java.util.Locale
 
 @AndroidEntryPoint
 class CartFragment : Fragment() {
@@ -30,6 +32,8 @@ class CartFragment : Fragment() {
     private val cartViewModel by viewModels<CartViewModel>()
 
     private lateinit var cartAdapter: CartAdapter
+    private var currentSelectedCartItem: CartItem? = null
+    private var currentTotalPrice: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,30 +43,36 @@ class CartFragment : Fragment() {
         getUserCart()
         observeDeleteCart()
         observeUpdateCart()
+        setupRecyclerView(emptyList())
 
         binding.btnBuy.setOnClickListener {
             val userId = Preferences.getId(requireActivity())
             val selectedItems = cartAdapter.getSelectedItems()
+            val selectedItemForCheckout = currentSelectedCartItem
 
-            if (selectedItems.isEmpty()) {
+            if (selectedItemForCheckout == null) {
                 Toast.makeText(requireContext(), "Pilih produk terlebih dahulu!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             // Calculate total price and prepare OrderDetail list
-            val total = selectedItems.sumOf { it.product.price * it.quantity }
-            val orderDetails = selectedItems.map { cartItem ->
-                OrderDetail(
-                    id = 0, // Assuming ID will be generated server-side
-                    id_order = 0, // Placeholder, will be set after order creation
-                    id_product = cartItem.product_id,
-                    name_product = cartItem.product.name,
-                    price = cartItem.product.price,
-                    qty = cartItem.quantity,
-                    createdAt = "", // Placeholder
-                    updatedAt = "" // Placeholder
+            val total = selectedItemForCheckout.product.price * selectedItemForCheckout.quantity
+            val orderDetails = ArrayList<OrderDetail>().apply {
+                add(
+                    OrderDetail(
+                        id = 0, // Assuming ID will be generated server-side
+                        id_order = 0, // Placeholder, will be set after order creation
+                        id_product = selectedItemForCheckout.product_id,
+                        name_product = selectedItemForCheckout.product.name,
+                        image_url = selectedItemForCheckout.product.images,
+                        price = selectedItemForCheckout.product.price,
+                        qty = selectedItemForCheckout.quantity,
+                        createdAt = "", // Placeholder
+                        updatedAt = "" // Placeholder
+                    )
                 )
             }
+
 
 //            // Create OrderRequest object
 //            val orderRequest = OrderRequest(
@@ -104,29 +114,25 @@ class CartFragment : Fragment() {
             if (cartItems.isNullOrEmpty()) {
                 binding.emptycart.visibility = View.VISIBLE
                 binding.rvCart.visibility = View.GONE
+                updateTotalPriceDisplay(0) // Set total harga ke 0 jika keranjang kosong
             } else {
                 binding.emptycart.visibility = View.GONE
                 binding.rvCart.visibility = View.VISIBLE
-
-                if (::cartAdapter.isInitialized) {
-                    cartAdapter.updateCart(cartItems) // Perbarui data
-                } else {
-                    setupRecyclerView(cartItems)
-                }
+                cartAdapter.updateCart(cartItems) // Perbarui data adapter
             }
         })
     }
 
     private fun observeDeleteCart() {
         cartViewModel.deleteCartResponse.observe(viewLifecycleOwner, Observer { message ->
-//            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
             getUserCart()
         })
     }
 
     private fun observeUpdateCart() {
         cartViewModel.updateCartResponse.observe(viewLifecycleOwner, Observer { message ->
-//            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
             getUserCart()
         })
     }
@@ -137,7 +143,12 @@ class CartFragment : Fragment() {
             cartItems,
             onDeleteClick = { cartItem -> cartViewModel.deleteCartItem(cartItem.id) },
             onAddClick = { cartItem -> cartViewModel.addCartItem(cartItem.id, cartItem.quantity + 1) },
-            onMinClick = { cartItem -> cartViewModel.minCartItem(cartItem.id, cartItem.quantity - 1) }
+            onMinClick = { cartItem -> cartViewModel.minCartItem(cartItem.id, cartItem.quantity - 1) },
+            onItemSelectedChange = { selectedItem, totalPrice ->
+                currentSelectedCartItem = selectedItem
+                currentTotalPrice = totalPrice
+                updateTotalPriceDisplay(totalPrice)
+            }
         )
         binding.rvCart.apply {
             layoutManager = LinearLayoutManager(context)
@@ -145,10 +156,28 @@ class CartFragment : Fragment() {
         }
     }
 
+    private fun updateTotalPriceDisplay(totalPrice: Int) {
+        val formatter = NumberFormat.getCurrencyInstance(Locale("in", "ID"))
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = 0
+        var formattedTotalPriceString = formatter.format(totalPrice)
+
+        if (formattedTotalPriceString.startsWith("Rp") && !formattedTotalPriceString.startsWith("Rp ")) {
+
+            formattedTotalPriceString = "Rp. " + formattedTotalPriceString.substring(2)
+        }
+
+        binding.tvTotalPrice.text = formattedTotalPriceString
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == 10 && RESULT_OK == resultCode){
             getUserCart()
         }
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

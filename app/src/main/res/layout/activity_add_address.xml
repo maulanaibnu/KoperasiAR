@@ -159,33 +159,16 @@
             android:background="@drawable/background_edit_text"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <LinearLayout
-        android:id="@+id/container_set_default"
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switchIsDefault"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
+        android:text="Jadikan Alamat Utama"
+        android:textColor="#212121"
+        android:textSize="15sp"
         android:layout_marginTop="30dp"
-        android:layout_marginEnd="30dp"
         android:layout_marginStart="30dp"
-        android:padding="10dp">
-
-        <ImageView
-            android:id="@+id/iv_set_default"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/check_box_blank"
-            android:contentDescription="address" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Jadikan Alamat Utama"
-            android:textColor="#212121"
-            android:textSize="15sp"
-            android:layout_marginStart="12dp"/>
-    </LinearLayout>
+        android:layout_marginEnd="30dp" />
 
 
     <com.google.android.material.button.MaterialButton

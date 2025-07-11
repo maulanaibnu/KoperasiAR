@@ -116,7 +116,7 @@
     <string name="selesai">Selesai</string>
     <string name="cancel">Cancel</string>
     <string name="pilih_metode_pembayaran">Pilih Metode Pembayaran</string>
-    <string name="bank_transfer">Bank Transfer</string>
+    <string name="bank_transfer">Virtual Account</string>
     <string name="pilih_kurir_pengiriman">Pilih Kurir Pengiriman</string>
 
     <string-array name="payment_types">

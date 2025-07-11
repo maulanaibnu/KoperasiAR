@@ -19,12 +19,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-<!--        <ImageView-->
-<!--            android:id="@+id/img_back"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="center_vertical"-->
-<!--            android:src="@drawable/ic_back" />-->
 
         <TextView
             style="@style/AppTheme.TextTittle"
@@ -125,21 +119,16 @@
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="10dp"
+        android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <CheckBox
-            android:id="@+id/cb_all"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:buttonTint="@color/priority"
-            android:text="@string/all" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="220dp"
             android:orientation="vertical">
 
             <TextView
@@ -156,9 +145,10 @@
                 android:id="@+id/tv_total_price"
                 style="@style/AppTheme.TextDefault"
                 android:layout_width="wrap_content"
+                android:text="Rp. 0"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
+                android:gravity="end"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
 

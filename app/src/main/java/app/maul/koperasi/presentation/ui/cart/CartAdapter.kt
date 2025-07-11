@@ -14,10 +14,12 @@ class CartAdapter(
     var cartItems: List<CartItem>,
     private val onDeleteClick: (CartItem) -> Unit,
     private val onAddClick: (CartItem) -> Unit,
-    private val onMinClick: (CartItem) -> Unit
+    private val onMinClick: (CartItem) -> Unit,
+    private val onItemSelectedChange: (CartItem?, Int) -> Unit
 ) : RecyclerView.Adapter<CartAdapter.CartViewHolder>() {
 
-    private val selectedItems = ArrayList<CartItem>()
+    private var selectedItem: CartItem? = null
+    private var selectedItemPosition: Int = RecyclerView.NO_POSITION
 
     inner class CartViewHolder(val binding: ProductListCartBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -30,29 +32,52 @@ class CartAdapter(
         val cartItem = cartItems[position]
         val product = cartItem.product
 
+        val formatter = NumberFormat.getCurrencyInstance(Locale("in", "ID"))
+
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = 0
+        var formattedPriceString = formatter.format(product.price)
+
+        if (formattedPriceString.startsWith("Rp") && !formattedPriceString.startsWith("Rp ")) {
+
+            formattedPriceString = "Rp. " + formattedPriceString.substring(2)
+        }
         holder.binding.apply {
             Glide.with(holder.itemView)
                 .load(
                     Constant.BASE_URL + product.images)
                 .into(imgProduct)
             tvProductName.text = product.name
-            tvProductPrice.text = "Rp. ${product.price}"
+
+            tvProductPrice.text = formattedPriceString
             tvQuantity.text = cartItem.quantity.toString()
 
-            // Atur checkbox sesuai status item dalam set
-            cbProduct.isChecked = selectedItems.contains(cartItem)
 
-            val itemTotalPrice = product.price * cartItem.quantity
+            cbProduct.isChecked = (cartItem == selectedItem)
 
-            // Buat formatter untuk mata uang Rupiah
-            val formatter = NumberFormat.getNumberInstance(Locale("in", "ID"))
+            cbProduct.setOnCheckedChangeListener(null)
+            cbProduct.isChecked = (cartItem == selectedItem)
 
-            // Event checkbox
+
             cbProduct.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
-                    selectedItems.add(cartItem)
+                    if (selectedItem != cartItem) {
+
+                        val previousSelectedItemPosition = selectedItemPosition
+                        selectedItem = cartItem
+                        selectedItemPosition = holder.adapterPosition
+                        if (previousSelectedItemPosition != RecyclerView.NO_POSITION) {
+                            notifyItemChanged(previousSelectedItemPosition)
+                        }
+
+                        onItemSelectedChange(selectedItem, calculateTotalPrice())
+                    }
                 } else {
-                    selectedItems.remove(cartItem)
+                    if (selectedItem == cartItem) {
+                        selectedItem = null
+                        selectedItemPosition = RecyclerView.NO_POSITION
+                        onItemSelectedChange(null, 0)
+                    }
                 }
             }
         }
@@ -74,13 +99,30 @@ class CartAdapter(
     }
 
     // Mengambil item yang dipilih
-    fun getSelectedItems(): List<CartItem> {
-        return selectedItems.toList()
+    fun getSelectedItems(): CartItem? {
+        return selectedItem
+    }
+
+    private fun calculateTotalPrice(): Int {
+        return selectedItem?.let { item -> item.product.price * item.quantity } ?: 0
     }
 
     fun updateCart(newCartItems: List<CartItem>) {
+        val currentSelectedItem = selectedItem
+        selectedItem = null
+        selectedItemPosition = RecyclerView.NO_POSITION
+
+        if (currentSelectedItem != null) {
+            val newIndex = newCartItems.indexOfFirst { it.id == currentSelectedItem.id }
+            if (newIndex != -1) {
+                selectedItem = newCartItems[newIndex]
+                selectedItemPosition = newIndex
+            }
+        }
+
         cartItems = newCartItems
         notifyDataSetChanged()
+        onItemSelectedChange(selectedItem, calculateTotalPrice())
     }
 
     override fun getItemCount(): Int {

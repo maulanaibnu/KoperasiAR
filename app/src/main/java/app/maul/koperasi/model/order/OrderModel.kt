@@ -214,6 +214,7 @@ data class OrderDetail(
     val name_product: String,
     val price: Int,
     val qty: Int,
+    val image_url: String?,
     val createdAt: String,
     val updatedAt: String
 ) : Parcelable

@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/bg"
     tools:context=".presentation.ui.payment.SelectPaymentActivity">
 
     <LinearLayout
@@ -13,23 +14,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="10dp">
+        android:padding="10dp"
+        android:background="@color/white"
+        android:elevation="4dp"
+        android:gravity="center_vertical">
 
         <ImageView
             android:id="@+id/img_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_back" />
+            android:padding="10dp"
+            android:src="@drawable/ic_back"
+            app:tint="@color/black"
+            android:contentDescription="Back"/>
 
         <TextView
             style="@style/AppTheme.TextTittle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:layout_weight="1"
@@ -49,90 +51,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="20dp"
-        android:padding="10dp">
+        android:layout_marginTop="16dp" android:padding="10dp"
+        android:background="@drawable/background_rounded"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
 
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/tvPaymentTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bank_transfer"
+            android:textColor="#212121"
+            android:textSize="16sp"
+            android:layout_marginStart="12dp"
+            android:textStyle="bold"
+            android:fontFamily="@font/urbanist_bold"
+            android:layout_marginBottom="8dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPaymentList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tvPaymentTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/bank_transfer"
-                android:textColor="#212121"
-                android:textSize="16sp"
-                android:layout_marginStart="12dp"
-                android:textStyle="bold"
-                android:fontFamily="@font/urbanist_bold"
-                android:layout_marginBottom="8dp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="10dp">
-
-            <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/bnilogo"
-                android:contentDescription="BRI" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="BNI Virtual Account"
-                android:textColor="#212121"
-                android:textSize="15sp"
-                android:layout_marginStart="12dp"/>
-
-            <ImageView
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/ic_unchecked"
-                android:contentDescription="Selected" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="10dp">
-
-            <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/permata_logo"
-                android:contentDescription="BRI" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="PERMATA Virtual Account"
-                android:textColor="#212121"
-                android:textSize="15sp"
-                android:layout_marginStart="12dp"/>
-
-            <ImageView
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/ic_unchecked"
-                android:contentDescription="Selected" />
-        </LinearLayout>
-
+            tools:listitem="@layout/payment_order_list" />
 
     </LinearLayout>
+
 
 </LinearLayout>

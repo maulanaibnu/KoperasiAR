@@ -1,12 +1,11 @@
 package app.maul.koperasi.viewmodel
 
-import android.util.Log
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.maul.koperasi.data.AddressRepository
 import app.maul.koperasi.model.address.AddressData
 import app.maul.koperasi.model.address.AddressRequest
-import app.maul.koperasi.model.address.AddressResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,12 +31,6 @@ class AddressViewModel @Inject constructor(
     private val _success = MutableStateFlow<String?>(null)
     val success: StateFlow<String?> get() = _success
 
-    private val _selectedId = MutableStateFlow<Int?>(null)
-    val selectedId: StateFlow<Int?> get() = _selectedId
-
-    fun setSelectedId(id: Int?) {
-        _selectedId.value = id
-    }
 
     fun getAddresses() {
         viewModelScope.launch {
@@ -48,11 +41,10 @@ class AddressViewModel @Inject constructor(
                 val response = addressRepository.getAddresses()
                 if (response.isSuccessful) {
                     _loading.value = false
-
                     _addresses.value = response.body()?.data ?: emptyList()
                     _success.value = "Daftar alamat berhasil dimuat"
                 } else {
-                    _error.value = "Gagal mengambil data address"
+                    _error.value = "Gagal mengambil data address: ${response.message()}"
                 }
             } catch (e: Exception) {
                 _error.value = e.localizedMessage ?: "Terjadi kesalahan"
@@ -70,9 +62,9 @@ class AddressViewModel @Inject constructor(
                 val response = addressRepository.createAddress(request)
                 if (response.isSuccessful) {
                     _success.value = "Alamat berhasil ditambahkan"
-                    getAddresses()
+                    getAddresses() // Muat ulang daftar setelah berhasil
                 } else {
-                    _error.value = "Gagal menambah address"
+                    _error.value = "Gagal menambah address: ${response.message()}"
                 }
             } catch (e: Exception) {
                 _error.value = e.localizedMessage ?: "Terjadi kesalahan"
@@ -90,9 +82,9 @@ class AddressViewModel @Inject constructor(
                 val response = addressRepository.updateAddress(id, request)
                 if (response.isSuccessful) {
                     _success.value = "Alamat berhasil diupdate"
-                    getAddresses()
+                    getAddresses() // Muat ulang daftar setelah berhasil
                 } else {
-                    _error.value = "Gagal mengupdate address"
+                    _error.value = "Gagal mengupdate address: ${response.message()}"
                 }
             } catch (e: Exception) {
                 _error.value = e.localizedMessage ?: "Terjadi kesalahan"
@@ -110,9 +102,9 @@ class AddressViewModel @Inject constructor(
                 val response = addressRepository.deleteAddress(id)
                 if (response.isSuccessful) {
                     _success.value = "Alamat berhasil dihapus"
-                    getAddresses()
+                    getAddresses() // Muat ulang daftar setelah berhasil
                 } else {
-                    _error.value = "Gagal menghapus address"
+                    _error.value = "Gagal menghapus address: ${response.message()}"
                 }
             } catch (e: Exception) {
                 _error.value = e.localizedMessage ?: "Terjadi kesalahan"
@@ -128,15 +120,14 @@ class AddressViewModel @Inject constructor(
                 val response = addressRepository.setDefaultAddress(id)
                 if (response.isSuccessful) {
                     _success.value = response.body()?.message ?: "Alamat utama berhasil diatur"
-                    // Setelah sukses, panggil ulang getAddresses untuk sinkronisasi data
-                    getAddresses()
+                    getAddresses() // Panggil ulang getAddresses untuk sinkronisasi data
                 } else {
-                    _error.value = "Gagal mengatur alamat utama"
+                    _error.value = "Gagal mengatur alamat utama: ${response.message()}"
                 }
             } catch (e: Exception) {
                 _error.value = "Terjadi kesalahan: ${e.message}"
             }
-            // Loading akan di-handle oleh getAddresses() setelah ini, jadi tidak perlu set false di sini.
+            // loading akan di-handle oleh getAddresses() setelah ini.
         }
     }
 
@@ -150,7 +141,7 @@ class AddressViewModel @Inject constructor(
                 if (response.isSuccessful) {
                     _address.value = response.body()?.data
                 } else {
-                    _error.value = "Gagal mengambil data address"
+                    _error.value = "Gagal mengambil data address: ${response.message()}"
                 }
             } catch (e: Exception) {
                 _error.value = e.localizedMessage ?: "Terjadi kesalahan"

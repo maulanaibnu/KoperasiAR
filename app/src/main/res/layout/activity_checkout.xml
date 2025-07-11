@@ -1,295 +1,301 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_marginTop="20dp"
     android:layout_height="match_parent"
+    android:layout_marginTop="20dp"
     tools:context=".presentation.ui.checkout.CheckoutActivity">
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp">
+
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/back"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/ic_back"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/black"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <TextView
+            android:id="@+id/TvDoCheckout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:layout_marginStart="15dp"
+            android:fontFamily="@font/urbanist_bold"
+            android:textSize="17sp"
+            android:text="@string/checkout"
+            app:layout_constraintBottom_toBottomOf="@+id/backButton"
+            app:layout_constraintStart_toEndOf="@+id/backButton" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/footerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:background="@color/white"> <Button
+        android:id="@+id/btnPayNow"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:backgroundTint="@color/second_color"
+        android:text="Bayar Sekarang" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/appBar"
+        android:layout_above="@id/footerLayout">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/appBar"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageButton
-                android:id="@+id/backButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/back"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/ic_back"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/black"
-                tools:ignore="TouchTargetSizeCheck" />
-
-            <TextView
-                android:id="@+id/TvDoCheckout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="1dp"
-                android:layout_marginStart="15dp"
-                android:fontFamily="@font/urbanist_bold"
-                android:textSize="17sp"
-                android:text="@string/checkout"
-                app:layout_constraintBottom_toBottomOf="@+id/backButton"
-                app:layout_constraintStart_toEndOf="@+id/backButton" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <View
-            android:id="@+id/view0"
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:layout_marginTop="20dp"
-            android:background="@color/lines"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardAlamatPengiriman" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardAlamatPengiriman"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="20dp"
-            app:cardCornerRadius="14dp"
-            app:cardBackgroundColor="@color/bg"
-            app:cardElevation="2dp"
-            app:layout_constraintTop_toBottomOf="@id/view1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:paddingBottom="16dp">
+
+            <View
+                android:id="@+id/view1"
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/lines"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardAlamatPengiriman"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="14dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardElevation="2dp"
+                app:layout_constraintTop_toBottomOf="@id/view1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/iconLocation"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_location"
+                        app:tint="@color/primary_color"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="12dp">
+
+                        <TextView
+                            android:id="@+id/tvLabelAlamat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rumah"
+                            android:textColor="@color/black"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/urbanist_bold"/>
+
+                        <TextView
+                            android:id="@+id/tvReceiptName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Maulana Ibnu Fajar"
+                            android:textColor="@color/black"
+                            android:textStyle="bold"
+                            android:layout_marginTop="4dp"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/urbanist_bold"/>
+
+                        <TextView
+                            android:id="@+id/tvDetailAlamat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Jl. Mangga, Kec. Slawi, Tegal, Jawa Tengah, 52194"
+                            android:textColor="@color/semi_black"
+                            android:textSize="14sp"
+                            android:layout_marginTop="4dp"
+                            android:maxLines="2"
+                            android:ellipsize="end"/>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/arrowRightAlamat"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_arrow_right"
+                        app:tint="@color/black"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <View
+                android:id="@+id/view0"
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/lines"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardAlamatPengiriman" />
 
             <LinearLayout
+                android:id="@+id/LinearCo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:padding="12dp"
-                android:gravity="center_vertical">
+                android:background="@drawable/background_rounded"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view0">
 
-                <ImageView
-                    android:id="@+id/iconLocation"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_location" />
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/imgCoPRoduct"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/product"
+                    app:riv_corner_radius="10dp"
+                    android:layout_marginEnd="12dp"/>
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="12dp">
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tvLabelAlamat"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/tvCOProductName"
+                        style="@style/AppTheme.TextDefault"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Rumah"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:fontFamily="@font/urbanist_bold"/>
-
-                    <TextView
-                        android:id="@+id/tvReceiptName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Maulana Ibnu Fajar"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"
-                        android:layout_marginTop="10dp"
-                        android:textSize="16sp"
-                        android:fontFamily="@font/urbanist_bold"/>
-
-                    <TextView
-                        android:id="@+id/tvDetailAlamat"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Jl. Mangga, Kec. Slawi, Tegal, Jawa Tengah, 52194"
-                        android:textColor="@color/semi_black"
-                        android:textSize="14sp"
-                        android:layout_marginTop="10dp"
+                        android:ellipsize="end"
                         android:maxLines="2"
-                        android:ellipsize="end"/>
+                        android:text="Nama Produk Barang yang Sangat Panjang"
+                        android:textColor="@color/semi_black"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/tvCoProductPrice"
+                        style="@style/AppTheme.TextDefault"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Rp. 0"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageButton
+                            android:id="@+id/btnMinus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="min"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_min"
+                            app:tint="@color/primary_color"
+                            tools:ignore="TouchTargetSizeCheck" />
+
+                        <TextView
+                            android:id="@+id/tvQuantityProduct"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:gravity="center"
+                            android:text="1"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <ImageButton
+                            android:id="@+id/btnPlus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="plus"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_add"
+                            app:tint="@color/primary_color"
+                            tools:ignore="TouchTargetSizeCheck" />
+                    </LinearLayout>
                 </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/arrowRightAlamat"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_arrow_right" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
 
-        <View
-            android:id="@+id/view1"
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:layout_marginTop="20dp"
-            android:background="@color/lines"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/appBar" />
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/lines"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/LinearCo" />
 
-        <LinearLayout
-            android:id="@+id/LinearCo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/view0">
-
-            <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/imgCoPRoduct"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginStart="20dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/product"
-                app:riv_corner_radius="10dp" />
-
-            <LinearLayout
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardShippingOption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="2dp"
+                app:layout_constraintTop_toBottomOf="@id/view2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
-                <TextView
-                    android:id="@+id/tvCOProductName"
-                    style="@style/AppTheme.TextDefault"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:text="Name "
-                    android:textColor="@color/semi_black" />
-
-                <TextView
-                    android:id="@+id/tvCoProductPrice"
-                    style="@style/AppTheme.TextDefault"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:text="price"
-                    android:textColor="@color/black"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="5dp"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageButton
-                        android:id="@+id/btnMinus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="@string/simpan"
-                        android:padding="12dp"
-                        android:src="@drawable/ic_min"
-                        app:tint="@color/primary_color" />
-
-                    <TextView
-                        android:id="@+id/tvQuantity"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:gravity="center"
-                        android:text="1"
-                        android:textSize="18sp" />
-
-                    <ImageButton
-                        android:id="@+id/btnPlus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="@string/simpan"
-                        android:padding="12dp"
-                        android:src="@drawable/ic_add"
-                        app:tint="@color/primary_color" />
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tvLihatSemua"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="125dp"
-                    android:text="Lihat Semua"
-                    android:textColor="@color/priority"
-                    android:textSize="14sp" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-
-
-
-        <View
-            android:id="@+id/view2"
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:layout_marginTop="20dp"
-            android:background="@color/lines"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/LinearCo" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardShippingOption"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            app:cardBackgroundColor="@color/bg"
-            app:cardCornerRadius="14dp"
-            app:cardElevation="2dp"
-            app:layout_constraintTop_toBottomOf="@id/view2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:padding="16dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-
-                <!-- Pilihan Ekspedisi -->
                 <LinearLayout
                     android:orientation="vertical"
+                    android:padding="16dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/bg"
-                    android:padding="10dp">
-
+                    android:layout_height="wrap_content">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:background="@color/bg">
+                        android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/tvCourier"
@@ -306,212 +312,171 @@
                             android:layout_width="22dp"
                             android:layout_height="22dp"
                             android:src="@drawable/ic_arrow_right"
-                            android:contentDescription="Selected" />
-
+                            android:contentDescription="Selected"
+                            app:tint="@color/black"/>
                     </LinearLayout>
-
-
 
                     <TextView
                         android:id="@+id/tvEstimation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Rp55.800"
+                        android:text="Biaya Pengiriman: Rp. 0"
                         android:textColor="@color/black"
                         android:textSize="15sp"
                         android:paddingTop="4dp"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/lines"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingTop="6dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" Otomatis Menggunakan Asuransi "
+                            android:textColor="#7A869A"
+                            android:textSize="15sp"
+                            android:paddingStart="6dp"
+                            android:paddingEnd="2dp"/>
+                    </LinearLayout>
                 </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                <!-- Garis pemisah -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/lines"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="8dp"/>
+            <View
+                android:id="@+id/view3"
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/lines"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cardShippingOption" />
 
-                <!-- Asuransi -->
+            <LinearLayout
+                android:id="@+id/coPaymentMethod"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="16dp"
+                android:padding="10dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/background_rounded"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view3">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:paddingTop="6dp">
-
+                    android:layout_marginBottom="8dp">
 
                     <TextView
+                        android:id="@+id/tvPaymentTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Metode pembayaran"
+                        android:textColor="#212121"
+                        android:textSize="16sp"
+                        android:layout_marginStart="12dp"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/urbanist_bold" />
+
+                    <TextView
+                        android:id="@+id/tvSeeAllPayments"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text=" Otomatis Menggunakan Asuransi "
-                        android:textColor="#7A869A"
-                        android:textSize="15sp"
-                        android:paddingStart="6dp"
-                        android:paddingEnd="2dp"/>
+                        android:minWidth="48dp"
+                        android:minHeight="48dp"
+                        android:gravity="center_vertical"
+                        android:text="Lihat Semua"
+                        android:textColor="@color/primary_color"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/urbanist_medium"
+                        android:padding="8dp"
+                        android:clickable="true"
+                        android:focusable="true"/>
 
                 </LinearLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
 
-        <View
-            android:id="@+id/view3"
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:layout_marginTop="20dp"
-            android:background="@color/lines"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cardShippingOption" />
-
-        <LinearLayout
-            android:id="@+id/coPaymentMethod"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="20dp"
-            android:padding="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/view3">
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tvPaymentTitle"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/llSelectedPaymentDisplay"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Metode pembayaran"
-                    android:textColor="#212121"
-                    android:textSize="16sp"
-                    android:layout_marginStart="12dp"
-                    android:textStyle="bold"
-                    android:fontFamily="@font/urbanist_bold"
-                    android:layout_marginBottom="8dp" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:visibility="gone">
 
-            </LinearLayout>
+                    <ImageView
+                        android:id="@+id/imgSelectedBankLogo"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/brikogo"
+                        android:contentDescription="Selected Bank Logo" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="10dp">
+                    <TextView
+                        android:id="@+id/tvSelectedBankName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="BRI Virtual Account"
+                        android:textColor="#212121"
+                        android:textSize="15sp"
+                        android:layout_marginStart="12dp"/>
 
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@drawable/brikogo"
-                    android:contentDescription="BRI" />
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_marginEnd="10dp"
+                        android:src="@drawable/ic_checked_select"
+                        android:contentDescription="Selected" />
+                </LinearLayout>
 
-                <TextView
-                    android:layout_width="0dp"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvPaymentOptions"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="BRI Virtual Account"
-                    android:textColor="#212121"
-                    android:textSize="15sp"
-                    android:layout_marginStart="12dp"/>
-
-                <ImageView
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_marginEnd="10dp"
-                    android:src="@drawable/ic_checked_select"
-                    android:contentDescription="Selected" />
+                    tools:listitem="@layout/payment_order_list"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
             </LinearLayout>
 
-            <LinearLayout
+            <View
+                android:id="@+id/view4"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="10dp">
-
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@drawable/bcalogo"
-                    android:contentDescription="BRI" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="BCA Virtual Account"
-                    android:textColor="#212121"
-                    android:textSize="15sp"
-                    android:layout_marginStart="12dp"/>
-
-                <ImageView
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_marginEnd="10dp"
-                    android:src="@drawable/ic_unchecked"
-                    android:contentDescription="Selected" />
-            </LinearLayout>
+                android:layout_height="8dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/lines"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/coPaymentMethod" />
 
             <LinearLayout
+                android:id="@+id/linearTotalPayment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="10dp">
-
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@drawable/mandirilogo"
-                    android:contentDescription="BRI" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Mandiri Virtual Account"
-                    android:textColor="#212121"
-                    android:textSize="15sp"
-                    android:layout_marginStart="12dp"/>
-
-                <ImageView
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_marginEnd="10dp"
-                    android:src="@drawable/ic_unchecked"
-                    android:contentDescription="Selected" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <View
-            android:id="@+id/view4"
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:layout_marginTop="15dp"
-            android:background="@color/lines"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/coPaymentMethod" />
-
-        <LinearLayout
-            android:id="@+id/linearTotalPayment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="20dp"
-            android:padding="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/view4">
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:layout_marginTop="16dp"
+                android:padding="10dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/background_rounded"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view4">
 
                 <TextView
                     android:id="@+id/tvRingkasanBelanja"
@@ -524,120 +489,102 @@
                     android:textStyle="bold"
                     android:fontFamily="@font/urbanist_bold"
                     android:layout_marginBottom="8dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp">
+
+                    <TextView
+                        android:id="@+id/tvTotalPaymentt"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Total Barang"
+                        android:textColor="#212121"
+                        android:textSize="16sp"
+                        android:layout_marginStart="12dp"
+                        android:fontFamily="@font/urbanist_bold" />
+
+                    <TextView
+                        android:id="@+id/tvTotalItemCo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:layout_marginEnd="12dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:id="@+id/tvTotalShippingg"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Total Pengiriman"
+                        android:textColor="#212121"
+                        android:textSize="16sp"
+                        android:layout_marginStart="12dp"
+                        android:fontFamily="@font/urbanist_bold" />
+
+                    <TextView
+                        android:id="@+id/tvTotalShipping"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:layout_marginEnd="12dp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/lines"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:id="@+id/tvTotal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Total Pembayaran"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:layout_marginStart="12dp"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/urbanist_bold" />
+
+                    <TextView
+                        android:id="@+id/tvPriceTotal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 0"
+                        android:textColor="@color/priority"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="12dp" />
+                </LinearLayout>
+
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tvTotalPaymentt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Total Barang"
-                    android:textColor="#212121"
-                    android:textSize="16sp"
-                    android:layout_marginStart="12dp"
-                    android:textStyle="bold"
-                    android:fontFamily="@font/urbanist_bold"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/tvTotalItemCo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Rp. 50.0000"
-                    android:textColor="@color/priority"
-                    android:textSize="14sp"
-                    android:layout_marginStart="185dp" />
-            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+    </ScrollView>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tvTotalShippingg"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Total Pengiriman"
-                    android:textColor="#212121"
-                    android:textSize="16sp"
-                    android:layout_marginStart="12dp"
-                    android:textStyle="bold"
-                    android:fontFamily="@font/urbanist_bold"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/tvTotalShipping"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Rp. 20.000"
-                    android:textColor="@color/priority"
-                    android:textSize="14sp"
-                    android:layout_marginStart="160dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tvTotal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Total Belanja"
-                    android:textColor="#212121"
-                    android:textSize="16sp"
-                    android:layout_marginStart="12dp"
-                    android:textStyle="bold"
-                    android:fontFamily="@font/urbanist_bold"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/tvPriceTotal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Rp. 50.0000"
-                    android:textColor="@color/priority"
-                    android:textSize="14sp"
-                    android:layout_marginStart="185dp" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/linearTotalPayment"
-            app:layout_constraintStart_toStartOf="parent">
-
-
-            <Button
-                android:id="@+id/btnPayNow"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-
-                android:layout_marginTop="20dp"
-                android:backgroundTint="@color/second_color"
-                android:text="Bayar Sekarang" />
-
-        </LinearLayout>
-
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</ScrollView>
+</RelativeLayout>
