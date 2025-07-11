@@ -17,6 +17,7 @@ import app.maul.koperasi.databinding.ActivityCheckoutBinding
 import app.maul.koperasi.model.ongkir.ShippingOption
 import app.maul.koperasi.model.ongkir.TariffData
 import app.maul.koperasi.model.order.OrderDetail
+import app.maul.koperasi.model.order.OrderRequest
 import app.maul.koperasi.preference.Preferences
 import app.maul.koperasi.presentation.ui.activity.AddressActivity
 import app.maul.koperasi.presentation.ui.courir.SelectCourirActivity
@@ -83,7 +84,7 @@ class CheckoutActivity : AppCompatActivity() {
                     selectedBank = Pair(bankCode, bankName) // Menyimpan bank yang dipilih
 
                     // Menyembunyikan daftar pembayaran dan menampilkan bank terpilih
-                    binding.rvPaymentOptions.visibility = View.GONE // Menyembunyikan RecyclerView
+
                     binding.llSelectedPaymentDisplay.visibility = View.VISIBLE // Menampilkan bank yang dipilih
                     binding.tvSelectedBankName.text = bankName
                     if (bankLogo != 0) binding.imgSelectedBankLogo.setImageResource(bankLogo)
@@ -114,6 +115,10 @@ class CheckoutActivity : AppCompatActivity() {
 
         userId = Preferences.getId(this@CheckoutActivity)
         // Retrieve data from Intent
+        binding.selectPaymentMethod.setOnClickListener {
+            val intent = Intent(this, SelectPaymentActivity::class.java)
+            resultLauncher.launch(intent)
+        }
         total = intent.getDoubleExtra("total", 0.0)
         orderDetails =
             intent.getParcelableArrayListExtra<OrderDetail>("orderDetails") ?: emptyList()
@@ -169,7 +174,7 @@ class CheckoutActivity : AppCompatActivity() {
         setupPaymentSelection()
         observeOrderResponse()
         observerCalculate()
-        setupClickListeners()
+
 
         binding.cardShippingOption.setOnClickListener {
             resultLauncher.launch(Intent(this, SelectCourirActivity::class.java).also{
@@ -179,7 +184,38 @@ class CheckoutActivity : AppCompatActivity() {
                 it.putExtra("price", totalProductPrice.toLong())
             })
         }
+        // Set up Submit Button
 
+        binding.btnSubmitOrder.setOnClickListener {
+            var paymentType = "bank_transfer"
+            val bank = ""
+            val shippingMethod = selectShipping?.let { it.shippingName }
+            val userId = Preferences.getId(this)
+            val productId = orderDetails[0].id_product
+            val quantity = orderDetails[0].qty
+            val shippingCost = selectShipping?.let { it.shippingCost }
+
+
+
+
+            // Create OrderRequest
+            val orderRequest = OrderRequest(
+                userId = userId,
+                idProduct = orderDetails[0].id_product,
+                quantity = countProduct,
+                paymentType = paymentType,
+                bank = (selectedBank?.first ?: "bca"),
+                shippingMethod = shippingMethod ?: "SICEPAT",
+                shippingCost = selectShipping?.shippingCost ?: 0,  // Assuming this is the cost
+                address = binding.tvDetailAlamat.text.toString()
+            )
+
+            // Call ViewModel to create the order
+            orderViewModel.createOrder(orderRequest)
+
+            // Show success message or navigate back
+            observeOrderResponse() // Observe the response after calling createOrder()
+        }
 
     }
 
@@ -187,9 +223,22 @@ class CheckoutActivity : AppCompatActivity() {
         orderViewModel.orderResponse.observe(this) { response ->
             if (response!!.status == "CREATED") {
                 Toast.makeText(this, "Order submitted successfully!", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, MainActivity::class.java)
+
+                // You can send additional info to PaymentActivity, like virtual account, expiration, etc.
+                val transactionData = response.data
+
+                val intent = Intent(this, PaymentActivity::class.java).apply {
+                    putExtra("virtual_account", transactionData?.virtualAccount)
+                    putExtra("expired", transactionData?.expired)
+                    putExtra("total_payment", transactionData?.price)
+                }
+                startActivity(intent)  // Navigate to PaymentActivity for further processing
+
                 setResult(RESULT_OK, null)
                 finish()
+            } else {
+                // Handle error scenario
+                Toast.makeText(this, "Failed to create order: ${response.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -237,13 +286,6 @@ class CheckoutActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupClickListeners() {
-
-        binding.tvSeeAllPayments.setOnClickListener {
-            val intent = Intent(this, SelectPaymentActivity::class.java)
-            resultLauncher.launch(intent)
-        }
-    }
 
     private fun observerCalculate() {
         kingViewModel.tariffResult.observe(this) {

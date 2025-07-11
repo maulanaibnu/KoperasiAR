@@ -44,7 +44,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
-        android:id="@+id/footerLayout"
+        android:id="@+id/btnSubmitOrder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -65,7 +65,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/appBar"
-        android:layout_above="@id/footerLayout">
+        android:layout_above="@id/btnSubmitOrder">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -395,20 +395,7 @@
                         android:textStyle="bold"
                         android:fontFamily="@font/urbanist_bold" />
 
-                    <TextView
-                        android:id="@+id/tvSeeAllPayments"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minWidth="48dp"
-                        android:minHeight="48dp"
-                        android:gravity="center_vertical"
-                        android:text="Lihat Semua"
-                        android:textColor="@color/primary_color"
-                        android:textSize="14sp"
-                        android:fontFamily="@font/urbanist_medium"
-                        android:padding="8dp"
-                        android:clickable="true"
-                        android:focusable="true"/>
+
 
                 </LinearLayout>
 
@@ -446,12 +433,38 @@
                         android:contentDescription="Selected" />
                 </LinearLayout>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvPaymentOptions"
+
+                <LinearLayout
+                    android:id="@+id/selectPaymentMethod"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:listitem="@layout/payment_order_list"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/imgVA"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/bcalogo"
+                        android:contentDescription="BRI" />
+
+                    <TextView
+                        android:id="@+id/tvVA"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="BCA Virtual Account"
+                        android:textColor="#212121"
+                        android:textSize="15sp"
+                        android:layout_marginStart="12dp"/>
+
+                    <RadioButton
+                        android:id="@+id/radio_button_payment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false" />
+                </LinearLayout>
             </LinearLayout>
 
             <View

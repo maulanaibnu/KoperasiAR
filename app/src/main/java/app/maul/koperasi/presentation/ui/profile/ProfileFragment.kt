@@ -73,8 +73,13 @@ class ProfileFragment : Fragment() {
         // Mengamati data profil pengguna
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.userProfile.collect { user ->
+
                 // 'it' adalah objek User. Cek jika tidak null lalu update UI
-                user?.let { updateUI(it) }
+                user?.let {
+                    updateUI(it)
+                    Preferences.setId(requireActivity(), user.id
+                    )
+                }
             }
         }
 
