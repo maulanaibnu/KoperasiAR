@@ -51,7 +51,8 @@
         android:orientation="vertical"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        android:background="@color/white"> <Button
+        android:background="@color/white">
+        <Button
         android:id="@+id/btnPayNow"
         android:layout_width="match_parent"
         android:layout_height="70dp"
@@ -169,98 +170,13 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cardAlamatPengiriman" />
 
-            <LinearLayout
-                android:id="@+id/LinearCo"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:padding="12dp"
-                android:background="@drawable/background_rounded"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/view0">
+                android:layout_marginHorizontal="16dp"
+                app:layout_constraintTop_toBottomOf="@id/view0"/>
 
-                <com.makeramen.roundedimageview.RoundedImageView
-                    android:id="@+id/imgCoPRoduct"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/product"
-                    app:riv_corner_radius="10dp"
-                    android:layout_marginEnd="12dp"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/tvCOProductName"
-                        style="@style/AppTheme.TextDefault"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:maxLines="2"
-                        android:text="Nama Produk Barang yang Sangat Panjang"
-                        android:textColor="@color/semi_black"
-                        android:textStyle="bold"/>
-
-                    <TextView
-                        android:id="@+id/tvCoProductPrice"
-                        style="@style/AppTheme.TextDefault"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="Rp. 0"
-                        android:textColor="@color/black"
-                        android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <ImageButton
-                            android:id="@+id/btnMinus"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="min"
-                            android:padding="8dp"
-                            android:src="@drawable/ic_min"
-                            app:tint="@color/primary_color"
-                            tools:ignore="TouchTargetSizeCheck" />
-
-                        <TextView
-                            android:id="@+id/tvQuantityProduct"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:gravity="center"
-                            android:text="1"
-                            android:textColor="@color/black"
-                            android:textSize="16sp" />
-
-                        <ImageButton
-                            android:id="@+id/btnPlus"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="plus"
-                            android:padding="8dp"
-                            android:src="@drawable/ic_add"
-                            app:tint="@color/primary_color"
-                            tools:ignore="TouchTargetSizeCheck" />
-                    </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
 
             <View
                 android:id="@+id/view2"
@@ -270,7 +186,7 @@
                 android:background="@color/lines"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/LinearCo" />
+                app:layout_constraintTop_toBottomOf="@id/rv_item" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardShippingOption"

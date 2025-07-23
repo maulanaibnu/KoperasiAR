@@ -18,11 +18,10 @@ class CartAdapter(
     private val onDeleteClick: (CartItem) -> Unit,
     private val onAddClick: (CartItem) -> Unit,
     private val onMinClick: (CartItem) -> Unit,
-    private val onItemSelectedChange: (CartItem?, Int) -> Unit
+    private val onItemSelectedChange: (List<CartItem>, Int) -> Unit
 ) : RecyclerView.Adapter<CartAdapter.CartViewHolder>() {
 
-    private var selectedItem: CartItem? = null
-    private var selectedItemPosition: Int = RecyclerView.NO_POSITION
+    private val selectedItems = mutableSetOf<CartItem>()
 
     inner class CartViewHolder(val binding: ProductListCartBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -74,6 +73,10 @@ class CartAdapter(
         }
     }
 
+    fun getSelectedItems(): List<CartItem> {
+        return selectedItems.toList()
+    }
+
     private fun bindNullProductData(holder: CartViewHolder, cartItem: CartItem) {
         holder.binding.apply {
             imgProduct.setImageResource(R.drawable.baseline_error_outline_24) // Gambar untuk item rusak
@@ -104,59 +107,35 @@ class CartAdapter(
 
     private fun setupCheckbox(holder: CartViewHolder, cartItem: CartItem) {
         holder.binding.cbProduct.setOnCheckedChangeListener(null)
-        holder.binding.cbProduct.isChecked = cartItem.id == selectedItem?.id
+        holder.binding.cbProduct.isChecked = selectedItems.contains(cartItem)
         holder.binding.cbProduct.setOnCheckedChangeListener { _, isChecked ->
-            val previousSelectedItemPosition = selectedItemPosition
-
+            Log.d("TESTED","$cartItem")
             if (isChecked) {
-                selectedItem = cartItem
-                selectedItemPosition = holder.adapterPosition
-                // Batalkan centang pada item sebelumnya
-                if (previousSelectedItemPosition != RecyclerView.NO_POSITION && previousSelectedItemPosition != selectedItemPosition) {
-                    notifyItemChanged(previousSelectedItemPosition)
-                }
+                selectedItems.add(cartItem)
             } else {
-                if (selectedItem?.id == cartItem.id) {
-                    selectedItem = null
-                    selectedItemPosition = RecyclerView.NO_POSITION
-                }
+                selectedItems.remove(cartItem)
             }
-            // Kirim perubahan ke fragment
-            onItemSelectedChange(selectedItem, calculateTotalPrice())
+            // Kirim semua item yang dipilih + total harga ke fragment
+            onItemSelectedChange(selectedItems.toList(), calculateTotalPrice())
         }
     }
 
-    fun getSelectedItem(): CartItem? {
-        return selectedItem
-    }
 
     private fun calculateTotalPrice(): Int {
-        return selectedItem?.product?.let { product -> product.price * (selectedItem?.quantity ?: 0) } ?: 0
+        return selectedItems.sumOf { it.product?.price?.times(it.quantity) ?: 0 }
     }
 
     fun updateData(newCartItems: List<CartItem>) {
-        val currentSelectedItemId = selectedItem?.id
-
         cartItems = newCartItems
 
-        selectedItem = if (currentSelectedItemId != null) {
-            newCartItems.find { it.id == currentSelectedItemId }
-        } else {
-            null
-        }
+        val selectedIds = selectedItems.map { it.id }
+        selectedItems.clear()
+        selectedItems.addAll(newCartItems.filter { selectedIds.contains(it.id) })
 
-        selectedItemPosition = if (selectedItem != null) {
-            cartItems.indexOf(selectedItem)
-        } else {
-            RecyclerView.NO_POSITION
-        }
-
-        // 5. Beri tahu RecyclerView untuk menggambar ulang dirinya
         notifyDataSetChanged()
-
-        // 6. Kirim total harga yang BARU dan BENAR ke fragment
-        onItemSelectedChange(selectedItem, calculateTotalPrice())
+        onItemSelectedChange(selectedItems.toList(), calculateTotalPrice())
     }
+
 
     override fun getItemCount(): Int {
         Log.d("CartAdapter", "getItemCount mengembalikan: ${cartItems.size}")

@@ -30,7 +30,7 @@ data class CartItem(
     val product_id: Int,
     val user_id: Int,
     val quantity: Int,
-    val product: ProductItem
+    val product: ProductItem?
 ) : Parcelable
 
 @Parcelize
@@ -46,6 +46,6 @@ data class ProductItem(
     val is_featured: Boolean = false,
     val sale_type: Int = 0,
     val price: Int = 0,
-    val stock_status: String = "",
+    val stock_status: String? = "",
     val terjual: String = "0",
 ) : Parcelable

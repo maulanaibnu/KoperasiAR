@@ -9,7 +9,9 @@ import app.maul.koperasi.data.OrderRepository
 import app.maul.koperasi.model.order.HistoryItem // [1] Ganti import ke HistoryItem
 import app.maul.koperasi.model.order.InvoiceResponse
 import app.maul.koperasi.model.order.OrderRequest
+import app.maul.koperasi.model.order.OrderRequestList
 import app.maul.koperasi.model.order.OrderResponse
+import app.maul.koperasi.model.order.OrderResponseList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -26,6 +28,9 @@ class OrderViewModel @Inject constructor(
 
     private val _orderResponse = MutableLiveData<OrderResponse?>()
     val orderResponse: LiveData<OrderResponse?> get() = _orderResponse
+
+    private val _orderResponseList = MutableLiveData<OrderResponseList?>()
+    val orderResponseList: LiveData<OrderResponseList?> get() = _orderResponseList
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
@@ -46,6 +51,25 @@ class OrderViewModel @Inject constructor(
                 val response = orderRepository.createOrder(orderRequest)
                 if (response.isSuccessful) {
                     _orderResponse.postValue(response.body())
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    _errorMessage.postValue("Gagal membuat pesanan: ${response.code()} - $errorBody")
+                }
+            } catch (e: Exception) {
+                _errorMessage.postValue("Terjadi kesalahan: ${e.message}")
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+    fun createOrderList(orderRequest: OrderRequestList) {
+        viewModelScope.launch {
+            _isLoading.postValue(true)
+            try {
+                val response = orderRepository.createTransaction(orderRequest)
+                if (response.isSuccessful) {
+                    _orderResponseList.postValue(response.body())
                 } else {
                     val errorBody = response.errorBody()?.string()
                     _errorMessage.postValue("Gagal membuat pesanan: ${response.code()} - $errorBody")

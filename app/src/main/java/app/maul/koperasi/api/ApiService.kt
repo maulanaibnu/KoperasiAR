@@ -17,7 +17,9 @@ import app.maul.koperasi.model.order.HistoryDetailResponse
 import app.maul.koperasi.model.order.HistoryResponse
 import app.maul.koperasi.model.order.InvoiceResponse
 import app.maul.koperasi.model.order.OrderRequest
+import app.maul.koperasi.model.order.OrderRequestList
 import app.maul.koperasi.model.order.OrderResponse
+import app.maul.koperasi.model.order.OrderResponseList
 import app.maul.koperasi.model.product.DetailProductResponse
 import app.maul.koperasi.model.product.ProductResponse
 import app.maul.koperasi.model.register.RegisterResponse
@@ -166,6 +168,9 @@ interface ApiService {
     //transacton
     @POST("transaction/createtransaction")
     suspend fun createOrder(@Body orderRequest: OrderRequest): Response<OrderResponse>
+
+    @POST("transaction/v2/createTransaction")
+    suspend fun createOrderList(@Body orderRequest: OrderRequestList): Response<OrderResponseList>
 
     @GET("transaction/history")
     suspend fun getAllOrders(): HistoryResponse

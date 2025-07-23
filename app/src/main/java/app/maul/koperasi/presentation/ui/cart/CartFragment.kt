@@ -30,7 +30,7 @@ class CartFragment : Fragment() {
     private val cartViewModel by viewModels<CartViewModel>()
 
     private lateinit var cartAdapter: CartAdapter
-    private var currentSelectedCartItem: CartItem? = null
+    private var selectedCartItems: List<CartItem> = emptyList()
     private var currentTotalPrice: Int = 0
 
     override fun onCreateView(
@@ -46,42 +46,42 @@ class CartFragment : Fragment() {
         binding.btnBuy.setOnClickListener {
             val userId = Preferences.getId(requireActivity())
 
-            // [FIX] Hapus baris duplikat di sini. Cukup gunakan variabel dari fragment.
-            val selectedItemForCheckout = currentSelectedCartItem
-
-            if (selectedItemForCheckout == null) {
-                Toast.makeText(requireContext(), "Pilih produk terlebih dahulu!", Toast.LENGTH_SHORT).show()
+            if (selectedCartItems.isEmpty()) {
+                Toast.makeText(requireContext(), "Pilih minimal 1 produk!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // Pastikan product tidak null sebelum mengakses propertinya
-            selectedItemForCheckout.product?.let { product ->
-                val total = product.price * selectedItemForCheckout.quantity
-                val orderDetails = ArrayList<OrderDetail>().apply {
-                    add(
+            val orderDetails = ArrayList<OrderDetail>()
+            for (item in selectedCartItems) {
+                val product = item.product
+                if (product != null) {
+                    orderDetails.add(
                         OrderDetail(
                             id = 0,
                             id_order = 0,
-                            id_product = selectedItemForCheckout.product_id,
+                            id_product = item.product_id,
                             name_product = product.name,
                             image_url = product.images.firstOrNull() ?: "",
                             price = product.price,
-                            qty = selectedItemForCheckout.quantity,
+                            qty = item.quantity,
                             createdAt = "",
                             updatedAt = ""
                         )
                     )
                 }
-
-                val intent = Intent(requireContext(), CheckoutActivity::class.java)
-                intent.putExtra("total", total.toDouble())
-                intent.putParcelableArrayListExtra("orderDetails", orderDetails as ArrayList<out Parcelable>)
-                startActivityForResult(intent, 10)
-            } ?: run {
-                // Tampilkan pesan error jika karena suatu hal produknya null
-                Toast.makeText(requireContext(), "Data produk pada item ini tidak lengkap.", Toast.LENGTH_SHORT).show()
             }
+
+            if (orderDetails.isEmpty()) {
+                Toast.makeText(requireContext(), "Tidak ada produk valid untuk checkout.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val intent = Intent(requireContext(), CheckoutActivity::class.java)
+            intent.putExtra("total", currentTotalPrice.toDouble())
+            intent.putParcelableArrayListExtra("orderDetails", orderDetails as ArrayList<out Parcelable>)
+            startActivityForResult(intent, 10)
         }
+
 
 
         return binding.root
@@ -140,8 +140,8 @@ class CartFragment : Fragment() {
             onDeleteClick = { cartItem -> cartViewModel.deleteCartItem(cartItem.id) },
             onAddClick = { cartItem -> cartViewModel.addCartItem(cartItem.id, cartItem.quantity + 1) },
             onMinClick = { cartItem -> cartViewModel.minCartItem(cartItem.id, cartItem.quantity - 1) },
-            onItemSelectedChange = { selectedItem, totalPrice ->
-                currentSelectedCartItem = selectedItem
+            onItemSelectedChange = { selectedItems, totalPrice ->
+                selectedCartItems = selectedItems
                 currentTotalPrice = totalPrice
                 updateTotalPriceDisplay(totalPrice)
             }
