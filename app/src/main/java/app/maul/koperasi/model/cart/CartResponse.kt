@@ -40,7 +40,7 @@ data class ProductItem(
     val kategoriId: Int = 0,
     val description: String = "",
     val status: String = "",
-    val images: String = "",
+    val images: List<String> = emptyList(),
     val order: Int = 0,
     val quantity: Int = 0,
     val is_featured: Boolean = false,

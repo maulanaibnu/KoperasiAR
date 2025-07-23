@@ -106,9 +106,9 @@
     <string name="detail_pembayaran">Detail Pembayaran</string>
     <string name="batas_pembayaran">Batas Pembayaran</string>
     <string name="date_expired">2025-07-09 09:49:19</string>
-    <string name="bca_virtual_account">Bca Virtual Account</string>
+    <string name="bca_virtual_account">Selected bank</string>
     <string name="nomor_virtual_account">Nomor Virtual Account</string>
-    <string name="va_number">46328476874238445</string>
+    <string name="va_number">nomor virtual account</string>
     <string name="salin">salin</string>
     <string name="total_pembayaran">Total Pembayaran</string>
     <string name="total_payment_order">Rp 20.000</string>
@@ -118,6 +118,9 @@
     <string name="pilih_metode_pembayaran">Pilih Metode Pembayaran</string>
     <string name="bank_transfer">Virtual Account</string>
     <string name="pilih_kurir_pengiriman">Pilih Kurir Pengiriman</string>
+    <string name="email_anda">Email Anda</string>
+    <string name="purchase_date_label">Tanggal Pembelian : %1$s</string>
+    <string name="buyer_label">Pembeli : %1$s</string>
 
     <string-array name="payment_types">
         <item>Bank Transfer</item>

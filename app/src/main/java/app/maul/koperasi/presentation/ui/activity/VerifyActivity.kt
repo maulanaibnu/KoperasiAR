@@ -17,11 +17,11 @@ import app.maul.koperasi.viewmodel.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
+
 @AndroidEntryPoint
 class VerifyActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityVerifyBinding
-
     private val authViewModel by viewModels<AuthViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {

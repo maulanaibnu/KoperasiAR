@@ -371,6 +371,8 @@
                 android:padding="10dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
+                android:clickable="true"
+                android:focusable="true"
                 android:background="@drawable/background_rounded"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -395,6 +397,14 @@
                         android:textStyle="bold"
                         android:fontFamily="@font/urbanist_bold" />
 
+                    <TextView
+                        android:id="@+id/selectAllPayment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lihat_semua"
+                        android:layout_marginEnd="15dp"
+                        android:fontFamily="@font/urbanist_regular"
+                        android:textColor="@color/priority"/>
 
 
                 </LinearLayout>

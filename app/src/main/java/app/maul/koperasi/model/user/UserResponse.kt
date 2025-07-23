@@ -8,15 +8,25 @@ data class UserResponse (
     val data: User
 )
 
+@Parcelize
+data class ForgotPasswordRequest(
+    val email: String
+) : Parcelable
+
 data class ForgotPasswordResponse(
-    val code: Int,
-    val status: String,
-    val data: Request
+    val message: String,
+    val otp: String
 )
 
-data class Request(
+data class ResetPasswordRequest(
     val email: String,
     val otp: String,
+    val newPassword: String
+)
+
+
+data class ResetPasswordResponse(
+    val message: String
 )
 
 @Parcelize

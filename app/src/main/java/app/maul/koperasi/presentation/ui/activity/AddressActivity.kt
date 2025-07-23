@@ -3,6 +3,7 @@ package app.maul.koperasi.presentation.ui.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -25,8 +26,12 @@ class AddressActivity : AppCompatActivity() {
     private val viewModel: AddressViewModel by viewModels()
 
     private val addAddressLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        Log.d("AddressActivity", "addAddressLauncher callback dipicu. Result Code: ${result.resultCode}")
         if (result.resultCode == Activity.RESULT_OK) {
+            Log.d("AddressActivity", "Result OK dari Add/Edit Address. Memanggil viewModel.getAddresses().")
             viewModel.getAddresses()
+        }else{
+            Log.d("AddressActivity", "Result not OK dari Add/Edit Address.")
         }
     }
 

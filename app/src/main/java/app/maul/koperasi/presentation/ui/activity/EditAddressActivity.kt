@@ -37,12 +37,12 @@ class EditAddressActivity : AppCompatActivity() {
     private val rajaOngkirViewModel: RajaOngkirViewModel by viewModels()
     private lateinit var cityAdapter: CityAdapter
 
-    private var currentAddressId: Int = 0 // Ubah nama variabel untuk kejelasan
+    private var currentAddressId: Int = 0
     private val labelOptions = listOf("Rumah", "Toko")
 
-    private var currentAddressData: AddressData? = null // Pertahankan ini untuk menyimpan data asli
+    private var currentAddressData: AddressData? = null
 
-    private var selectedIdDestination: Int = 0 // Ubah nama variabel untuk kejelasan
+    private var selectedIdDestination: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

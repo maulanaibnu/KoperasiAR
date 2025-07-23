@@ -12,6 +12,7 @@ import app.maul.koperasi.MainActivity
 import app.maul.koperasi.R
 import app.maul.koperasi.databinding.ActivityLoginBinding
 import app.maul.koperasi.preference.Preferences
+import app.maul.koperasi.presentation.ui.activity.ForgotPasswordActivity
 import app.maul.koperasi.presentation.ui.register.RegisterActivity
 import app.maul.koperasi.viewmodel.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,6 +46,9 @@ class LoginActivity : AppCompatActivity() {
         }
         binding.tvRegister.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
+        }
+        binding.tvForgetPassword.setOnClickListener {
+            startActivity(Intent(this,ForgotPasswordActivity::class.java))
         }
     }
 

@@ -57,4 +57,34 @@ class TestingFragment : Fragment() {
                 }
             }
     }
+
+    //    private fun doRegister(name : String,email : String,password : String){
+//        authViewModel.doPostRegister(name, email, password)
+//        authViewModel.doPostRegisterObserver().observe(this){ x ->
+//            if(x != null){
+//                startActivity(Intent(this, VerifyActivity::class.java).also{
+//                    it.putExtra("email",binding.etEmail.text.toString().trim())
+//                    it.putExtra("otp",x.otp)
+//                })
+//                Toast.makeText(this, "${x.otp}", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//    }
+
+    ////cart
+    //            // Create OrderRequest object
+//            val orderRequest = OrderRequest(
+//                id_user = userId,
+//                total = total.toDouble(),
+//                payment_type = "bank_transfer",
+//                bank_transfer = "bri",
+//                shipping_method = "pending",
+//                orderDetails = orderDetails,
+//                customer = "",
+//                phone_number = "",
+//                address = ""
+//            )
+
+    // Call createOrder with the constructed OrderRequest
+//            orderViewModel.createOrder(orderRequest)
 }

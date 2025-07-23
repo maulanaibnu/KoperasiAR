@@ -4,11 +4,14 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import app.maul.koperasi.R
 import app.maul.koperasi.adapter.PaymentAdapter
 import app.maul.koperasi.databinding.ActivitySelectPaymentBinding
 import app.maul.koperasi.model.payment.PaymentMethod
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SelectPaymentActivity : AppCompatActivity() {
 
@@ -46,7 +49,10 @@ class SelectPaymentActivity : AppCompatActivity() {
                 putExtra("bank_logo", selectedMethod.logoResId)
             }
             setResult(Activity.RESULT_OK, resultIntent)
-            finish()
+            lifecycleScope.launch {
+                delay(300L) // Jeda 300 milidetik. Anda bisa coba 400L atau 500L jika masih terlalu cepat
+                finish() // Baru panggil finish() setelah jeda
+            }
         }
 
         // Mengirimkan list metode pembayaran ke adapter

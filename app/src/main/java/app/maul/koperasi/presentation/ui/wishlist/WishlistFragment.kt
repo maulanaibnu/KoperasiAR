@@ -21,6 +21,7 @@ class WishlistFragment : Fragment() {
     private val wishlistViewModel by viewModels<WishlistViewModel>()
     private var _binding: FragmentWishlistBinding? = null
     private val binding get() = _binding!!
+    // [FIX 1] Inisialisasi adapter di sini
     private lateinit var wishlistAdapter: WishlistAdapter
 
     override fun onCreateView(
@@ -28,26 +29,34 @@ class WishlistFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentWishlistBinding.inflate(inflater, container, false)
+
+        setupAdapter() // Panggil setup adapter sekali saja
+        observeWishlist() // Ganti nama fungsi agar lebih jelas
+
         wishlistViewModel.getAllWishlist(Preferences.getId(requireContext()))
-        showWishlistRV()
+
         return binding.root
     }
 
+    // [FIX 2] Buat fungsi terpisah untuk setup adapter
+    private fun setupAdapter() {
+        wishlistAdapter = WishlistAdapter(emptyList(), object : WishlistItemListener {
+            override fun onItemClick(wishlist: Wishlist) {
+                startActivity(Intent(activity, DetailProductActivity::class.java).apply {
+                    putExtra("product_id", wishlist.productId)
+                })
+            }
+        })
 
-    private fun showWishlistRV() {
         val mlayoutManager = GridLayoutManager(activity, 2)
-        mlayoutManager.orientation = LinearLayoutManager.VERTICAL
         binding.rvProduct.layoutManager = mlayoutManager
+        binding.rvProduct.adapter = wishlistAdapter
+    }
+
+    // [FIX 3] Di dalam observer, HANYA panggil fungsi updateData
+    private fun observeWishlist() {
         wishlistViewModel.wishlists.observe(viewLifecycleOwner, Observer { wishlist ->
-            println(wishlist)
-            wishlistAdapter = WishlistAdapter(wishlist, object : WishlistItemListener {
-                override fun onItemClick(wishlist: Wishlist) {
-                    startActivity(Intent(activity, DetailProductActivity::class.java).apply {
-                        putExtra("product_id", wishlist.productId)
-                    })
-                }
-            })
-            binding.rvProduct.adapter = wishlistAdapter
+            wishlistAdapter.updateData(wishlist)
         })
     }
 }

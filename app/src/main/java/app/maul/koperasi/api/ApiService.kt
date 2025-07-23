@@ -11,14 +11,22 @@ import app.maul.koperasi.model.cart.CartRequest
 import app.maul.koperasi.model.cart.CartResponse
 import app.maul.koperasi.model.chatbot.ChatbotListResponse
 import app.maul.koperasi.model.chatbot.ChatbotRequest
+import app.maul.koperasi.model.chatbot.TopicResponse
 import app.maul.koperasi.model.login.LoginResponse
+import app.maul.koperasi.model.order.HistoryDetailResponse
 import app.maul.koperasi.model.order.HistoryResponse
+import app.maul.koperasi.model.order.InvoiceResponse
 import app.maul.koperasi.model.order.OrderRequest
 import app.maul.koperasi.model.order.OrderResponse
 import app.maul.koperasi.model.product.DetailProductResponse
 import app.maul.koperasi.model.product.ProductResponse
 import app.maul.koperasi.model.register.RegisterResponse
+import app.maul.koperasi.model.user.ChangePasswordRequest
+import app.maul.koperasi.model.user.ChangePasswordResponse
+import app.maul.koperasi.model.user.ForgotPasswordRequest
 import app.maul.koperasi.model.user.ForgotPasswordResponse
+import app.maul.koperasi.model.user.ResetPasswordRequest
+import app.maul.koperasi.model.user.ResetPasswordResponse
 import app.maul.koperasi.model.user.UpdateResponse
 import app.maul.koperasi.model.user.UserResponse
 import app.maul.koperasi.model.verify.VerifyResponse
@@ -32,6 +40,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -67,20 +76,21 @@ interface ApiService {
         @Field("email") email: String,
     ): VerifyResponse
 
-    //forgot password
-    @FormUrlEncoded
-    @POST("auth/sendreset")
+    @POST("user/forgotPassword")
     suspend fun forgotPassword(
-        @Field("email") email: String
+        @Body request: ForgotPasswordRequest
     ): ForgotPasswordResponse
 
-    //change Password
-    @FormUrlEncoded
-    @POST("auth/forgotPassword")
+    @POST("user/resetPassword")
+    suspend fun resetPassword(
+        @Body request: ResetPasswordRequest
+    ): ResetPasswordResponse
+
+    @POST("user/newPassword")
     suspend fun changePassword(
-        @Field("email") email: String,
-        @Field("password") password: String
-    ): UserResponse
+        @Header("Authorization") token: String,
+        @Body request: ChangePasswordRequest
+    ): ChangePasswordResponse
 
     //update user
     @Multipart
@@ -138,6 +148,9 @@ interface ApiService {
     @POST("chat/add")
     suspend fun addChat(@Body chatbotRequest: ChatbotRequest): ChatbotListResponse
 
+    @GET("chat/topics")
+    suspend fun getChatTopics(): TopicResponse
+
     @GET("wishlist/getAllWishlist")
     suspend fun getAllWishlist(@Query("userId") userId: Int): WishlistResponse
 
@@ -150,11 +163,19 @@ interface ApiService {
     @POST("wishlist")
     suspend fun createWishlist(@Body wishlistRequest: WishlistRequest): Response<Void>
 
+    //transacton
     @POST("transaction/createtransaction")
     suspend fun createOrder(@Body orderRequest: OrderRequest): Response<OrderResponse>
 
     @GET("transaction/history")
-    suspend fun getAllOrders(@Query("userId") userId: Int): HistoryResponse
+    suspend fun getAllOrders(): HistoryResponse
+
+    @GET("transaction/getTransactionById/{id}")
+    suspend fun getTransactionById(@Path("id") transactionId: Int): HistoryDetailResponse
+
+    //invoice
+    @GET("/transaction/getInvoiceById/{id}")
+    suspend fun getInvoiceDetail(@Path("id") transactionId: Int): InvoiceResponse
 
     //Address
     @POST("address")

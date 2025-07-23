@@ -4,6 +4,7 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,11 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import app.maul.koperasi.databinding.FragmentCartBinding
 import app.maul.koperasi.model.cart.CartItem
 import app.maul.koperasi.model.order.OrderDetail
-
-import app.maul.koperasi.model.order.OrderRequest
 import app.maul.koperasi.preference.Preferences
 import app.maul.koperasi.presentation.ui.checkout.CheckoutActivity
-import app.maul.koperasi.presentation.ui.order.OrderViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.NumberFormat
 import java.util.ArrayList
@@ -40,14 +38,15 @@ class CartFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentCartBinding.inflate(inflater, container, false)
-        getUserCart()
+        setupRecyclerView(emptyList())
+        observeCart()
         observeDeleteCart()
         observeUpdateCart()
-        setupRecyclerView(emptyList())
 
         binding.btnBuy.setOnClickListener {
             val userId = Preferences.getId(requireActivity())
-            val selectedItems = cartAdapter.getSelectedItems()
+
+            // [FIX] Hapus baris duplikat di sini. Cukup gunakan variabel dari fragment.
             val selectedItemForCheckout = currentSelectedCartItem
 
             if (selectedItemForCheckout == null) {
@@ -55,48 +54,44 @@ class CartFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            // Calculate total price and prepare OrderDetail list
-            val total = selectedItemForCheckout.product.price * selectedItemForCheckout.quantity
-            val orderDetails = ArrayList<OrderDetail>().apply {
-                add(
-                    OrderDetail(
-                        id = 0, // Assuming ID will be generated server-side
-                        id_order = 0, // Placeholder, will be set after order creation
-                        id_product = selectedItemForCheckout.product_id,
-                        name_product = selectedItemForCheckout.product.name,
-                        image_url = selectedItemForCheckout.product.images,
-                        price = selectedItemForCheckout.product.price,
-                        qty = selectedItemForCheckout.quantity,
-                        createdAt = "", // Placeholder
-                        updatedAt = "" // Placeholder
+            // Pastikan product tidak null sebelum mengakses propertinya
+            selectedItemForCheckout.product?.let { product ->
+                val total = product.price * selectedItemForCheckout.quantity
+                val orderDetails = ArrayList<OrderDetail>().apply {
+                    add(
+                        OrderDetail(
+                            id = 0,
+                            id_order = 0,
+                            id_product = selectedItemForCheckout.product_id,
+                            name_product = product.name,
+                            image_url = product.images.firstOrNull() ?: "",
+                            price = product.price,
+                            qty = selectedItemForCheckout.quantity,
+                            createdAt = "",
+                            updatedAt = ""
+                        )
                     )
-                )
+                }
+
+                val intent = Intent(requireContext(), CheckoutActivity::class.java)
+                intent.putExtra("total", total.toDouble())
+                intent.putParcelableArrayListExtra("orderDetails", orderDetails as ArrayList<out Parcelable>)
+                startActivityForResult(intent, 10)
+            } ?: run {
+                // Tampilkan pesan error jika karena suatu hal produknya null
+                Toast.makeText(requireContext(), "Data produk pada item ini tidak lengkap.", Toast.LENGTH_SHORT).show()
             }
-
-
-//            // Create OrderRequest object
-//            val orderRequest = OrderRequest(
-//                id_user = userId,
-//                total = total.toDouble(),
-//                payment_type = "bank_transfer",
-//                bank_transfer = "bri",
-//                shipping_method = "pending",
-//                orderDetails = orderDetails,
-//                customer = "",
-//                phone_number = "",
-//                address = ""
-//            )
-
-            val intent = Intent(requireContext(), CheckoutActivity::class.java)
-            intent.putExtra("total", total.toDouble())
-            intent.putParcelableArrayListExtra("orderDetails", orderDetails as ArrayList<out Parcelable>)
-            startActivityForResult(intent, 10)
-
-            // Call createOrder with the constructed OrderRequest
-//            orderViewModel.createOrder(orderRequest)
         }
 
+
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // [FIX] Panggil fungsi untuk mengambil data di sini.
+        // Ini akan berjalan setiap kali Anda kembali ke halaman keranjang.
+        getUserCart()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -111,6 +106,7 @@ class CartFragment : Fragment() {
 
     private fun observeCart() {
         cartViewModel.userCart.observe(viewLifecycleOwner, Observer { cartItems ->
+            Log.d("CartFragment", "Observer terpanggil, jumlah item: ${cartItems.size}")
             if (cartItems.isNullOrEmpty()) {
                 binding.emptycart.visibility = View.VISIBLE
                 binding.rvCart.visibility = View.GONE
@@ -118,7 +114,7 @@ class CartFragment : Fragment() {
             } else {
                 binding.emptycart.visibility = View.GONE
                 binding.rvCart.visibility = View.VISIBLE
-                cartAdapter.updateCart(cartItems) // Perbarui data adapter
+                cartAdapter.updateData(cartItems) // Perbarui data adapter
             }
         })
     }

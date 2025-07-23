@@ -31,16 +31,16 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    // Pindahkan semua logika yang berinteraksi dengan view ke onViewCreated
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Panggil observer SEBELUM meminta data, agar siap menerima data
+
         observeViewModel()
 
         val token = Preferences.getToken(requireContext())
@@ -51,6 +51,16 @@ class ProfileFragment : Fragment() {
         }
 
         setupClickListener()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val token = Preferences.getToken(requireContext())
+        if (token != null && token.isNotEmpty()) {
+            viewModel.getUserProfile(token)
+        } else {
+            Toast.makeText(requireContext(), "Sesi berakhir, silahkan login kembali.", Toast.LENGTH_LONG).show()
+        }
     }
 
 
@@ -64,17 +74,17 @@ class ProfileFragment : Fragment() {
         binding.linearAddress.setOnClickListener {
             startActivity(Intent(activity, AddressActivity::class.java))
         }
+        binding.linearPassword.setOnClickListener {
+            startActivity((Intent(activity, ChangePasswordActivity::class.java)))
+        }
         binding.linearLogout.setOnClickListener {
             logout()
         }
     }
 
     private fun observeViewModel() {
-        // Mengamati data profil pengguna
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.userProfile.collect { user ->
-
-                // 'it' adalah objek User. Cek jika tidak null lalu update UI
                 user?.let {
                     updateUI(it)
                     Preferences.setId(requireActivity(), user.id

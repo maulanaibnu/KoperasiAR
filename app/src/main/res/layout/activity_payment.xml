@@ -122,7 +122,7 @@
             android:id="@+id/tv_tapToCopy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="160sp"
+            android:layout_marginStart="120sp"
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:fontFamily="@font/urbanist_medium"

@@ -5,9 +5,11 @@ package app.maul.koperasi.presentation.ui.historyorder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import app.maul.koperasi.R
 import app.maul.koperasi.databinding.OrderListItemBinding
 import app.maul.koperasi.model.order.HistoryItem
 import com.bumptech.glide.Glide
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -37,54 +39,85 @@ class OrderAdapter(
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
         val order = orderList[position]
 
-        holder.binding.apply {
-            // Mengatur teks status pesanan berdasarkan paymentStatus
-            val statusText = when (order.paymentStatus) {
-                "0" -> "Menunggu Pembayaran"
-                "1" -> "Pesanan Diproses"
-                "2" -> "Pesanan Selesai"
-                else -> "Status Tidak Diketahui"
+        // [FIX UTAMA] Lakukan pengecekan null pada objek 'product'
+        order.product?.let { product ->
+            // --- BLOK INI HANYA BERJALAN JIKA PRODUK TIDAK NULL ---
+            holder.binding.apply {
+                // Mengatur status
+                historyStatus.text = formatStatus(order.paymentStatus)
+
+                // Mengatur tanggal
+                historyDate.text = formatDisplayDate(order.createdAt)
+
+                // Mengatur nama produk
+                historyProductName.text = product.name // Ambil dari objek produk
+
+                // Memuat gambar produk
+                val baseUrl = "https://koperasi.simagang.my.id/"
+                if (product.images.isNotEmpty()) {
+                    Glide.with(holder.itemView.context)
+                        .load(baseUrl + product.images) // sudah String!
+                        .placeholder(R.drawable.product)
+                        .error(R.drawable.product)
+                        .into(historyImgProduct)
+                } else {
+                    historyImgProduct.setImageResource(R.drawable.product)
+                }
+
+                // Menampilkan total harga
+                totalBelanja.text = "Total Belanja"
+                historyTotalPrice.text = formatRupiah(order.totalPrice.toDoubleOrNull() ?: 0.0)
             }
-            historyStatus.text = statusText
-
-            // Memformat dan menampilkan tanggal pembuatan pesanan
-            try {
-                val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-                inputFormat.isLenient = false // Pastikan parsing ketat
-                val date = inputFormat.parse(order.createdAt)
-                val outputFormat = SimpleDateFormat("dd MMM, yyyy", Locale("id", "ID")) // Format: 12 Des 2024
-                hidtoryDate.text = outputFormat.format(date)
-            } catch (e: Exception) {
-                // Fallback jika format tanggal tidak sesuai
-                hidtoryDate.text = order.createdAt
-                e.printStackTrace() // Cetak stack trace untuk debugging
-            }
-
-            // Menampilkan nama produk
-            historyProductName.text = order.nameProduct
-
-            // Memuat gambar produk menggunakan Glide
-            Glide.with(holder.itemView.context)
-                .load(order.product.images) // URL gambar dari objek produk
-                .placeholder(app.maul.koperasi.R.drawable.product) // Gambar placeholder saat loading
-                .error(app.maul.koperasi.R.drawable.product) // Gambar jika terjadi error
-                .into(historyImgProduct)
-
-            // Menampilkan total belanja dan total harga
-            totalBelanja.text = "Total Belanja" // Label
-            historyTotalPrice.text = "Rp ${order.totalPrice}" // Nilai total harga
+        } ?: run {
+//            // --- BLOK INI HANYA BERJALAN JIKA PRODUK ADALAH NULL ---
+//            holder.binding.apply {
+//                historyStatus.text = formatStatus(order.paymentStatus)
+//                historyDate.text = formatDisplayDate(order.createdAt)
+//                historyProductName.text = "Produk telah dihapus"
+//                historyImgProduct.setImageResource(R.drawable.) // Gambar placeholder untuk item rusak
+//                totalBelanja.text = "Total Belanja"
+//                historyTotalPrice.text = formatRupiah(order.totalPrice.toDoubleOrNull() ?: 0.0)
+//            }
         }
 
-        // Mengatur listener klik untuk setiap item dalam RecyclerView
+
         holder.itemView.setOnClickListener {
-            listener.onItemClick(order) // Memanggil callback onItemClick pada listener
+            listener.onItemClick(order)
         }
     }
 
+    // Tambahkan helper function ini di dalam OrderAdapter untuk merapikan kode
+    private fun formatStatus(status: String): String {
+        return when (status) {
+            "pending" -> "Menunggu Pembayaran"
+            "success" -> "Pesanan Selesai"
+            "cancel" -> "Pesanan Dibatalkan"
+            "expired" -> "Pembayaran Kedaluwarsa"
+            "failure" -> "Pembayaran Gagal"
+            else -> "Status Tidak Diketahui"
+        }
+    }
+
+    private fun formatDisplayDate(dateString: String?): String {
+        if (dateString.isNullOrEmpty()) return ""
+        return try {
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+            val date = inputFormat.parse(dateString)
+            val outputFormat = SimpleDateFormat("dd MMM, yyyy", Locale("id", "ID"))
+            outputFormat.format(date)
+        } catch (e: Exception) {
+            dateString
+        }
+    }
+    companion object {
+        fun formatRupiah(amount: Double): String {
+            val formatter = NumberFormat.getNumberInstance(Locale("in", "ID"))
+            return "Rp ${formatter.format(amount)}" // Menggunakan "Rp " tanpa titik
+        }
+    }
     override fun getItemCount(): Int = orderList.size
 }
 
-// Interface untuk mendefinisikan callback saat item riwayat pesanan diklik
 interface OrderItemListener {
     fun onItemClick(order: HistoryItem)
 }

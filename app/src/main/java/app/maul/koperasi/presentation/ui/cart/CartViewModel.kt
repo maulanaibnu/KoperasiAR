@@ -29,12 +29,20 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
         viewModelScope.launch {
             try {
                 val response = cartRepository.getUserCart(userId)
+
+                // [FIX] Tambahkan pengecekan status yang lebih lengkap
                 if (response.status == 200) {
-                    _userCart.postValue(response.data)
+                    _userCart.postValue(response.data ?: emptyList()) // Kirim list kosong jika data null
+                    Log.d("CartViewModel", "Data cart diterima, jumlah item: ${response.data?.size ?: 0}")
+                } else {
+                    // Beri tahu UI jika ada pesan error dari server
+                    _errorMessage.postValue("Gagal memuat keranjang: ${response.message}")
+                    Log.w("CartViewModel", "API merespons dengan status ${response.status}: ${response.message}")
                 }
             } catch (e: Exception) {
-                _errorMessage.value = "Failed to fetch carts: ${e.message}"
-                Log.e("CartViewModel", "Error: ${e.message}")
+                // Tangani error jaringan atau parsing
+                _errorMessage.postValue("Terjadi kesalahan: ${e.message}")
+                Log.e("CartViewModel", "Error Exception: ${e.message}")
             }
         }
     }

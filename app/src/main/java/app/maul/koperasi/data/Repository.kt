@@ -4,8 +4,14 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import app.maul.koperasi.api.ApiService
+import app.maul.koperasi.model.login.LoginResponse
 import app.maul.koperasi.model.login.LoginResult
 import app.maul.koperasi.model.register.RegisterRequest
+import app.maul.koperasi.model.register.RegisterResponse
+import app.maul.koperasi.model.user.ForgotPasswordRequest
+import app.maul.koperasi.model.user.ForgotPasswordResponse
+import app.maul.koperasi.model.user.ResetPasswordRequest
+import app.maul.koperasi.model.user.ResetPasswordResponse
 import app.maul.koperasi.model.verify.VerifyResponse
 import javax.inject.Inject
 
@@ -77,6 +83,14 @@ class AuthRepository @Inject constructor(private val apiService: ApiService) {
             Log.d("TEST UHUYY","${t.message}")
             doPostVerify.postValue(null)
         }
+    }
+
+    suspend fun forgotPassword(request: ForgotPasswordRequest): ForgotPasswordResponse {
+        return apiService.forgotPassword(request)
+    }
+
+    suspend fun resetPassword(request: ResetPasswordRequest): ResetPasswordResponse {
+        return apiService.resetPassword(request)
     }
 
 }

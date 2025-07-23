@@ -7,11 +7,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import app.maul.koperasi.MainActivity
 import app.maul.koperasi.R
+import app.maul.koperasi.adapter.ImageSliderAdapter
 import app.maul.koperasi.databinding.ActivityDetailProductBinding
 import app.maul.koperasi.model.product.Product
 import app.maul.koperasi.preference.Preferences
@@ -20,6 +19,7 @@ import app.maul.koperasi.presentation.ui.detailProduct.DetailProductViewModel
 import app.maul.koperasi.presentation.ui.wishlist.WishlistViewModel
 import app.maul.koperasi.utils.Constant
 import com.bumptech.glide.Glide
+import com.google.android.material.tabs.TabLayoutMediator
 import java.text.DecimalFormat
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -98,11 +98,19 @@ class DetailProductActivity : AppCompatActivity() {
                 val formatter = DecimalFormat("#,###")
                 val formattedPrice = formatter.format(product.price).replace(',', '.')
                 val prefix = "Rp. "
-                Glide.with(this).load(Constant.BASE_URL + product.images).into(binding.IvProduct)
+//                Glide.with(this).load(Constant.BASE_URL + product.images).into(binding.IvProduct)
+                val imageAdapter = ImageSliderAdapter(product.images) // `product.images` sekarang adalah List<String>
+                binding.viewPagerProduct.adapter = imageAdapter
+
+                // [TAMBAHKAN] Hubungkan TabLayout dengan ViewPager2 untuk indikator titik
+                TabLayoutMediator(binding.tabLayout, binding.viewPagerProduct) { tab, position ->
+                    // Tidak perlu melakukan apa-apa di sini, cukup untuk membuat titik-titik
+                }.attach()
                 binding.ProductPrice.text = "Rp. $formattedPrice"
                 binding.ProductName.text = product.name
-                binding.ProductSold.text = "Terjual ${product.terjual}"
+//                binding.ProductSold.text = " ${product.soldCount} Terjual"
                 binding.ProductDesc.text = product.description
+                binding.tvstockProduct.text = product.quantity.toString()
 
                 if (product.isWishlisted == 1) {
                     binding.wishlistButton.setImageResource(R.drawable.ic_favorite_red)
@@ -132,17 +140,14 @@ class DetailProductActivity : AppCompatActivity() {
         }
     }
 
-
     private fun goToArActivity() {
         binding.arButton.setOnClickListener {
             detailProductViewModel.productDetail.value?.data?.let { product ->
                 startActivity(Intent(this, ProductArActivity::class.java).apply {
-                    // Pastikan Anda mengirim "urlGlbFile" dan "productName"
-                    putExtra("urlGlbFile", product.model?.urlname) // <-- Ini yang Anda inginkan kembali
-                    putExtra("productName", product.name)          // <-- TAMBAHKAN BARIS INI
+                    putExtra("urlGlbFile", product.model?.urlname)
+                    putExtra("productName", product.name)
                 })
             }
         }
     }
-
 }

@@ -106,18 +106,15 @@
         android:layout_marginStart="30dp"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         app:endIconMode="dropdown_menu"
-        >
+        android:hint="Jenis Kelamin">
 
         <AutoCompleteTextView
             android:id="@+id/edtTextGender"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:hint="     Jenis Kelamin"
             android:fontFamily="@font/urbanist_regular"
             android:inputType="none"
-            android:textSize="16sp"
-            android:importantForAccessibility="no"
-            android:background="@drawable/background_edit_text"/>
+            android:textSize="16sp"/>
     </com.google.android.material.textfield.TextInputLayout>
 
 

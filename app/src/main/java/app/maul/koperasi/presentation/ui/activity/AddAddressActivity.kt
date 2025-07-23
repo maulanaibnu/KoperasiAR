@@ -32,15 +32,10 @@ class AddAddressActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddAddressBinding
     private val viewModel: AddressViewModel by viewModels()
-
     private var selectedIdDestination: Int = 0
-
     private val labelOptions = listOf("Rumah", "Toko")
-
     private val rajaOngkirViewModel by viewModels<RajaOngkirViewModel>()
-
     private lateinit var cityAdapter: CityAdapter
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +43,6 @@ class AddAddressActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupLabelDropdown()
-
         binding.imgBack.setOnClickListener { finish() }
         binding.etCity.setOnClickListener { showFullScreenBottomSheet() }
 
@@ -75,9 +69,8 @@ class AddAddressActivity : AppCompatActivity() {
                 notes = notes,
                 city = city,
                 id_destination = selectedIdDestination,
-                isDefault = isDefault // Kirimkan nilai isDefault dari SwitchMaterial
+                isDefault = isDefault
             )
-
             Toast.makeText(this, "Menambahkan alamat baru...", Toast.LENGTH_SHORT).show()
             viewModel.createAddress(request)
         }

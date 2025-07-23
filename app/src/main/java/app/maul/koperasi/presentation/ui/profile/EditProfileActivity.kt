@@ -6,7 +6,13 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
+import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
@@ -18,10 +24,12 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import app.maul.koperasi.R
 import app.maul.koperasi.databinding.ActivityEditProfileBinding
+import app.maul.koperasi.model.user.User
 import app.maul.koperasi.preference.Preferences
 import app.maul.koperasi.presentation.ui.activity.AddAddressActivity
 import app.maul.koperasi.viewmodel.AddressViewModel
 import app.maul.koperasi.viewmodel.UserViewModel
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -62,10 +70,38 @@ class EditProfileActivity : AppCompatActivity() {
         if (!token.isNullOrEmpty()) {
             viewModel.getUserProfile("Bearer $token")
         }
+
+        observeProfileData()
+
     }
 
-    private fun initView(
-    ){
+    private fun initView(){
+        val genderOptions = arrayOf("Laki-laki", "Perempuan")
+        val paddingStartPx = 16.dpToPx() // Dapatkan padding dalam piksel
+
+        val adapter = object : ArrayAdapter<String>(
+            this,
+            android.R.layout.simple_dropdown_item_1line,
+            genderOptions
+        ) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getView(position, convertView, parent)
+                if (view is TextView) {
+                    view.setPadding(paddingStartPx, view.paddingTop, view.paddingRight, view.paddingBottom)
+                }
+                return view
+            }
+
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getDropDownView(position, convertView, parent)
+                if (view is TextView) {
+
+                    view.setPadding(paddingStartPx, 24, 0, 24) // Contoh padding vertikal 24dp
+                }
+                return view
+            }
+        }
+        binding.edtTextGender.setAdapter(adapter)
 
         binding.apply {
             imgBack.setOnClickListener {
@@ -80,8 +116,39 @@ class EditProfileActivity : AppCompatActivity() {
                     doUpdateUser()
                 }
             }
+            edtTextGender.setOnClickListener {
+                edtTextGender.showDropDown() // Memaksa dropdown untuk tampil
+            }
         }
     }
+    private fun observeProfileData() {
+        lifecycleScope.launchWhenStarted {
+            viewModel.userProfile.collect { user ->
+                // Pastikan user datanya tidak null
+                user?.let {
+                    populateUserData(it)
+                }
+            }
+        }
+    }
+    private fun populateUserData(user: User) {
+        binding.apply {
+            edtTextName.setText(user.name)
+            edtTextGender.setText(user.gender ?: "", false)
+            edtPhone.setText(user.phone ?: "")
+
+            if (!user.profile_image.isNullOrEmpty()) {
+                Glide.with(this@EditProfileActivity)
+                    .load(user.profile_image)
+                    .placeholder(R.drawable.img_1)
+                    .error(R.drawable.img_1)
+                    .into(profileImage)
+            }
+        }
+    }
+    private fun Int.dpToPx(): Int =
+        (this * resources.displayMetrics.density).toInt()
+
 
     private fun showBottomSheet() {
         val bottomSheetDialog = BottomSheetDialog(this)

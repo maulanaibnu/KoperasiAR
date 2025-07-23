@@ -1,6 +1,7 @@
 package app.maul.koperasi.viewmodel
 
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.maul.koperasi.data.AddressRepository
@@ -120,12 +121,15 @@ class AddressViewModel @Inject constructor(
                 val response = addressRepository.setDefaultAddress(id)
                 if (response.isSuccessful) {
                     _success.value = response.body()?.message ?: "Alamat utama berhasil diatur"
-                    getAddresses() // Panggil ulang getAddresses untuk sinkronisasi data
+                    Log.d("AddressViewModel", "setDefaultAddress API Success for ID: $id. Response: ${response.body()?.message}")
+                    getAddresses()
                 } else {
                     _error.value = "Gagal mengatur alamat utama: ${response.message()}"
+                    Log.e("AddressViewModel", "setDefaultAddress API Failed for ID: $id. Error: ${response.message()}")
                 }
             } catch (e: Exception) {
                 _error.value = "Terjadi kesalahan: ${e.message}"
+                Log.e("AddressViewModel", "setDefaultAddress Exception for ID: $id. Error: ${e.message}")
             }
             // loading akan di-handle oleh getAddresses() setelah ini.
         }

@@ -51,26 +51,26 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/img_star"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:src="@drawable/star" />
+<!--            <ImageView-->
+<!--                android:id="@+id/img_star"-->
+<!--                android:layout_width="15dp"-->
+<!--                android:layout_height="15dp"-->
+<!--                android:src="@drawable/star" />-->
 
-            <TextView
-                android:id="@+id/text_average"
-                style="@style/AppTheme.TextMini"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:text="@string/_4_9" />
+<!--            <TextView-->
+<!--                android:id="@+id/text_average"-->
+<!--                style="@style/AppTheme.TextMini"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="5dp"-->
+<!--                android:text="@string/_4_9" />-->
 
-            <View
-                android:layout_width="1dp"
-                android:layout_height="15dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="@color/semi_black" />
+<!--            <View-->
+<!--                android:layout_width="1dp"-->
+<!--                android:layout_height="15dp"-->
+<!--                android:layout_marginStart="8dp"-->
+<!--                android:layout_marginEnd="8dp"-->
+<!--                android:background="@color/semi_black" />-->
 
             <TextView
                 android:id="@+id/text_stock"

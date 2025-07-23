@@ -21,6 +21,7 @@ class HomeFragment : Fragment() {
     private val homeViewModel by viewModels<HomeViewModel>()
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+    // [FIX 1] Inisialisasi adapter di sini, awalnya dengan list kosong
     private lateinit var productAdapter: ProductAdapter
 
     override fun onCreateView(
@@ -28,34 +29,40 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+
+        setupAdapter() // Panggil fungsi setup adapter
+        showProductRV() // Panggil fungsi untuk observasi
+
         homeViewModel.getAllProducts()
         setName()
-        showProductRV()
         return binding.root
+    }
+
+    // [FIX 2] Buat fungsi terpisah untuk setup adapter sekali saja
+    private fun setupAdapter() {
+        productAdapter = ProductAdapter(emptyList(), object : ProductItemListener {
+            override fun onItemClick(product: Product) {
+                startActivity(Intent(activity, DetailProductActivity::class.java).apply {
+                    putExtra("product_id", product.id)
+                })
+            }
+        })
+
+        val mlayoutManager = GridLayoutManager(activity, 2)
+        binding.rvProduct.layoutManager = mlayoutManager
+        binding.rvProduct.adapter = productAdapter
     }
 
     private fun setName() {
         val name = Preferences.getName(requireActivity())
-        println("name>>>>${name}")
         binding.tvNameUser.text = name
     }
 
     private fun showProductRV() {
-        val mlayoutManager = GridLayoutManager(activity, 2)
-        mlayoutManager.orientation = LinearLayoutManager.VERTICAL
-        binding.rvProduct.layoutManager = mlayoutManager
+        // [FIX 3] Di dalam observer, HANYA panggil fungsi updateData
         homeViewModel.products.observe(viewLifecycleOwner, Observer { product ->
-            println(product)
-            productAdapter = ProductAdapter(product, object : ProductItemListener {
-                override fun onItemClick(product: Product) {
-                    startActivity(Intent(activity, DetailProductActivity::class.java).apply {
-                        putExtra("product_id", product.id)
-                    })
-                }
-            })
-            binding.rvProduct.adapter = productAdapter
+            println("DATA DITERIMA: $product")
+            productAdapter.updateData(product)
         })
     }
-
-
 }

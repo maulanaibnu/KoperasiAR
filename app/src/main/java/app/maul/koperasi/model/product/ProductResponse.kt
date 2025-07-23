@@ -1,5 +1,7 @@
 package app.maul.koperasi.model.product
 
+import com.google.gson.annotations.SerializedName
+
 data class ProductResponse(
     val message: String,
     val data: List<Product>
@@ -16,7 +18,7 @@ data class Product(
     val kategoriId: Int,
     val description: String,
     val status: String,
-    val images: String,
+    val images: List<String>,
     val order: Int,
     val quantity: Int,
     val isFeatured: Boolean,
@@ -25,7 +27,8 @@ data class Product(
     val createdAt: String?,
     val updated: String?,
     val stockStatus: String?,
-    val terjual: String,
+    @SerializedName("sold_count")
+    val soldCount: String,
     val updatedAt: String,
     val category: Category,
     val model: Model?,

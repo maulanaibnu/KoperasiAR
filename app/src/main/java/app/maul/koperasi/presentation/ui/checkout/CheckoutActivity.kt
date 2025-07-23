@@ -18,6 +18,7 @@ import app.maul.koperasi.model.ongkir.ShippingOption
 import app.maul.koperasi.model.ongkir.TariffData
 import app.maul.koperasi.model.order.OrderDetail
 import app.maul.koperasi.model.order.OrderRequest
+import app.maul.koperasi.model.payment.PaymentMethod
 import app.maul.koperasi.preference.Preferences
 import app.maul.koperasi.presentation.ui.activity.AddressActivity
 import app.maul.koperasi.presentation.ui.courir.SelectCourirActivity
@@ -33,42 +34,30 @@ import java.util.*
 
 @AndroidEntryPoint
 class CheckoutActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityCheckoutBinding
     private lateinit var orderDetails: List<OrderDetail>
     private val orderViewModel by viewModels<OrderViewModel>()
     private var userId: Int = 0
     private var total: Double = 0.0
-
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
-
     private val viewModel: AddressViewModel by viewModels()
-
     private val kingViewModel: RajaOngkirViewModel by viewModels()
-
     var street : String? = ""
     var name : String? = ""
     var label : String? = ""
     var idDestination : Int = 0
-
     var selectShipping : ShippingOption? = null
-    private var selectedBank: Pair<String, String>? = null
+    private var selectedPaymentMethod: PaymentMethod? = null
     var countProduct = 1
-
     private var isFromShippingSelection = false
-
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCheckoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.cardAlamatPengiriman.setOnClickListener {
-            resultLauncher.launch(Intent(this, AddressActivity::class.java))
-        }
 
-
-
+        setupClickListeners()
 
         resultLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -76,23 +65,27 @@ class CheckoutActivity : AppCompatActivity() {
             if (result.resultCode == RESULT_OK) {
                 val data = result.data
 
-                // 1. Cek apakah ini hasil dari pemilihan bank
                 val bankCode = data?.getStringExtra("bank_code")
-                if (bankCode != null) {
-                    val bankName = data.getStringExtra("bank_name") ?: ""
-                    val bankLogo = data.getIntExtra("bank_logo", 0)
-                    selectedBank = Pair(bankCode, bankName) // Menyimpan bank yang dipilih
+                val shippingOption = data?.getParcelableExtra<ShippingOption>("shippingOption")
+                when {
+                    bankCode != null -> {
+                        val bankName = data.getStringExtra("bank_name") ?: ""
+                        val bankLogoResId = data.getIntExtra("bank_logo", 0) ?: 0
 
-                    // Menyembunyikan daftar pembayaran dan menampilkan bank terpilih
+                        val newlySelectedMethod = PaymentMethod(
+                            bankName = bankName,
+                            bankCode = bankCode,
+                            logoResId = bankLogoResId,
+                            isSelected = true
+                        )
+                        selectedPaymentMethod = newlySelectedMethod
 
-                    binding.llSelectedPaymentDisplay.visibility = View.VISIBLE // Menampilkan bank yang dipilih
-                    binding.tvSelectedBankName.text = bankName
-                    if (bankLogo != 0) binding.imgSelectedBankLogo.setImageResource(bankLogo)
-                }
-                // 2. Jika bukan, cek apakah ini hasil dari pemilihan kurir
-                else {
-                    val shippingOption = data?.getParcelableExtra<ShippingOption>("shippingOption")
-                    if (shippingOption != null) {
+                        binding.selectPaymentMethod.visibility = View.GONE
+                        binding.llSelectedPaymentDisplay.visibility = View.VISIBLE
+                        updateSelectedPaymentDisplay()
+                        Log.d("CheckoutActivity", "Bank default diinisialisasi: ${selectedPaymentMethod?.bankName} (${selectedPaymentMethod?.bankCode})")
+                    }
+                    shippingOption != null -> {
                         isFromShippingSelection = true
                         selectShipping = shippingOption
                         binding.tvCourier.text = "${shippingOption.shippingName} (${shippingOption.serviceName})"
@@ -100,8 +93,7 @@ class CheckoutActivity : AppCompatActivity() {
                         binding.tvTotalShipping.text = formatRupiah(shippingOption.shippingCost)
                         updateTotalPrice()
                     }
-                    // 3. Jika bukan keduanya, ini adalah hasil pemilihan alamat
-                    else {
+                    else -> {
                         val street = data?.getStringExtra("street") ?: ""
                         val name = data?.getStringExtra("name") ?: ""
                         val label = data?.getStringExtra("label") ?: ""
@@ -114,43 +106,32 @@ class CheckoutActivity : AppCompatActivity() {
         }
 
         userId = Preferences.getId(this@CheckoutActivity)
-        // Retrieve data from Intent
-        binding.selectPaymentMethod.setOnClickListener {
-            val intent = Intent(this, SelectPaymentActivity::class.java)
-            resultLauncher.launch(intent)
-        }
         total = intent.getDoubleExtra("total", 0.0)
-        orderDetails =
-            intent.getParcelableArrayListExtra<OrderDetail>("orderDetails") ?: emptyList()
+        orderDetails = intent.getParcelableArrayListExtra<OrderDetail>("orderDetails") ?: emptyList()
 
-
+        Log.d("CheckoutActivity", "OrderDetail diterima dari Intent: $orderDetails")
+        if (orderDetails.isNotEmpty()) {
+            Log.d("CheckoutActivity", "ID Produk pertama di OrderDetails: ${orderDetails[0].id}")
+        } else {
+            Log.d("CheckoutActivity", "OrderDetails kosong setelah diterima dari Intent.")
+        }
         if (orderDetails.isNotEmpty()) {
             val firstItem = orderDetails[0]
 
             binding.tvCOProductName.text = firstItem.name_product
             binding.tvCoProductPrice.text = formatRupiah(firstItem.price)
 
-
             countProduct = firstItem.qty
-
             binding.tvQuantityProduct.text = countProduct.toString()
 
-            // Panggil fungsi updateTotalPrice() di sini untuk perhitungan awal yang benar
             updateTotalPrice()
-
-
-            binding.tvQuantityProduct.text = countProduct.toString()
-
             val baseUrl = "https://koperasi.simagang.my.id/"
             val fullImageUrl = baseUrl + firstItem.image_url
-
-
             Glide.with(this)
                 .load(fullImageUrl)
                 .placeholder(R.drawable.product)
                 .error(R.drawable.baseline_error_outline_24)
                 .into(binding.imgCoPRoduct)
-
 
             binding.btnPlus.setOnClickListener {
                 countProduct++
@@ -167,159 +148,212 @@ class CheckoutActivity : AppCompatActivity() {
             }
         } else {
             Toast.makeText(this, "Terjadi kesalahan produk", Toast.LENGTH_SHORT).show()
+
         }
 
         viewModel.getAddresses()
         setupObservers()
         setupPaymentSelection()
-        observeOrderResponse()
         observerCalculate()
 
-
+        binding.cardAlamatPengiriman.setOnClickListener {
+            resultLauncher.launch(Intent(this, AddressActivity::class.java))
+        }
         binding.cardShippingOption.setOnClickListener {
             resultLauncher.launch(Intent(this, SelectCourirActivity::class.java).also{
                 it.putExtra("receiver_id", idDestination)
-                // INI BENAR, harga total barang dikirim
                 val totalProductPrice = (orderDetails.getOrNull(0)?.price ?: 0) * countProduct
                 it.putExtra("price", totalProductPrice.toLong())
             })
         }
-        // Set up Submit Button
+        binding.btnPayNow.setOnClickListener {
 
-        binding.btnSubmitOrder.setOnClickListener {
-            var paymentType = "bank_transfer"
-            val bank = ""
-            val shippingMethod = selectShipping?.let { it.shippingName }
-            val userId = Preferences.getId(this)
-            val productId = orderDetails[0].id_product
-            val quantity = orderDetails[0].qty
-            val shippingCost = selectShipping?.let { it.shippingCost }
+            if (selectShipping == null) {
+                Toast.makeText(this, "Mohon pilih opsi pengiriman terlebih dahulu.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            val currentAddressDetail = binding.tvDetailAlamat.text.toString()
+            val receiptNameFromAddress = binding.tvReceiptName.text.toString()
+            val labelFromAddress = binding.tvLabelAlamat.text.toString()
+
+            if (currentAddressDetail.isNullOrEmpty() ||
+                receiptNameFromAddress.isNullOrEmpty() ||
+                labelFromAddress.isNullOrEmpty()) {
+                Toast.makeText(this, "Mohon lengkapi alamat pengiriman.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val paymentType = "bank_transfer"
+            val bankCode = selectedPaymentMethod?.bankCode ?: ""
+
+            val shippingMethodName = selectShipping?.shippingName ?: (selectShipping?.serviceName ?: "")
 
 
+            val addressForOrder = currentAddressDetail
 
 
-            // Create OrderRequest
             val orderRequest = OrderRequest(
                 userId = userId,
                 idProduct = orderDetails[0].id_product,
                 quantity = countProduct,
                 paymentType = paymentType,
-                bank = (selectedBank?.first ?: "bca"),
-                shippingMethod = shippingMethod ?: "SICEPAT",
-                shippingCost = selectShipping?.shippingCost ?: 0,  // Assuming this is the cost
-                address = binding.tvDetailAlamat.text.toString()
+                bank = bankCode,
+                shippingMethod = shippingMethodName,
+                shippingCost = selectShipping?.shippingCost ?: 0,
+                address = addressForOrder
             )
-
-            // Call ViewModel to create the order
-            orderViewModel.createOrder(orderRequest)
-
-            // Show success message or navigate back
-            observeOrderResponse() // Observe the response after calling createOrder()
+            lifecycleScope.launch {
+                orderViewModel.createOrder(orderRequest)
+            }
         }
 
+    }
+    private fun setupPaymentSelection() {
+        val initialDefaultBank = PaymentMethod(
+            bankName = "BCA Virtual Account",
+            bankCode = "bca",
+            logoResId = R.drawable.bcalogo,
+            isSelected = true
+        )
+
+        selectedPaymentMethod = initialDefaultBank
+        Log.d("CheckoutActivity", "Bank default diinisialisasi: ${selectedPaymentMethod?.bankName} (${selectedPaymentMethod?.bankCode})")
+        binding.selectPaymentMethod.visibility = View.VISIBLE
+        binding.llSelectedPaymentDisplay.visibility = View.GONE
+        binding.imgVA.setImageResource(initialDefaultBank.logoResId)
+        binding.tvVA.text = initialDefaultBank.bankName
+        binding.radioButtonPayment.isChecked = true // Centang RadioButton ini
+    }
+
+    private fun updateSelectedPaymentDisplay() {
+        selectedPaymentMethod?.let { bank ->
+            binding.llSelectedPaymentDisplay.visibility = View.VISIBLE
+            binding.tvSelectedBankName.text = bank.bankName
+            if (bank.logoResId != 0) {
+                binding.imgSelectedBankLogo.setImageResource(bank.logoResId)
+            } else {
+                binding.imgSelectedBankLogo.setImageDrawable(null) // Atau default image
+            }
+        } ?: run {
+            binding.llSelectedPaymentDisplay.visibility = View.GONE
+        }
+        updatePayButtonState()
+    }
+
+    private fun updatePayButtonState() {
+        binding.btnPayNow.isEnabled = selectedPaymentMethod != null
     }
 
     fun observeOrderResponse() {
         orderViewModel.orderResponse.observe(this) { response ->
-            if (response!!.status == "CREATED") {
-                Toast.makeText(this, "Order submitted successfully!", Toast.LENGTH_SHORT).show()
+            if (response != null) {
+                if (response.status == "CREATED") {
+                    Toast.makeText(this, "Order submitted successfully!", Toast.LENGTH_SHORT).show()
+                    val transactionData = response.data
 
-                // You can send additional info to PaymentActivity, like virtual account, expiration, etc.
-                val transactionData = response.data
+                    val intent = Intent(this, PaymentActivity::class.java).apply {
+                        putExtra("virtual_account", transactionData?.virtualAccount)
+                        putExtra("expired", transactionData?.expired)
+                        putExtra("total_payment", transactionData?.price)
+                        putExtra("bank_name", selectedPaymentMethod?.bankName)
+                    }
+                    startActivity(intent)
 
-                val intent = Intent(this, PaymentActivity::class.java).apply {
-                    putExtra("virtual_account", transactionData?.virtualAccount)
-                    putExtra("expired", transactionData?.expired)
-                    putExtra("total_payment", transactionData?.price)
+                    setResult(RESULT_OK, null)
+                    finish()
+                } else {
+                    Toast.makeText(this, "Failed to create order: ${response.message}", Toast.LENGTH_SHORT).show()
                 }
-                startActivity(intent)  // Navigate to PaymentActivity for further processing
-
-                setResult(RESULT_OK, null)
-                finish()
             } else {
-                // Handle error scenario
-                Toast.makeText(this, "Failed to create order: ${response.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Failed to create order: Response is null", Toast.LENGTH_SHORT).show()
             }
         }
     }
-
     private fun setupObservers() {
-        // Mengamati perubahan pada daftar alamat
+        observeOrderResponse()
         lifecycleScope.launch {
             viewModel.addresses.collect { addresses ->
                 idDestination = addresses?.firstOrNull { it.isDefault }?.id_destination ?: 0
                 binding.tvDetailAlamat.text = addresses?.firstOrNull { it.isDefault }?.street ?: ""
                 binding.tvReceiptName.text = addresses?.firstOrNull { it.isDefault }?.recipient_name ?: ""
                 binding.tvLabelAlamat.text = addresses?.firstOrNull { it.isDefault }?.label ?: ""
-                if (!isFromShippingSelection) {
+
+                if (!isFromShippingSelection && idDestination != 0) {
+                    val totalProductPrice = (orderDetails.getOrNull(0)?.price ?: 0) * countProduct
                     kingViewModel.calculateTariff(
                         shipperId = 73209,
                         receiverId = idDestination,
                         weight = 1,
-                        itemValue = orderDetails.sumOf { it.price }.toLong(),
+                        itemValue = totalProductPrice.toLong(),
                         cod = "no"
                     )
                 }
-
                 isFromShippingSelection = false
             }
         }
-
-        // Mengamati pesan error
         lifecycleScope.launch {
             viewModel.error.collect { message ->
                 message?.let {
                     Toast.makeText(this@CheckoutActivity, it, Toast.LENGTH_LONG).show()
-                    viewModel.resetError() // Reset agar toast tidak muncul lagi
+                    viewModel.resetError()
                 }
             }
         }
-
-        // Mengamati pesan sukses
         lifecycleScope.launch {
             viewModel.success.collect { message ->
                 message?.let {
                     Toast.makeText(this@CheckoutActivity, it, Toast.LENGTH_SHORT).show()
-                    viewModel.resetSuccess() // Reset agar toast tidak muncul lagi
+                    viewModel.resetSuccess()
                 }
             }
         }
     }
 
+    private fun setupClickListeners() {
+        binding.cardAlamatPengiriman.setOnClickListener {
+            resultLauncher.launch(Intent(this, AddressActivity::class.java))
+        }
+        binding.cardShippingOption.setOnClickListener {
+            resultLauncher.launch(Intent(this, SelectCourirActivity::class.java).also{
+                it.putExtra("receiver_id", idDestination)
+                val totalProductPrice = (orderDetails.getOrNull(0)?.price ?: 0) * countProduct
+                it.putExtra("price", totalProductPrice.toLong())
+            })
+        }
+        binding.selectAllPayment.setOnClickListener {
+            val intent = Intent(this, SelectPaymentActivity::class.java)
+            resultLauncher.launch(intent)
+        }
+        binding.selectPaymentMethod.setOnClickListener {
+            val intent = Intent(this, SelectPaymentActivity::class.java)
+            resultLauncher.launch(intent)
+        }
+    }
 
     private fun observerCalculate() {
         kingViewModel.tariffResult.observe(this) {
             val data = getCheapestShippingOption(it)
-            binding.tvCourier.text = "${data?.shippingName} ( ${data?.serviceName} )" ?: "Gagal mendapatkan nama shipping"
+            binding.tvCourier.text = "${data?.shippingName} ( ${data?.serviceName} )"
             binding.tvEstimation.text = formatRupiah(data?.shippingCost ?: 0)
             selectShipping = data
             binding.tvTotalShipping.text = formatRupiah(data?.shippingCost ?: 0)
-
-            // PANGGIL FUNGSI YANG SUDAH BENAR
             updateTotalPrice()
         }
         kingViewModel.errorMessage.observe(this) { error ->
             Toast.makeText(this, error ?: "Error menghitung ongkir", Toast.LENGTH_SHORT).show()
         }
     }
-
     fun getCheapestShippingOption(tariffData: TariffData): ShippingOption? {
         return (tariffData.reguler)
             .minByOrNull { it.shippingCost }
     }
-
-    private fun setupPaymentSelection() {
-
-    }
-
     fun formatRupiah(amount: Int): String {
         val formatter = NumberFormat.getNumberInstance(Locale("in", "ID"))
         return "Rp. ${formatter.format(amount)}"
     }
-
     private fun updateTotalPrice() {
         val shippingCost = selectShipping?.shippingCost ?: 0
-        val totalProductPrice = orderDetails[0].price * countProduct
+        val totalProductPrice = if (orderDetails.isNotEmpty()) orderDetails[0].price * countProduct else 0
         binding.tvTotalItemCo.text = formatRupiah(totalProductPrice)
         binding.tvPriceTotal.text = formatRupiah(shippingCost + totalProductPrice)
     }

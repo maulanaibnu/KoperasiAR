@@ -55,7 +55,7 @@ class DetailProductFragment : Fragment() {
                 Glide.with(this).load(product.images).into(binding.IvProduct)
                 binding.ProductPrice.text = "$prefix${product.price}"
                 binding.ProductName.text = product.name
-                binding.ProductSold.text = "Terjual ${product.terjual}"
+                binding.ProductSold.text = " ${product.soldCount} Terjual"
                 binding.ProductDesc.text = product.description
             }
         })

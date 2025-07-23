@@ -1,7 +1,14 @@
 package app.maul.koperasi.data
 
 
+import android.util.Log
 import app.maul.koperasi.api.ApiService
+import app.maul.koperasi.model.user.ChangePasswordRequest
+import app.maul.koperasi.model.user.ChangePasswordResponse
+import app.maul.koperasi.model.user.ForgotPasswordRequest
+import app.maul.koperasi.model.user.ForgotPasswordResponse
+import app.maul.koperasi.model.user.ResetPasswordRequest
+import app.maul.koperasi.model.user.ResetPasswordResponse
 import app.maul.koperasi.model.user.UpdateResponse
 import app.maul.koperasi.model.user.User
 import okhttp3.MultipartBody
@@ -31,6 +38,14 @@ class UserRepository @Inject constructor(private val apiService: ApiService) {
             Result.failure(e)
         }
     }
+
+    suspend fun changePassword(token: String, request: ChangePasswordRequest): ChangePasswordResponse {
+        Log.d("ChangePassDebug", "3. Password di Repository sebelum dikirim ke API: [${request.oldPassword}]")
+        // Tambahkan "Bearer " pada token sebelum dikirim
+        return apiService.changePassword("Bearer $token", request)
+    }
+
+
 
 
 

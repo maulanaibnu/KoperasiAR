@@ -184,48 +184,48 @@
             android:layout_gravity="center_vertical"
             android:src="@drawable/arrow_right" />
     </LinearLayout>
-    <LinearLayout
-        android:id="@+id/linearNotifikasi"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="10dp">
+<!--    <LinearLayout-->
+<!--        android:id="@+id/linearNotifikasi"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:padding="10dp">-->
 
-        <ImageView
-            android:id="@+id/imgNotifikasi"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            app:tint="@color/black"
-            android:layout_marginStart="25dp"
-            android:layout_marginTop="7dp"
-            android:layout_marginBottom="5dp"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/notification" />
+<!--        <ImageView-->
+<!--            android:id="@+id/imgNotifikasi"-->
+<!--            android:layout_width="15dp"-->
+<!--            android:layout_height="15dp"-->
+<!--            app:tint="@color/black"-->
+<!--            android:layout_marginStart="25dp"-->
+<!--            android:layout_marginTop="7dp"-->
+<!--            android:layout_marginBottom="5dp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:src="@drawable/notification" />-->
 
-        <TextView
-            android:id="@+id/tvToEditNotifikasi"
-            style="@style/AppTheme.TextTittle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_weight="1"
-            android:text="@string/notifikasi"
-            android:textColor="@color/black"
-            android:textStyle="bold" />
+<!--        <TextView-->
+<!--            android:id="@+id/tvToEditNotifikasi"-->
+<!--            style="@style/AppTheme.TextTittle"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="5dp"-->
+<!--            android:layout_marginBottom="5dp"-->
+<!--            android:layout_marginStart="10dp"-->
+<!--            android:layout_marginEnd="10dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:text="@string/notifikasi"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:textStyle="bold" />-->
 
-        <ImageView
-            android:id="@+id/arrowNotifikasi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="5.6dp"
-            android:layout_marginBottom="5dp"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/arrow_right" />
-    </LinearLayout>
+<!--        <ImageView-->
+<!--            android:id="@+id/arrowNotifikasi"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginEnd="20dp"-->
+<!--            android:layout_marginTop="5.6dp"-->
+<!--            android:layout_marginBottom="5dp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:src="@drawable/arrow_right" />-->
+<!--    </LinearLayout>-->
 
     <LinearLayout
         android:id="@+id/linearPusatBantuan"
