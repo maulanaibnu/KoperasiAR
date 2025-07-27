@@ -307,7 +307,7 @@ data class OrderDetail(
     val id_product: Int,
     val name_product: String,
     val price: Int,
-    val qty: Int,
+    var qty: Int,
     val image_url: String?,
     val createdAt: String,
     val updatedAt: String

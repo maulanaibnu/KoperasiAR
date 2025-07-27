@@ -331,16 +331,20 @@ class CheckoutActivity : AppCompatActivity() {
 
     private fun updateTotalPrice() {
         val shippingCost = selectShipping?.shippingCost ?: 0
-        val totalProductPrice = orderDetails.sumOf { it.price }
+        val totalProductPrice = orderDetails.sumOf { it.qty * it.price }
         binding.tvTotalItemCo.text = formatRupiah(totalProductPrice)
-        binding.tvPriceTotal.text = formatRupiah(shippingCost + totalProductPrice)
+        binding.tvPriceTotal.text = formatRupiah(totalProductPrice + shippingCost)
     }
 
-    private fun showRecycler(data : List<OrderDetail>){
-        checkoutAdapter = CheckoutAdapter(data)
+    private fun showRecycler(data: List<OrderDetail>) {
+        checkoutAdapter = CheckoutAdapter(data) {
+            updateTotalPrice() // akan otomatis menghitung total jika qty berubah
+        }
         binding.rvItem.apply {
             adapter = checkoutAdapter
             layoutManager = LinearLayoutManager(this@CheckoutActivity)
         }
     }
+
+
 }

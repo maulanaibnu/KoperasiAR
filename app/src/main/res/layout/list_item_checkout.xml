@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:text="Nama Produk Barang yang Sangat Panjang"
+                android:text="Nama Produk"
                 android:textColor="@color/semi_black"
                 android:textStyle="bold"/>
 
@@ -66,6 +66,7 @@
                     style="@style/AppTheme.TextDefault"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:layout_marginTop="4dp"
                     android:layout_marginStart="4dp"
                     android:text="Rp. 0"
@@ -81,8 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:visibility="gone">
+                android:orientation="horizontal">
 
                 <ImageButton
                     android:id="@+id/btnMinus"
