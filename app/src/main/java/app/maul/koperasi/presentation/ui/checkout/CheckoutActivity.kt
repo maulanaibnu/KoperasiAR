@@ -1,15 +1,20 @@
 package app.maul.koperasi.presentation.ui.checkout
 
 
+import android.app.Dialog
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import app.maul.koperasi.MainActivity
@@ -50,6 +55,8 @@ class CheckoutActivity : AppCompatActivity() {
 
     private val kingViewModel: RajaOngkirViewModel by viewModels()
 
+    private var loadingDialog: Dialog? = null
+
     var street : String? = ""
     var name : String? = ""
     var label : String? = ""
@@ -70,6 +77,7 @@ class CheckoutActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityCheckoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        loadingDialog = showSimpleLoadingDialog(this)
         binding.cardAlamatPengiriman.setOnClickListener {
             resultLauncher.launch(Intent(this, AddressActivity::class.java))
         }
@@ -306,6 +314,10 @@ class CheckoutActivity : AppCompatActivity() {
             binding.tvEstimation.text = formatRupiah(data?.shippingCost ?: 0)
             selectShipping = data
             binding.tvTotalShipping.text = formatRupiah(data?.shippingCost ?: 0)
+            if(!binding.tvCourier.text.toString().contains("null")){
+                loadingDialog?.dismiss()
+                loadingDialog = null
+            }
 
             // PANGGIL FUNGSI YANG SUDAH BENAR
             updateTotalPrice()
@@ -338,7 +350,7 @@ class CheckoutActivity : AppCompatActivity() {
 
     private fun showRecycler(data: List<OrderDetail>) {
         checkoutAdapter = CheckoutAdapter(data) {
-            updateTotalPrice() // akan otomatis menghitung total jika qty berubah
+            updateTotalPrice()
         }
         binding.rvItem.apply {
             adapter = checkoutAdapter
@@ -346,5 +358,18 @@ class CheckoutActivity : AppCompatActivity() {
         }
     }
 
+    fun showSimpleLoadingDialog(context: Context, cancelable: Boolean = true): Dialog {
+        val progressBar = ProgressBar(context).apply {
+            isIndeterminate = true
+        }
 
+        val dialog = Dialog(context)
+        dialog.setContentView(progressBar)
+        dialog.setCancelable(cancelable)
+        dialog.setCanceledOnTouchOutside(false)
+        dialog.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+
+        dialog.show()
+        return dialog
+    }
 }

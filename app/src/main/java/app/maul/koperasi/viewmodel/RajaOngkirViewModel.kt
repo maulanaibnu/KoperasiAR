@@ -1,5 +1,6 @@
 package app.maul.koperasi.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -46,6 +47,7 @@ class RajaOngkirViewModel : ViewModel() {
         viewModelScope.launch {
             val result = repository.calculateTariff(shipperId, receiverId, weight, itemValue, cod)
             result.onSuccess { response ->
+                Log.d("TESTED","$response")
                 _tariffResult.postValue(response.data!!)
             }.onFailure { error ->
                 _errorMessage.postValue(error.message)
