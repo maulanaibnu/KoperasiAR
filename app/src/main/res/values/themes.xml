@@ -70,4 +70,15 @@
     <style name="FullScreenBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:layout_height">match_parent</item>
     </style>
+
+    <style name="CustomDotIndicator" parent="Widget.MaterialComponents.TabLayout">
+        <item name="tabIndicatorHeight">0dp</item>
+
+        <item name="tabBackground">@drawable/tab_selector</item>
+
+        <item name="tabMinWidth">0dp</item>
+
+        <item name="tabPaddingStart">6dp</item>
+        <item name="tabPaddingEnd">6dp</item>
+    </style>
 </resources>

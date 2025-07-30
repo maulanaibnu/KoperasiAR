@@ -13,6 +13,8 @@ import app.maul.koperasi.model.chatbot.ChatbotListResponse
 import app.maul.koperasi.model.chatbot.ChatbotRequest
 import app.maul.koperasi.model.chatbot.TopicResponse
 import app.maul.koperasi.model.login.LoginResponse
+import app.maul.koperasi.model.order.CancelRequest
+import app.maul.koperasi.model.order.CancelResponse
 import app.maul.koperasi.model.order.HistoryDetailResponse
 import app.maul.koperasi.model.order.HistoryResponse
 import app.maul.koperasi.model.order.InvoiceResponse
@@ -90,7 +92,7 @@ interface ApiService {
 
     @POST("user/newPassword")
     suspend fun changePassword(
-        @Header("Authorization") token: String,
+//        @Header("Authorization") token: String,
         @Body request: ChangePasswordRequest
     ): ChangePasswordResponse
 
@@ -171,6 +173,9 @@ interface ApiService {
 
     @POST("transaction/v2/createTransaction")
     suspend fun createOrderList(@Body orderRequest: OrderRequestList): Response<OrderResponseList>
+
+    @POST("transaction/cancelTransaction")
+    suspend fun cancelTransaction(@Body request: CancelRequest): CancelResponse
 
     @GET("transaction/history")
     suspend fun getAllOrders(): HistoryResponse

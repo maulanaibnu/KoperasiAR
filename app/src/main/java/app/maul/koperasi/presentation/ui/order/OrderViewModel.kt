@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.maul.koperasi.data.OrderRepository
-import app.maul.koperasi.model.order.HistoryItem // [1] Ganti import ke HistoryItem
+import app.maul.koperasi.model.order.HistoryItem
 import app.maul.koperasi.model.order.InvoiceResponse
 import app.maul.koperasi.model.order.OrderRequest
 import app.maul.koperasi.model.order.OrderRequestList
@@ -43,6 +43,9 @@ class OrderViewModel @Inject constructor(
 
     private val _invoiceDetail = MutableLiveData<InvoiceResponse?>()
     val invoiceDetail: LiveData<InvoiceResponse?> get() = _invoiceDetail
+
+    private val _cancelStatus = MutableLiveData<Result<String>>()
+    val cancelStatus: LiveData<Result<String>> = _cancelStatus
 
     fun createOrder(orderRequest: OrderRequest) {
         viewModelScope.launch {
@@ -104,26 +107,41 @@ class OrderViewModel @Inject constructor(
 
     fun getTransactionById(transactionId: Int) {
         viewModelScope.launch {
-            _isLoading.postValue(true) // Atur status loading
-            _errorMessage.postValue("") // Bersihkan pesan error sebelumnya
+            _isLoading.postValue(true)
+            _errorMessage.postValue("")
             try {
                 val response = orderRepository.getTransactionById(transactionId)
                 if (response.success) {
-                    _transactionDetail.postValue(response.data) // Update LiveData dengan detail transaksi
+                    _transactionDetail.postValue(response.data)
                 } else {
-                    _transactionDetail.postValue(null) // Set null jika tidak berhasil
-                    _errorMessage.postValue(response.message) // Atur pesan error dari backend
+                    _transactionDetail.postValue(null)
+                    _errorMessage.postValue(response.message)
                 }
             } catch (e: Exception) {
-                _transactionDetail.postValue(null) // Set null jika terjadi error
+                _transactionDetail.postValue(null)
                 val message = when (e) {
                     is retrofit2.HttpException -> "Gagal memuat detail: Error ${e.code()}"
                     is java.io.IOException -> "Tidak ada koneksi internet."
                     else -> "Terjadi kesalahan tidak diketahui: ${e.message}"
                 }
-                _errorMessage.postValue(message) // Atur pesan error
+                _errorMessage.postValue(message)
             } finally {
-                _isLoading.postValue(false) // Nonaktifkan status loading
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+    fun cancelOrder(orderCode: String) {
+        viewModelScope.launch {
+            try {
+                val response = orderRepository.cancelTransaction(orderCode)
+                if (response.success) {
+                    _cancelStatus.postValue(Result.success(response.message))
+                } else {
+                    _cancelStatus.postValue(Result.failure(Exception(response.message)))
+                }
+            } catch (e: Exception) {
+                _cancelStatus.postValue(Result.failure(e))
             }
         }
     }
@@ -132,7 +150,6 @@ class OrderViewModel @Inject constructor(
         viewModelScope.launch {
             _isLoading.postValue(true)
             try {
-                // Memanggil fungsi baru di repository
                 val response = orderRepository.getInvoiceDetail(transactionId)
                 _invoiceDetail.postValue(response)
             } catch (e: Exception) {

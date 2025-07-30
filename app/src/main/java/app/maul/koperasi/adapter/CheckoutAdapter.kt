@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import app.maul.koperasi.R
-import app.maul.koperasi.adapter.CheckoutAdapter.CheckoutViewHolder
 import app.maul.koperasi.databinding.ListItemCheckoutBinding
 import app.maul.koperasi.model.order.OrderDetail
 import app.maul.koperasi.utils.Constant

@@ -6,15 +6,19 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import app.maul.koperasi.R
 import app.maul.koperasi.databinding.ActivityInvoiceDetailBinding
 import app.maul.koperasi.model.order.HistoryItem
+import app.maul.koperasi.presentation.ui.order.OrderViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -24,15 +28,14 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
+@AndroidEntryPoint
 class InvoiceDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityInvoiceDetailBinding
     private var currentInvoiceData: HistoryItem? = null
+    private val viewModel by viewModels<OrderViewModel>()
 
-    companion object {
-        const val EXTRA_INVOICE_DATA = "extra_invoice_data"
-        private const val STORAGE_PERMISSION_CODE = 101
-    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,26 +44,35 @@ class InvoiceDetailActivity : AppCompatActivity() {
 
         setupWindowInsets()
         setupClickListeners()
+        observeViewModel()
 
-        val invoiceData: HistoryItem? = getInvoiceDataFromIntent()
-
-        if (invoiceData != null) {
-            currentInvoiceData = invoiceData
-            displayInvoiceData(invoiceData)
+        val invoiceId = intent.getIntExtra(EXTRA_INVOICE_ID, -1)
+        if (invoiceId != -1) {
+            // 2. Minta data ke ViewModel menggunakan ID
+            viewModel.getTransactionById(invoiceId)
         } else {
-            Toast.makeText(this, "Gagal memuat data invoice", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Gagal memuat data: ID tidak valid", Toast.LENGTH_SHORT).show()
             finish()
         }
     }
 
     // --- FUNGSI UTAMA YANG SUDAH DI-REFACTOR ---
+    private fun observeViewModel() {
+        viewModel.transactionDetail.observe(this) { invoice ->
+            invoice?.let {
+                currentInvoiceData = it
+                displayInvoiceData(it)
+            }
+        }
+        // Anda juga bisa observe isLoading dan errorMessage di sini
+    }
+
     private fun displayInvoiceData(invoice: HistoryItem) {
         bindHeaderInfo(invoice)
         bindProductDetails(invoice)
         bindPaymentSummary(invoice)
     }
 
-    // --- HELPER UNTUK MENGISI UI ---
     private fun bindHeaderInfo(invoice: HistoryItem) {
         binding.apply {
             tvInvoiceNumber.text = invoice.code
@@ -71,30 +83,29 @@ class InvoiceDetailActivity : AppCompatActivity() {
     }
 
     private fun bindProductDetails(invoice: HistoryItem) {
-        binding.apply {
-            // Karena HistoryItem hanya untuk 1 produk
-            tvProductName.text = invoice.nameProduct
-            tvProductQuantity.text = invoice.quantity.toString()
-
-            val productTotalPrice = (invoice.price.toDoubleOrNull() ?: 0.0) * invoice.quantity
-            tvProductTotal.text = formatRupiah(productTotalPrice)
+        if (invoice.orderDetails.isNotEmpty()) {
+            val invoiceAdapter = InvoiceDetailAdapter(invoice.orderDetails)
+            binding.rvHistoryDetail.apply {
+                layoutManager = LinearLayoutManager(this@InvoiceDetailActivity)
+                adapter = invoiceAdapter
+                isNestedScrollingEnabled = false
+            }
         }
     }
 
     private fun bindPaymentSummary(invoice: HistoryItem) {
         binding.apply {
-            val productTotalPrice = (invoice.price.toDoubleOrNull() ?: 0.0) * invoice.quantity
+            val productTotalPrice = invoice.orderDetails.sumOf { it.price * it.qty }
             val shippingCost = invoice.shippingCost.toDoubleOrNull() ?: 0.0
             val grandTotal = invoice.totalPrice.toDoubleOrNull() ?: 0.0
 
-            valueSubtotal.text = formatRupiah(productTotalPrice)
+            valueSubtotal.text = formatRupiah(productTotalPrice.toDouble())
             valueShipping.text = formatRupiah(shippingCost)
             valueGrandTotal.text = formatRupiah(grandTotal)
 
-            // Logika untuk menampilkan nama bank
             var paymentMethodText = formatPaymentType(invoice.paymentType)
-            if (invoice.paymentType.equals("bank_transfer", ignoreCase = true) && !invoice.bankName.isNullOrEmpty()) {
-                paymentMethodText = invoice.bankName // Asumsi 'bankName' ada di HistoryItem
+            if (invoice.paymentType.equals("bank_transfer", true) && !invoice.bankName.isNullOrEmpty()) {
+                paymentMethodText = invoice.bankName
             }
             bankMethod.text = paymentMethodText
         }
@@ -219,4 +230,11 @@ class InvoiceDetailActivity : AppCompatActivity() {
         format.maximumFractionDigits = 0
         return format.format(amount)
     }
+
+    companion object {
+        const val EXTRA_INVOICE_ID = "extra_invoice_id"
+        const val EXTRA_INVOICE_DATA = "extra_invoice_data"
+        private const val STORAGE_PERMISSION_CODE = 101
+    }
+
 }

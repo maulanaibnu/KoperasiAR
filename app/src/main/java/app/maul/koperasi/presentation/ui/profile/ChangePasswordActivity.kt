@@ -38,13 +38,8 @@ class ChangePasswordActivity : AppCompatActivity() {
 
             Log.d("ChangePassDebug", "1. Password dari EditText: [$oldPass]")
 
-            if (token.isNullOrEmpty()) {
-                Toast.makeText(this, "Sesi tidak valid.", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
             // Panggil fungsi di ViewModel
-            viewModel.changePassword(token, oldPass, newPass, confirmPass)
+            viewModel.changePassword(oldPass, newPass, confirmPass)
         }
 
         observeViewModel()

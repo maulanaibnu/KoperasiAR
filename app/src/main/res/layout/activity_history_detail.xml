@@ -11,6 +11,7 @@
     <LinearLayout
         android:id="@+id/linear_header"
         android:layout_width="match_parent"
+        android:backgroundTint="@color/bg"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="10dp">
@@ -126,72 +127,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="16dp">
+        android:layout_marginTop="20dp">
 
-        <ImageView
-            android:id="@+id/historyImgProduct"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="5dp"
-            android:src="@drawable/product"
-            android:layout_marginEnd="8dp"/>
-
-        <LinearLayout
-            android:orientation="vertical"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_historyDetail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp">
-
-            <TextView
-                android:id="@+id/historyProductName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Nama produk"
-                android:fontFamily="@font/urbanist_medium"
-                android:textSize="15sp"
-                android:textColor="#000000"
-                android:layout_gravity="center_vertical"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/totalQuantityOrder"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="1"
-                    android:fontFamily="@font/urbanist_regular"
-                    android:textSize="12sp"
-                    android:textColor="#555555"
-                    android:layout_gravity="center_vertical"/>
-
-                <TextView
-                    android:id="@+id/xTotalPrice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="x"
-                    android:fontFamily="@font/urbanist_regular"
-                    android:textSize="12sp"
-                    android:textColor="#555555"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginEnd="6dp"
-                    android:layout_gravity="center_vertical"/>
-
-                <TextView
-                    android:id="@+id/priceProductHistory"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Rp 10.000"
-                    android:fontFamily="@font/urbanist_regular"
-                    android:textSize="12sp"
-                    android:textColor="#555555"
-                    android:layout_gravity="center_vertical"/>
-            </LinearLayout>
-        </LinearLayout>
+            tools:listitem="@layout/detail_history_item"/>
 
     </LinearLayout>
 
@@ -202,7 +144,6 @@
         android:text="Info Pengiriman"
         android:textSize="16sp"
         android:fontFamily="@font/urbanist_medium"
-        android:layout_marginTop="30dp"
         android:layout_marginStart="15dp"
         android:textColor="#000000"
         android:layout_marginBottom="8dp"/>
@@ -316,81 +257,74 @@
         android:textColor="#000000"
         android:layout_marginBottom="8dp"/>
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="4dp">
 
         <TextView
             android:id="@+id/totalhargaBarang"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Total Harga Barang"
-            android:textSize="14sp"
-            android:fontFamily="@font/urbanist_regular"
-            android:layout_marginStart="15dp"
-            android:textColor="#555555"
-            android:layout_weight="1"/>
-
-        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1">
+            android:fontFamily="@font/urbanist_regular"
+            android:text="Total Harga Barang"
+            android:textColor="#555555"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/totalProductCostHistory"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/totalProductCostHistory"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Rp 10.000"
-                android:layout_marginStart="6dp"
-                android:fontFamily="@font/urbanist_medium"
-                android:textSize="14sp"
-                android:textColor="#555555"/>
+        <TextView
+            android:id="@+id/totalProductCostHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/urbanist_medium"
+            android:text="Rp 10.000"
+            android:textColor="#555555"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        </LinearLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="4dp">
 
         <TextView
             android:id="@+id/totalOngkir"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Total Ongkos Kirim"
-            android:textSize="14sp"
-            android:fontFamily="@font/urbanist_regular"
-            android:layout_marginStart="15dp"
-            android:textColor="#555555"
-            android:layout_weight="1"/>
-
-        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1">
+            android:fontFamily="@font/urbanist_regular"
+            android:text="Total Ongkos Kirim"
+            android:textColor="#555555"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/totalShippingCostHistory"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/totalShippingCostHistory"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Rp 10.000"
-                android:layout_marginStart="10dp"
-                android:fontFamily="@font/urbanist_medium"
-                android:textSize="14sp"
-                android:textColor="#555555"/>
-
-        </LinearLayout>
-    </LinearLayout>
-
-
+        <TextView
+            android:id="@+id/totalShippingCostHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/urbanist_medium"
+            android:text="Rp 10.000"
+            android:textColor="#555555"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
         android:layout_width="match_parent"
@@ -400,42 +334,39 @@
         android:layout_marginEnd="16dp"
         android:layout_marginTop="10dp"/>
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="4dp">
 
         <TextView
             android:id="@+id/totalPembayaran"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Total Pembayaran"
-            android:textSize="14sp"
-            android:fontFamily="@font/urbanist_regular"
-            android:layout_marginStart="15dp"
-            android:textColor="#555555"
-            android:layout_weight="1"/>
-
-        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1">
+            android:fontFamily="@font/urbanist_regular"
+            android:text="Total Pembayaran"
+            android:textColor="#555555"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/totalPaymentHistory"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/totalPaymentHistory"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Rp 20.000"
-                android:layout_marginStart="10dp"
-                android:fontFamily="@font/urbanist_medium"
-                android:textSize="14sp"
-                android:textColor="#555555"/>
-
-        </LinearLayout>
-    </LinearLayout>
+        <TextView
+            android:id="@+id/totalPaymentHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/urbanist_medium"
+            android:text="Rp 20.000"
+            android:textColor="#555555"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </LinearLayout>

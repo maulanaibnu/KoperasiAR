@@ -24,5 +24,6 @@
     <color name="authColour">#F8FFFFFF</color>
     <color name="shadow">#BABABA</color>
     <color name="delete">#F44336</color>
+    <color name="backgrond">#F1F6F6F6</color>
 
 </resources>

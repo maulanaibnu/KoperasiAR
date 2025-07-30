@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import app.maul.koperasi.MainActivity
 import app.maul.koperasi.R
 import app.maul.koperasi.databinding.ActivityLoginBinding
@@ -16,6 +17,7 @@ import app.maul.koperasi.presentation.ui.activity.ForgotPasswordActivity
 import app.maul.koperasi.presentation.ui.register.RegisterActivity
 import app.maul.koperasi.viewmodel.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
@@ -26,13 +28,8 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
-        enableEdgeToEdge()
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        setupObservers()
         binding.btnLogin.setOnClickListener {
             binding.apply {
                 val email = binding.etEmail.text.toString().trim()
@@ -49,6 +46,28 @@ class LoginActivity : AppCompatActivity() {
         }
         binding.tvForgetPassword.setOnClickListener {
             startActivity(Intent(this,ForgotPasswordActivity::class.java))
+        }
+    }
+
+    private fun setupObservers() {
+        lifecycleScope.launch {
+            authViewModel.error.collect { errorMessage ->
+                if (!errorMessage.isNullOrEmpty()) {
+                    Toast.makeText(this@LoginActivity, errorMessage, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            authViewModel.loading.collect { isLoading ->
+            }
+        }
+
+        lifecycleScope.launch {
+            authViewModel.loginResult.collect { result ->
+                if (result != null) {
+                }
+            }
         }
     }
 

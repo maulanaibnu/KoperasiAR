@@ -4,134 +4,152 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import app.maul.koperasi.R
 import app.maul.koperasi.databinding.ActivityHistoryDetailBinding
 import app.maul.koperasi.model.order.HistoryItem
+import app.maul.koperasi.model.order.OrderDetail
+import app.maul.koperasi.presentation.ui.order.OrderViewModel
 import com.bumptech.glide.Glide
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
 
+@AndroidEntryPoint
 class HistoryDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHistoryDetailBinding
-    private var transactionId: Int = -1
+    // 2. Panggil ViewModel yang sudah Anda buat
+    private val viewModel by viewModels<OrderViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHistoryDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        Log.d("HistoryDetailActivity", "onCreate dipanggil.")
-        Log.d("HistoryDetailActivity", "Mencoba mengambil data dari Intent.")
 
-        // Cetak semua key yang ada di dalam intent extras
-        Log.d("HistoryDetailActivity", "Intent Extras Keys: ${intent.extras?.keySet()}")
+        // 3. Ambil HANYA ID dari Intent
+        val orderId = intent.getIntExtra(EXTRA_ORDER_ID, -1)
 
-        val orderHistory: HistoryItem? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra(EXTRA_ORDER_HISTORY, HistoryItem::class.java)
+        // 4. Panggil ViewModel untuk mengambil data lengkap dari server
+        if (orderId != -1) {
+            viewModel.getTransactionById(orderId)
         } else {
-            @Suppress("DEPRECATION")
-            intent.getParcelableExtra(EXTRA_ORDER_HISTORY)
-        }
-        Log.d("HistoryDetailActivity", "Hasil getParcelableExtra: $orderHistory")
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+            Toast.makeText(this, "ID Transaksi tidak valid", Toast.LENGTH_SHORT).show()
+            finish()
         }
 
-        binding.imgBack.setOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
-        }
+        setupBackButton()
+
+        // 5. Panggil fungsi untuk mengamati LiveData
+        observeViewModel()
 
         binding.tvinvoice.setOnClickListener {
-            if (orderHistory != null) {
+            // Ambil ID dari intent yang diterima activity ini
+            val orderId = intent.getIntExtra(EXTRA_ORDER_ID, -1)
+            if (orderId != -1) {
                 val intent = Intent(this, InvoiceDetailActivity::class.java).apply {
-                    // Kirim SELURUH OBJEK HistoryItem
-                    putExtra(InvoiceDetailActivity.EXTRA_INVOICE_DATA, orderHistory)
+                    putExtra(InvoiceDetailActivity.EXTRA_INVOICE_ID, orderId)
                 }
                 startActivity(intent)
             } else {
-                Toast.makeText(this, "Data transaksi tidak lengkap", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "ID Transaksi tidak ditemukan", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    // 6. FUNGSI BARU UNTUK MENGAMATI VIEWMODEL
+    private fun observeViewModel() {
+        // Observer untuk data detail transaksi
+        viewModel.transactionDetail.observe(this) { order ->
+            order?.let {
+                bindOrderInfo(it)
+                setupRecyclerView(it.orderDetails)
             }
         }
 
+        viewModel.isLoading.observe(this) { isLoading ->
+        }
 
-        orderHistory?.let { historyItem -> // 'historyItem' sekarang adalah objek HistoryItem yang benar
-
-            // --- Mengisi data dari Order (HistoryItem) ---
-            val statusText = when (historyItem.paymentStatus) {
-                "pending" -> "Menunggu Pembayaran"
-                "success" -> "Selesai"
-                "cancel" -> "Dibatalkan"
-                "expired" -> "Kedaluwarsa"
-                "failure" -> "Gagal"
-                else -> "Status Tidak Diketahui"
+        viewModel.errorMessage.observe(this) { message ->
+            if (message.isNotEmpty() && viewModel.transactionDetail.value == null) {
+                Toast.makeText(this, message, Toast.LENGTH_LONG).show()
             }
-            binding.statushistoryOrder.text = statusText
-            binding.orderCodeo.text = historyItem.code
-            binding.historyDateOrder.text = formatOrderDate(historyItem.createdAt)
-            binding.totalQuantityOrder.text = historyItem.quantity.toString()
-            binding.shippingCourirName.text = historyItem.shippingMethod
-            binding.nameReceiptOrder.text = historyItem.customerName
-            binding.phoneReceiptOrder.text = historyItem.phoneNumber
-            binding.adressReceiptOrder.text = historyItem.address
-            binding.totalShippingCostHistory.text = formatRupiah(historyItem.shippingCost.toDoubleOrNull() ?: 0.0)
-            binding.totalPaymentHistory.text = formatRupiah(historyItem.totalPrice.toDoubleOrNull() ?: 0.0)
+        }
+    }
 
-            // --- Mengisi data dari Produk yang ada di dalam Order ---
-            // Gunakan let lagi untuk keamanan jika produk bisa null
-            historyItem.product?.let { product ->
-                binding.historyProductName.text = product.name // Ini benar, dari objek product
-                binding.priceProductHistory.text = formatRupiah(product.price.toDouble()) // Ambil harga dari detail produk
+    private fun setupBackButton() {
+        binding.imgBack.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+    }
 
-                // Logika untuk menampilkan gambar produk
-                val baseUrl = "https://koperasi.simagang.my.id/"
-                if (product.images.isNotEmpty()) {
-                    val fullImageUrl = baseUrl + product.images // Sudah string langsung
-                    Glide.with(this)
-                        .load(fullImageUrl)
-                        .placeholder(R.drawable.product)
-                        .error(R.drawable.product)
-                        .into(binding.historyImgProduct)
-                } else {
-                    binding.historyImgProduct.setImageResource(R.drawable.product)
-                }
 
-                // Kalkulasi total harga produk
-                val totalProductCostCalculated = product.price.toDouble() * historyItem.quantity
-                binding.totalProductCostHistory.text = formatRupiah(totalProductCostCalculated)
-            }
 
-        } ?: run {
-            // Ini akan berjalan jika orderHistory adalah null
-            Toast.makeText(this, "Detail transaksi tidak dapat dimuat.", Toast.LENGTH_SHORT).show()
-            finish()
+    private fun bindOrderInfo(order: HistoryItem) {
+        if (order.paymentStatus.equals("success", ignoreCase = true)) {
+
+            binding.tvinvoice.visibility = View.VISIBLE
+        } else {
+            binding.tvinvoice.visibility = View.GONE
+        }
+        binding.statushistoryOrder.text = mapStatus(order.paymentStatus)
+        binding.orderCodeo.text = order.code
+        binding.historyDateOrder.text = formatOrderDate(order.createdAt)
+        binding.shippingCourirName.text = order.shippingMethod
+        binding.nameReceiptOrder.text = order.customerName
+        binding.phoneReceiptOrder.text = order.phoneNumber ?: "-"
+        binding.adressReceiptOrder.text = order.address
+        binding.totalShippingCostHistory.text = formatRupiah(order.shippingCost.toDoubleOrNull() ?: 0.0)
+        binding.totalPaymentHistory.text = formatRupiah(order.totalPrice.toDoubleOrNull() ?: 0.0)
+
+        val totalHargaBarang = order.orderDetails.sumOf { it.price * it.qty }
+        binding.totalProductCostHistory.text = formatRupiah(totalHargaBarang.toDouble())
+
+        val jumlahProduk = order.orderDetails.size
+        binding.statusProduck.text = "Detail Produk ($jumlahProduk) "
+
+        binding.totalhargaBarang.text = "Total Harga Barang ($jumlahProduk Produk)"
+    }
+
+    private fun setupRecyclerView(orderDetails: List<OrderDetail>) {
+        val adapter = OrderDetailAdapter(orderDetails)
+        binding.rvHistoryDetail.apply {
+            layoutManager = LinearLayoutManager(this@HistoryDetailActivity)
+            this.adapter = adapter
+        }
+    }
+
+    private fun mapStatus(status: String): String {
+        return when (status) {
+            "pending" -> "Menunggu Pembayaran"
+            "success" -> "Selesai"
+            "cancel" -> "Dibatalkan"
+            "expired" -> "Kedaluwarsa"
+            "failure" -> "Gagal"
+            else -> "Status Tidak Diketahui"
         }
     }
 
     private fun formatOrderDate(dateString: String?): String {
         if (dateString.isNullOrEmpty()) return "N/A"
         return try {
-
             val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
             inputFormat.timeZone = TimeZone.getTimeZone("UTC")
             val date = inputFormat.parse(dateString)
-
-
             val outputFormat = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale("id", "ID"))
             date?.let { outputFormat.format(it) } ?: dateString
         } catch (e: Exception) {
-            e.printStackTrace()
             dateString
         }
     }
-
 
     private fun formatRupiah(amount: Double): String {
         val formatter = NumberFormat.getNumberInstance(Locale("in", "ID"))
@@ -139,6 +157,6 @@ class HistoryDetailActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val EXTRA_ORDER_HISTORY = "extra_order_history"
+        const val EXTRA_ORDER_ID = "extra_order_id"
     }
 }

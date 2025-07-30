@@ -64,7 +64,7 @@ class HistoryFragment : Fragment(), OrderItemListener {
             }
         }
 
-        orderViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+        orderViewModel.isLoading.observe(viewLifecycleOwner) { _ ->
         }
 
         orderViewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
@@ -76,7 +76,8 @@ class HistoryFragment : Fragment(), OrderItemListener {
 
     override fun onItemClick(order: HistoryItem) {
         val intent = Intent(requireContext(), HistoryDetailActivity::class.java).apply {
-            putExtra(HistoryDetailActivity.EXTRA_ORDER_HISTORY, order)
+            // Hanya kirim ID transaksi
+            putExtra(HistoryDetailActivity.EXTRA_ORDER_ID, order.id)
         }
         startActivity(intent)
     }

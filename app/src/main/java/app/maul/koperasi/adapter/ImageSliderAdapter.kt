@@ -7,11 +7,21 @@ import app.maul.koperasi.databinding.ItemImageSliderBinding
 import app.maul.koperasi.utils.Constant
 import com.bumptech.glide.Glide
 
-class ImageSliderAdapter(private val images: List<String>) :
-    RecyclerView.Adapter<ImageSliderAdapter.ImageViewHolder>() {
+class ImageSliderAdapter(
+    private val images: List<String>,
+    private val onClick: (position: Int) -> Unit
+) : RecyclerView.Adapter<ImageSliderAdapter.ImageViewHolder>() {
 
-    inner class ImageViewHolder(val binding: ItemImageSliderBinding) :
-        RecyclerView.ViewHolder(binding.root)
+
+    inner class ImageViewHolder(val binding: ItemImageSliderBinding) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            binding.root.setOnClickListener {
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    onClick(adapterPosition)
+                }
+            }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val binding =

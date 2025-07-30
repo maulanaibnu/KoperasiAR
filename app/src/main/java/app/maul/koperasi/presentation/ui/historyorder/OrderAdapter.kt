@@ -2,6 +2,7 @@
 
 package app.maul.koperasi.presentation.ui.historyorder
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -9,21 +10,18 @@ import app.maul.koperasi.R
 import app.maul.koperasi.databinding.OrderListItemBinding
 import app.maul.koperasi.model.order.HistoryItem
 import com.bumptech.glide.Glide
+import org.json.JSONArray
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class OrderAdapter(
-    // orderList sekarang private, yang merupakan praktik baik untuk enkapsulasi data
     private var orderList: List<HistoryItem>,
     private val listener: OrderItemListener
 ) : RecyclerView.Adapter<OrderAdapter.OrderViewHolder>() {
 
-    // Metode publik untuk memperbarui data adapter
     fun submitList(newList: List<HistoryItem>) {
         orderList = newList
-        // Memberi tahu RecyclerView bahwa set data telah berubah
-        // Ini akan memicu RecyclerView untuk menggambar ulang item-itemnya
         notifyDataSetChanged()
     }
 
@@ -31,62 +29,46 @@ class OrderAdapter(
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderViewHolder {
-        val binding =
-            OrderListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = OrderListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return OrderViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
         val order = orderList[position]
+        val firstDetail = order.orderDetails.firstOrNull()
+        val product = firstDetail?.product
 
-        // [FIX UTAMA] Lakukan pengecekan null pada objek 'product'
-        order.product?.let { product ->
-            // --- BLOK INI HANYA BERJALAN JIKA PRODUK TIDAK NULL ---
-            holder.binding.apply {
-                // Mengatur status
-                historyStatus.text = formatStatus(order.paymentStatus)
+        holder.binding.apply {
+            historyStatus.text = formatStatus(order.paymentStatus)
+            historyDate.text = formatDisplayDate(order.createdAt)
+            historyProductName.text = product?.name ?: "Produk tidak tersedia"
 
-                // Mengatur tanggal
-                historyDate.text = formatDisplayDate(order.createdAt)
+            // Memuat gambar produk dari JSON string
+            val baseUrl = "https://koperasi.simagang.my.id/"
+            val imagePath = product?.images?.let { parseImage(it) }
 
-                // Mengatur nama produk
-                historyProductName.text = product.name // Ambil dari objek produk
+            if (!imagePath.isNullOrEmpty()) {
+                val fullImageUrl = baseUrl + imagePath
+                Log.d("ImageDebug_HistoryList", "Mencoba memuat gambar untuk produk '${product?.name}': $fullImageUrl")
+                Glide.with(holder.itemView.context)
+                    .load(fullImageUrl)
+                    .placeholder(R.drawable.product)
+                    .error(R.drawable.product)
+                    .into(historyImgProduct)
+            } else {
 
-                // Memuat gambar produk
-                val baseUrl = "https://koperasi.simagang.my.id/"
-                if (product.images.isNotEmpty()) {
-                    Glide.with(holder.itemView.context)
-                        .load(baseUrl + product.images) // sudah String!
-                        .placeholder(R.drawable.product)
-                        .error(R.drawable.product)
-                        .into(historyImgProduct)
-                } else {
-                    historyImgProduct.setImageResource(R.drawable.product)
-                }
-
-                // Menampilkan total harga
-                totalBelanja.text = "Total Belanja"
-                historyTotalPrice.text = formatRupiah(order.totalPrice.toDoubleOrNull() ?: 0.0)
+                Log.w("ImageDebug_HistoryList", "URL gambar KOSONG untuk produk: ${product?.name}")
+                historyImgProduct.setImageResource(R.drawable.product)
             }
-        } ?: run {
-//            // --- BLOK INI HANYA BERJALAN JIKA PRODUK ADALAH NULL ---
-//            holder.binding.apply {
-//                historyStatus.text = formatStatus(order.paymentStatus)
-//                historyDate.text = formatDisplayDate(order.createdAt)
-//                historyProductName.text = "Produk telah dihapus"
-//                historyImgProduct.setImageResource(R.drawable.) // Gambar placeholder untuk item rusak
-//                totalBelanja.text = "Total Belanja"
-//                historyTotalPrice.text = formatRupiah(order.totalPrice.toDoubleOrNull() ?: 0.0)
-//            }
+            totalBelanja.text = "Total Belanja"
+            historyTotalPrice.text = formatRupiah(order.totalPrice.toDoubleOrNull() ?: 0.0)
         }
-
 
         holder.itemView.setOnClickListener {
             listener.onItemClick(order)
         }
     }
 
-    // Tambahkan helper function ini di dalam OrderAdapter untuk merapikan kode
     private fun formatStatus(status: String): String {
         return when (status) {
             "pending" -> "Menunggu Pembayaran"
@@ -109,14 +91,27 @@ class OrderAdapter(
             dateString
         }
     }
+
+    // Fungsi bantu parsing string JSON array: ["img1.png", "img2.png"]
+    private fun parseImage(images: String): String? {
+        return try {
+            val jsonArray = JSONArray(images)
+            jsonArray.getString(0) // Ambil gambar pertama
+        } catch (e: Exception) {
+            null
+        }
+    }
+
     companion object {
         fun formatRupiah(amount: Double): String {
             val formatter = NumberFormat.getNumberInstance(Locale("in", "ID"))
-            return "Rp ${formatter.format(amount)}" // Menggunakan "Rp " tanpa titik
+            return "Rp ${formatter.format(amount)}"
         }
     }
+
     override fun getItemCount(): Int = orderList.size
 }
+
 
 interface OrderItemListener {
     fun onItemClick(order: HistoryItem)

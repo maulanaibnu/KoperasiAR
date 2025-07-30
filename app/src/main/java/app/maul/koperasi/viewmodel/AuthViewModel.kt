@@ -10,11 +10,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 import android.util.Log
 import app.maul.koperasi.model.login.LoginResult
-import app.maul.koperasi.model.register.RegisterResponse
-import app.maul.koperasi.model.verify.VerifyResponse
+import app.maul.koperasi.model.register.ApiErrorResponse
+import com.google.gson.Gson
+import retrofit2.HttpException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.Calendar
@@ -43,22 +43,96 @@ class AuthViewModel @Inject constructor(
     val resetPasswordSuccess: StateFlow<String?> get() = _resetPasswordSuccess
 
     fun doPostRegister(name : String,email : String,password : String){
+        if (name.isBlank()) {
+            _error.value = "Nama tidak boleh kosong."
+            return
+        }
+        if (!isEmailValid(email)) {
+            return
+        }
+        if (!isPasswordValid(password)) {
+            return
+        }
         viewModelScope.launch {
-            authRepository.doPostRegister(name,email, password)
+            _loading.value = true
+            _error.value = null
+            try {
+
+                authRepository.doPostRegister(name, email, password)
+
+
+            } catch (e: HttpException) {
+                // --- INI BAGIAN YANG DIPERBARUI ---
+                var errorMessage = "Terjadi kesalahan pada server."
+                try {
+                    val errorJson = e.response()?.errorBody()?.string()
+                    val errorResponse = Gson().fromJson(errorJson, ApiErrorResponse::class.java)
+
+                    if (!errorResponse.message.isNullOrEmpty()) {
+                        errorMessage = errorResponse.message
+                    }
+
+                } catch (jsonError: Exception) {
+                    Log.e("AuthViewModel", "Gagal parsing JSON error: $jsonError")
+                }
+                _error.value = errorMessage
+
+            } catch (e: Exception) {
+                _error.value = "Koneksi bermasalah. Periksa internet Anda."
+            } finally {
+                _loading.value = false
+            }
         }
     }
 
     fun doPostRegisterObserver() = authRepository.postRegisterObserver()
 
     fun doPostLogin(email : String,password : String){
+        if (!isEmailValid(email)) {
+            return
+        }
+        if (password.isBlank()) {
+            _error.value = "Password tidak boleh kosong."
+            return
+        }
         viewModelScope.launch {
-            authRepository.doPostLogin(email,password)
+            _loading.value = true
+            _error.value = null
+            try {
+                authRepository.doPostLogin(email, password)
+
+            } catch (e: HttpException) {
+                var errorMessage = "Terjadi kesalahan pada server."
+
+                if (e.code() == 404) {
+                    try {
+                        val errorJson = e.response()?.errorBody()?.string()
+                        val errorResponse = Gson().fromJson(errorJson, ApiErrorResponse::class.java)
+
+                        errorMessage = errorResponse.message ?: "Email tidak terdaftar."
+
+                    } catch (jsonError: Exception) {
+
+                        errorMessage = "Email atau password salah."
+                    }
+                }
+                _error.value = errorMessage
+
+            } catch (e: Exception) {
+                _error.value = "Koneksi bermasalah. Periksa internet Anda."
+            } finally {
+                _loading.value = false
+            }
         }
     }
 
     fun doPostLoginObserver() = authRepository.postLoginObserver()
 
     fun doPostVerify(otp : String, email:String){
+        if (otp.isBlank() || otp.length < 4) {
+            _error.value = "Kode OTP tidak valid."
+            return
+        }
         viewModelScope.launch {
             authRepository.doPostVerify(otp, email)
         }
@@ -67,6 +141,9 @@ class AuthViewModel @Inject constructor(
     fun doPostVerifyObserver() = authRepository.postVerifyObserver()
 
     fun requestForgotPassword(email: String) {
+        if (!isEmailValid(email)) {
+            return
+        }
         viewModelScope.launch {
             _loading.value = true
             _error.value = null
@@ -170,6 +247,13 @@ class AuthViewModel @Inject constructor(
     }
 
     fun resetPassword(email: String, otp: String, newPassword: String) {
+        if (otp.isBlank()) {
+            _error.value = "Kode OTP tidak boleh kosong."
+            return
+        }
+        if (isPasswordValid(newPassword)){
+            return
+        }
         viewModelScope.launch {
             _loading.value = true
             try {
@@ -182,6 +266,30 @@ class AuthViewModel @Inject constructor(
                 _loading.value = false
             }
         }
+    }
+
+    private fun isEmailValid(email: String): Boolean {
+        if (email.isBlank() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            _error.value = "Format email tidak valid."
+            return false
+        }
+        return true
+    }
+
+    private fun isPasswordValid(password: String): Boolean {
+        if (password.length < 8) {
+            _error.value = "Password minimal harus 8 karakter."
+            return false
+        }
+        if (!password.matches("^[A-Z].*".toRegex())) {
+            _error.value = "Password harus diawali dengan huruf kapital."
+            return false
+        }
+        if (!password.matches(".*[!@#\$%^&*()].*".toRegex())) {
+            _error.value = "Password harus mengandung karakter spesial (contoh: !@#\$%)."
+            return false
+        }
+        return true
     }
 
 }

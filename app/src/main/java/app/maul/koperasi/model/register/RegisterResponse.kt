@@ -24,3 +24,8 @@ data class RegisterRequest(
     val createdAt: String,
     val images: String?
 )
+
+data class ApiErrorResponse(
+    val message: String?,
+    val status: Int?
+)

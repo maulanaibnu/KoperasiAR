@@ -1,31 +1,23 @@
 package app.maul.koperasi.presentation.ui.register
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
-import app.maul.koperasi.R
 import app.maul.koperasi.databinding.ActivityRegisterBinding
 import app.maul.koperasi.presentation.ui.activity.VerifyActivity
 import app.maul.koperasi.viewmodel.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
-
 import kotlinx.coroutines.launch
 import java.util.Calendar
-
-
-import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.util.Log
-import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.mail.*
 import javax.mail.internet.*
@@ -39,14 +31,8 @@ class RegisterActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
         binding.btnRegis.setOnClickListener {
             binding.apply {
                 val name = binding.etName.text.toString().trim()
@@ -61,6 +47,27 @@ class RegisterActivity : AppCompatActivity() {
         }
         binding.tvLogin.setOnClickListener {
             finish()
+        }
+        setupObservers()
+    }
+    private fun setupObservers() {
+        lifecycleScope.launch {
+            authViewModel.error.collect { errorMessage ->
+                if (!errorMessage.isNullOrEmpty()) {
+                    Toast.makeText(this@RegisterActivity, errorMessage, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            authViewModel.loading.collect { isLoading ->
+                if (isLoading) {
+
+                    showLoadingDialog()
+                } else {
+                    hideLoadingDialog()
+                }
+            }
         }
     }
 
@@ -144,5 +151,23 @@ class RegisterActivity : AppCompatActivity() {
                 Toast.makeText(this@RegisterActivity, "Pendaftaran gagal. Respon OTP null.", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private var loadingDialog: Dialog? = null
+    private fun showLoadingDialog() {
+
+        loadingDialog?.dismiss()
+
+        val dialog = Dialog(this)
+        dialog.setContentView(ProgressBar(this))
+        dialog.setCancelable(false)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        loadingDialog = dialog
+        loadingDialog?.show()
+    }
+
+    private fun hideLoadingDialog() {
+        loadingDialog?.dismiss()
     }
 }

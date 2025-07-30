@@ -108,15 +108,6 @@ data class HistoryItem(
     @SerializedName("id")
     val id: Int,
 
-    @SerializedName("id_product")
-    val idProduct: Int,
-
-    @SerializedName("name_product")
-    val nameProduct: String,
-
-    @SerializedName("price")
-    val price: String,
-
     @SerializedName("code")
     val code: String,
 
@@ -135,9 +126,6 @@ data class HistoryItem(
     @SerializedName("shipping_method")
     val shippingMethod: String,
 
-    @SerializedName("quantity")
-    val quantity: Int,
-
     @SerializedName("customer_name")
     val customerName: String,
 
@@ -148,7 +136,7 @@ data class HistoryItem(
     val address: String,
 
     @SerializedName("expire_time")
-    val expireTime: String?, // Dibuat nullable karena nilainya bisa null
+    val expireTime: String?,
 
     @SerializedName("createdAt")
     val createdAt: String,
@@ -162,11 +150,12 @@ data class HistoryItem(
     @SerializedName("bank_name")
     val bankName: String?,
 
-    @SerializedName("product")
-    val product: ProductHistoryDetail?
+    // Tambahkan ini! untuk menampung banyak produk
+    @SerializedName("order_details")
+    val orderDetails: List<OrderDetail>
 ) : Parcelable
 
-// 3. Kelas untuk data detail produk yang ada di dalam setiap item riwayat
+
 @Parcelize
 data class ProductHistoryDetail(
     @SerializedName("id")
@@ -308,6 +297,7 @@ data class OrderDetail(
     val name_product: String,
     val price: Int,
     var qty: Int,
+    val product: ProductHistoryDetail? = null,
     val image_url: String?,
     val createdAt: String,
     val updatedAt: String

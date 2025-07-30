@@ -17,8 +17,6 @@ import app.maul.koperasi.preference.Preferences
 import app.maul.koperasi.presentation.ui.augmentedReality.ProductArActivity
 import app.maul.koperasi.presentation.ui.detailProduct.DetailProductViewModel
 import app.maul.koperasi.presentation.ui.wishlist.WishlistViewModel
-import app.maul.koperasi.utils.Constant
-import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import java.text.DecimalFormat
 import dagger.hilt.android.AndroidEntryPoint
@@ -99,12 +97,15 @@ class DetailProductActivity : AppCompatActivity() {
                 val formattedPrice = formatter.format(product.price).replace(',', '.')
                 val prefix = "Rp. "
 //                Glide.with(this).load(Constant.BASE_URL + product.images).into(binding.IvProduct)
-                val imageAdapter = ImageSliderAdapter(product.images) // `product.images` sekarang adalah List<String>
+                val imageAdapter = ImageSliderAdapter(product.images) { position ->
+                    // Ini adalah aksi yang akan dijalankan saat gambar diklik
+                    // Membuka FullscreenImageActivity yang sudah kita buat sebelumnya
+                    val intent = FullscreenImageActivity.newIntent(this, product.images, position)
+                    startActivity(intent)
+                }
                 binding.viewPagerProduct.adapter = imageAdapter
 
-                // [TAMBAHKAN] Hubungkan TabLayout dengan ViewPager2 untuk indikator titik
                 TabLayoutMediator(binding.tabLayout, binding.viewPagerProduct) { tab, position ->
-                    // Tidak perlu melakukan apa-apa di sini, cukup untuk membuat titik-titik
                 }.attach()
                 binding.ProductPrice.text = "Rp. $formattedPrice"
                 binding.ProductName.text = product.name

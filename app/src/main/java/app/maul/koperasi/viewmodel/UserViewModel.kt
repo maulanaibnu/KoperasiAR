@@ -6,13 +6,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import app.maul.koperasi.data.AddressRepository
 import app.maul.koperasi.data.UserRepository
-import app.maul.koperasi.model.address.AddressData
 import app.maul.koperasi.model.user.ChangePasswordRequest
-import app.maul.koperasi.model.user.ForgotPasswordRequest
+import app.maul.koperasi.model.user.ChangePasswordResponse
 import app.maul.koperasi.model.user.ForgotPasswordResponse
 import app.maul.koperasi.model.user.User
+import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -93,16 +92,15 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun changePassword(token: String, oldPass: String, newPass: String, confirmPass: String) {
+    fun changePassword(oldPass: String, newPass: String, confirmPass: String) {
 
-        Log.d("ChangePassDebug", "2. Password diterima di ViewModel: [$oldPass]")
-
-        // Validasi dasar di sisi klien
         if (newPass != confirmPass) {
             _error.value = "Password baru dan konfirmasi tidak cocok."
             return
         }
-        // ... validasi lainnya ...
+        if (!isPasswordValid(newPass)) {
+            return
+        }
 
         viewModelScope.launch {
             _loading.value = true
@@ -111,28 +109,53 @@ class UserViewModel @Inject constructor(
 
             try {
                 val request = ChangePasswordRequest(oldPassword = oldPass, newPassword = newPass)
-                // Panggil repository yang akan memanggil API
-                val response = userRepository.changePassword(token, request)
+                val response = userRepository.changePassword(request)
 
-                // Jika sukses, kirim pesan dari server ke UI
+
                 _changePasswordSuccess.value = response.message
 
             } catch (e: Exception) {
-                // Blok ini akan menangkap error seperti 400 (password lama salah) atau 404
                 val errorMessage = if (e is HttpException) {
-                    // Ambil pesan error dari server jika ada
-                    val errorJson = e.response()?.errorBody()?.string()
-                    // Di sini Anda bisa parse JSON untuk mendapatkan 'message' spesifik
-                    // atau tampilkan pesan default
-                    "Gagal: ${e.code()}. Password lama mungkin salah."
+                    try {
+                        val errorJson = e.response()?.errorBody()?.string()
+                        val errorResponse = Gson().fromJson(errorJson, ChangePasswordResponse::class.java)
+
+                        // Tampilkan pesan error spesifik dari API
+                        errorResponse.message ?: "Terjadi kesalahan (Kode: ${e.code()})"
+                    } catch (jsonError: Exception) {
+                        // Jika parsing JSON gagal, tampilkan pesan generik
+                        "Terjadi kesalahan server (Kode: ${e.code()})"
+                    }
                 } else {
-                    "Terjadi kesalahan koneksi."
+                    "Terjadi kesalahan koneksi. Periksa internet Anda."
                 }
                 _error.value = errorMessage
             } finally {
                 _loading.value = false
             }
         }
+    }
+
+    private fun isPasswordValid(password: String): Boolean {
+        // Minimal 8 karakter
+        if (password.length < 8) {
+            _error.value = "Password minimal harus 8 karakter."
+            return false
+        }
+
+        // Huruf depan harus besar (kapital)
+        if (!password.matches("^[A-Z].*".toRegex())) {
+            _error.value = "Password harus diawali dengan huruf kapital."
+            return false
+        }
+
+        //  karakter khusus
+        if (!password.matches(".*[!@#\$%^&*()].*".toRegex())) {
+            _error.value = "Password harus mengandung karakter spesial (contoh: !@#\$%)."
+            return false
+        }
+
+        return true
     }
 
 

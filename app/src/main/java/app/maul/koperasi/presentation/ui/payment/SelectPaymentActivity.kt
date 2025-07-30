@@ -4,14 +4,11 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import app.maul.koperasi.R
 import app.maul.koperasi.adapter.PaymentAdapter
 import app.maul.koperasi.databinding.ActivitySelectPaymentBinding
 import app.maul.koperasi.model.payment.PaymentMethod
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class SelectPaymentActivity : AppCompatActivity() {
 
@@ -20,8 +17,8 @@ class SelectPaymentActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySelectPaymentBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        setupRecyclerView()
+        val currentBankCode = intent.getStringExtra("CURRENT_BANK_CODE")
+        setupRecyclerView(currentBankCode)
         setupClickListeners()
     }
 
@@ -29,8 +26,7 @@ class SelectPaymentActivity : AppCompatActivity() {
         binding.imgBack.setOnClickListener { finish() }
     }
 
-    private fun setupRecyclerView() {
-        // Membuat daftar metode pembayaran secara hardcode
+    private fun setupRecyclerView(currentBankCode: String?) {
         val paymentOptions = listOf(
             PaymentMethod("BCA Virtual Account", "bca", R.drawable.bcalogo),
             PaymentMethod("BRI Virtual Account", "bri", R.drawable.brikogo),
@@ -38,31 +34,28 @@ class SelectPaymentActivity : AppCompatActivity() {
             PaymentMethod("BNI Virtual Account", "bni", R.drawable.bnilogo),
             PaymentMethod("PERMATA Virtual Account", "permata", R.drawable.permata_logo),
             PaymentMethod("CIMB NIAGA Virtual Account", "cimb_niaga", R.drawable.cimb)
+
         )
 
-        // Menginisialisasi adapter dan mengirim data yang dipilih ke CheckoutActivity
-        val paymentAdapter = PaymentAdapter { selectedMethod ->
-            // Mengirimkan data yang dipilih kembali ke CheckoutActivity
+        // Kirim currentBankCode ke constructor Adapter
+        val paymentAdapter = PaymentAdapter(currentBankCode) { selectedMethod ->
+            // Bagian ini sudah benar, tidak perlu diubah
             val resultIntent = Intent().apply {
                 putExtra("bank_code", selectedMethod.bankCode)
                 putExtra("bank_name", selectedMethod.bankName)
                 putExtra("bank_logo", selectedMethod.logoResId)
             }
             setResult(Activity.RESULT_OK, resultIntent)
-            lifecycleScope.launch {
-                delay(300L) // Jeda 300 milidetik. Anda bisa coba 400L atau 500L jika masih terlalu cepat
-                finish() // Baru panggil finish() setelah jeda
-            }
+            finish()
         }
 
-        // Mengirimkan list metode pembayaran ke adapter
         paymentAdapter.submitList(paymentOptions)
 
-        // Mengatur RecyclerView dengan adapter
         binding.rvPaymentList.apply {
             layoutManager = LinearLayoutManager(this@SelectPaymentActivity)
             adapter = paymentAdapter
         }
     }
+
 
 }

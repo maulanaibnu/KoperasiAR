@@ -91,20 +91,16 @@ class CheckoutActivity : AppCompatActivity() {
             if (result.resultCode == RESULT_OK) {
                 val data = result.data
 
-                // 1. Cek apakah ini hasil dari pemilihan bank
                 val bankCode = data?.getStringExtra("bank_code")
                 if (bankCode != null) {
                     val bankName = data.getStringExtra("bank_name") ?: ""
                     val bankLogo = data.getIntExtra("bank_logo", 0)
-                    selectedBank = Pair(bankCode, bankName) // Menyimpan bank yang dipilih
+                    selectedBank = Pair(bankCode, bankName)
 
-                    // Menyembunyikan daftar pembayaran dan menampilkan bank terpilih
-
-                    binding.llSelectedPaymentDisplay.visibility = View.VISIBLE // Menampilkan bank yang dipilih
+                    binding.llSelectedPaymentDisplay.visibility = View.VISIBLE
                     binding.tvSelectedBankName.text = bankName
                     if (bankLogo != 0) binding.imgSelectedBankLogo.setImageResource(bankLogo)
                 }
-                // 2. Jika bukan, cek apakah ini hasil dari pemilihan kurir
                 else {
                     val shippingOption = data?.getParcelableExtra<ShippingOption>("shippingOption")
                     if (shippingOption != null) {
@@ -115,7 +111,7 @@ class CheckoutActivity : AppCompatActivity() {
                         binding.tvTotalShipping.text = formatRupiah(shippingOption.shippingCost)
                         updateTotalPrice()
                     }
-                    // 3. Jika bukan keduanya, ini adalah hasil pemilihan alamat
+
                     else {
                         val street = data?.getStringExtra("street") ?: ""
                         val name = data?.getStringExtra("name") ?: ""
@@ -129,7 +125,6 @@ class CheckoutActivity : AppCompatActivity() {
         }
 
         userId = Preferences.getId(this@CheckoutActivity)
-        // Retrieve data from Intent
         binding.selectPaymentMethod.setOnClickListener {
             val intent = Intent(this, SelectPaymentActivity::class.java)
             resultLauncher.launch(intent)
@@ -141,52 +136,6 @@ class CheckoutActivity : AppCompatActivity() {
             showRecycler(orderDetails)
         }
 
-
-//        if (orderDetails.isNotEmpty()) {
-//            val firstItem = orderDetails[0]
-//
-//            binding.tvCOProductName.text = firstItem.name_product
-//            binding.tvCoProductPrice.text = formatRupiah(firstItem.price)
-//
-//
-//            countProduct = firstItem.qty
-//
-//            binding.tvQuantityProduct.text = countProduct.toString()
-//
-//            // Panggil fungsi updateTotalPrice() di sini untuk perhitungan awal yang benar
-//            updateTotalPrice()
-//
-//
-//            binding.tvQuantityProduct.text = countProduct.toString()
-//
-//            val baseUrl = "https://koperasi.simagang.my.id/"
-//            val fullImageUrl = baseUrl + firstItem.image_url
-//
-//
-//            Glide.with(this)
-//                .load(fullImageUrl)
-//                .placeholder(R.drawable.product)
-//                .error(R.drawable.baseline_error_outline_24)
-//                .into(binding.imgCoPRoduct)
-//
-//
-//            binding.btnPlus.setOnClickListener {
-//                countProduct++
-//                binding.tvQuantityProduct.text = countProduct.toString()
-//                updateTotalPrice()
-//            }
-//
-//            binding.btnMinus.setOnClickListener {
-//                if (countProduct > 1) {
-//                    countProduct--
-//                    binding.tvQuantityProduct.text = countProduct.toString()
-//                    updateTotalPrice()
-//                }
-//            }
-//        } else {
-//            Toast.makeText(this, "Terjadi kesalahan produk", Toast.LENGTH_SHORT).show()
-//        }
-
         viewModel.getAddresses()
         setupObservers()
         setupPaymentSelection()
@@ -197,12 +146,10 @@ class CheckoutActivity : AppCompatActivity() {
         binding.cardShippingOption.setOnClickListener {
             resultLauncher.launch(Intent(this, SelectCourirActivity::class.java).also{
                 it.putExtra("receiver_id", idDestination)
-                // INI BENAR, harga total barang dikirim
                 val totalProductPrice = (orderDetails.getOrNull(0)?.price ?: 0) * countProduct
                 it.putExtra("price", totalProductPrice.toLong())
             })
         }
-        // Set up Submit Button
 
         binding.btnPayNow.setOnClickListener {
             var paymentType = "bank_transfer"
@@ -226,13 +173,20 @@ class CheckoutActivity : AppCompatActivity() {
                 address = binding.tvDetailAlamat.text.toString(),
                 products = productRequest
             )
-            Toast.makeText(this, "JEMBUT", Toast.LENGTH_SHORT).show()
             Log.d("TESTED","$orderRequest")
 
             // Call ViewModel to create the order
             orderViewModel.createOrderList(orderRequest)
 
 
+        }
+
+        binding.selectAllPayment.setOnClickListener {
+            val intent = Intent(this, SelectPaymentActivity::class.java)
+
+            intent.putExtra("CURRENT_BANK_CODE", selectedBank?.first)
+
+            resultLauncher.launch(intent)
         }
 
         observeOrderResponse()
@@ -251,6 +205,7 @@ class CheckoutActivity : AppCompatActivity() {
                     putExtra("virtual_account", transactionData?.virtual_account)
                     putExtra("expired", transactionData?.expired)
                     putExtra("total_payment", transactionData?.price)
+                    putExtra("order_id", transactionData?.code)
                 }
                 startActivity(intent)  // Navigate to PaymentActivity for further processing
 
@@ -333,6 +288,25 @@ class CheckoutActivity : AppCompatActivity() {
     }
 
     private fun setupPaymentSelection() {
+        if (selectedBank == null) {
+            // 1. Definisikan data default untuk BCA
+            val defaultBankCode = "bca"
+            val defaultBankName = "BCA Virtual Account"
+            // Ganti R.drawable.logo_bca dengan nama resource logo Anda yang benar
+            val defaultBankLogo = R.drawable.bcalogo
+
+            // 2. Atur variabel state dengan data BCA
+            selectedBank = Pair(defaultBankCode, defaultBankName)
+
+            // 3. Perbarui tampilan UI
+            // Sembunyikan tombol "Pilih Metode Pembayaran"
+            binding.selectPaymentMethod.visibility = View.GONE
+
+            // Tampilkan layout yang berisi detail bank yang sudah terpilih
+            binding.llSelectedPaymentDisplay.visibility = View.VISIBLE
+            binding.tvSelectedBankName.text = defaultBankName
+            binding.imgSelectedBankLogo.setImageResource(defaultBankLogo)
+        }
 
     }
 

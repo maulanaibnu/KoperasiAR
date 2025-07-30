@@ -72,7 +72,6 @@ class AuthRepository @Inject constructor(private val apiService: ApiService) {
     ) {
         try {
             val response = apiService.verify(otp, email)
-            Log.d("TEST UHUY","$response")
             if (response.status == 200) {
                 val body = response
                 doPostVerify.postValue(body)
@@ -80,7 +79,6 @@ class AuthRepository @Inject constructor(private val apiService: ApiService) {
                 doPostVerify.postValue(null)
             }
         } catch (t: Throwable) {
-            Log.d("TEST UHUYY","${t.message}")
             doPostVerify.postValue(null)
         }
     }
